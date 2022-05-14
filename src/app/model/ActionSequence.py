@@ -5,7 +5,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from pydantic.schema import datetime
 
-from app.model.Action import Action
+from model.Action import Action
 
 
 class ActionSequence(BaseModel):

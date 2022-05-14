@@ -4,7 +4,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from app.model.ActionParameter import ActionParameter
+from model.ActionParameter import ActionParameter
 
 
 class Action(BaseModel):

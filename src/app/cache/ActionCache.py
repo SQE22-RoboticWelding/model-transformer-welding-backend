@@ -4,9 +4,9 @@ from typing import Dict
 
 from pydantic.schema import datetime
 
-from app.model.ActionParameter import ActionParameter
-from app.model.Action import Action
-from app.model.ActionSequence import ActionSequence
+from model.ActionParameter import ActionParameter
+from model.Action import Action
+from model.ActionSequence import ActionSequence
 
 
 class ActionCache:
@@ -27,7 +27,7 @@ class ActionCache:
         self.parameters["p5"] = ActionParameter("roll", 0.50)
         self.parameters["p6"] = ActionParameter("yaw", 0.75)
 
-        self.actions["a1"] = Action("move_1", list(self.parameters.values()))
-        action = self.actions["a1"]
+        self.actions["move_1"] = Action("move_1", list(self.parameters.values()))
+        action = self.actions["move_1"]
 
-        self.action_sequence["s1"] = ActionSequence("seq_1", None, datetime.now(), [action, action, action])
+        self.action_sequence["seq_1"] = ActionSequence("seq_1", None, datetime.now(), [action, action, action])

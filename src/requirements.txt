@@ -8,3 +8,4 @@ asyncpg
 greenlet
 bson
 psycopg2-binary
+Jinja2
