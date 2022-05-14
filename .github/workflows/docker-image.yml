@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+    - automatic-build
   workflow_dispatch:
 
 env:
