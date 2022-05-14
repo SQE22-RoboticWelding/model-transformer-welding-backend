@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -32,12 +33,12 @@ jobs:
     - name: Build a development Docker image
       if: github.event_name == 'workflow_dispatch'
       working-directory: ./src
-      run: docker build . --file Dockerfile --tag DEV-$(date +%s)
+      run: docker build . --file Dockerfile --tag low-code-ros:DEV-$(date +%s)
 
     - name: Build a productive Docker image
       if: github.event_name == 'push'
       working-directory: ./src
-      run: docker build . --file Dockerfile --tag $(date +%s)
+      run: docker build . --file Dockerfile --tag low-code-ros:$(date +%s)
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
