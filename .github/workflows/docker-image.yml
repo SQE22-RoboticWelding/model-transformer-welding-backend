@@ -32,7 +32,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Set environment for tagging
-      run: echo "TAG=$(date +%s)" >> $GITUHB_ENV
+      run: echo "TAG=$(date +%s)" >> $GITHUB_ENV
     - name: Extract metadata (tags, labels) for Docker
       id: meta
       uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
