@@ -4,7 +4,7 @@ import rospy
 
 def run_actions(n):
     {% for action in action_sequence %}
-    n.{{ action.key }}({% for param in action.parameters %}{{param.name}}={{param.value}}{% endfor %})
+    n.{{ action.key }}({% for param in action.parameters %}{{param.name}}={{param.value}},{% endfor %})
 
     {% endfor %}
 
