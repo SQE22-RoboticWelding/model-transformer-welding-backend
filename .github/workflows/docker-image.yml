@@ -43,6 +43,7 @@ jobs:
       with:
         major_pattern: "/^MAJOR:.*$/"
         minor_pattern: "/^MINOR:.*$/"
+        tag_prefix: "v"
         format: "${major}.${minor}-${increment}"
         namespace: ${{ env.GITHUB_SHA }}
 
@@ -51,8 +52,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GHCR_IO_PAT }}
       with:
-        tag_name: v${{ steps.semver.outputs.version }}
-        release_name: Release v${{ steps.semver.outputs.version }}
+        tag_name: ${{ steps.semver.outputs.version_tag }}
+        release_name: Release ${{ steps.semver.outputs.version_tag }}
         draft: false
 
     - name: Build and push Docker image
