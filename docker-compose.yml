@@ -7,6 +7,9 @@ services:
             - "8000:8000"
         depends_on:
             - sqe_database
+        environment:
+            DATABASE_URL_ASYNC: "postgresql+asyncpg://postgres:awesomepw@sqe_database:5432"
+            DATABASE_URL_SYNC: "postgresql://postgres:awesomepw@sqe_database:5432"
     sqe_database:
         container_name: sqe_database
         image: postgres:14.2-alpine
