@@ -37,7 +37,6 @@ jobs:
       id: semver
       uses: paulhatch/semantic-version@v4.0.2
       with:
-        tag_prefix: "v"
         major_pattern: "/^MAJOR:.*$/"
         minor_pattern: "/^MINOR:.*$/"
         format: "${major}.${minor}-${increment}"
@@ -48,8 +47,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GHCR_IO_PAT }}
       with:
-        tag_name: ${{ steps.semver.outputs.version }}
-        release_name: Release ${{ steps.semver.outputs.version }}
+        tag_name: v${{ steps.semver.outputs.version }}
+        release_name: Release v${{ steps.semver.outputs.version }}
         draft: false
 
     - name: Build and push Docker image
@@ -57,4 +56,4 @@ jobs:
       with:
         context: ./src
         push: true
-        tags: "${{ env.REGISTRY }}/${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
+        tags: "${{ env.REGISTRY }}/${{ env.GITHUB_REPOSITORY_OWNER }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
