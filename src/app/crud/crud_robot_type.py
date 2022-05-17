@@ -1,8 +1,6 @@
-from sqlalchemy import Integer
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.future import select
-from typing import List, Optional
+from typing import Any, Dict, Optional, Union, List
 
 from app.crud.base import CRUDBase
 from app.models.robot_type import RobotType
@@ -22,7 +20,16 @@ class CRUDRobotType(CRUDBase[RobotType, RobotTypeCreate, RobotTypeUpdate]):
         await db.refresh(db_obj)
         return db_obj
 
-    async def get_by_id(
+    async def update(
+            self, db: AsyncSession, *, db_obj: RobotType, obj_in: Union[RobotTypeUpdate, Dict[str, Any]]
+    ) -> RobotType:
+        if isinstance(obj_in, dict):
+            update_data = obj_in
+        else:
+            update_data = obj_in.dict(exclude_unset=True)
+        return await super().update(db, db_obj=db_obj, obj_in=update_data)
+
+    async def get_by_id( # noqa
             self, db: AsyncSession, *, id: int
     ) -> Optional[RobotType]:
         result = await db.execute(select(RobotType).filter(RobotType.id == id))
