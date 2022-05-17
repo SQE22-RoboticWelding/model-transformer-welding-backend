@@ -44,7 +44,7 @@ jobs:
         major_pattern: "/^MAJOR:.*$/"
         minor_pattern: "/^MINOR:.*$/"
         tag_prefix: "v"
-        format: "${major}.${minor}-${increment}"
+        format: "${major}.${minor}.${patch}"
         namespace: ${{ env.GITHUB_SHA }}
 
     - name: Create GitHub release
