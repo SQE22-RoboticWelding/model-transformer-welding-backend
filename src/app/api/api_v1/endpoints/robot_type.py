@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-from typing import Any
 
 from app.api import deps
 from app.crud.crud_robot_type import *
