@@ -26,6 +26,10 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Lower-case organization name
+      run: |
+        echo "ORGANIZATION=${ORGANIZATION,,}" >>${GITHUB_ENV}
+
     - name: Log in to the Container registry
       uses: docker/login-action@v2.0.0
       with:
