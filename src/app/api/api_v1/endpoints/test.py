@@ -6,8 +6,7 @@ router = APIRouter()
 
 @router.get("/test/{id}")
 async def test(id):
-    print(id)
-    return {"message": "Success!"}
+    return {"message": f"{id} was sent"}
 
 
 @router.get("/database")
@@ -15,8 +14,6 @@ async def database(
         db: AsyncSession = Depends(deps.get_async_db)
 ):
     if db is not None:
-        print("We have a database :)")
-        return {"message": "Success"}
+        return {"message": "Database reachable"}
     else:
-        print("We don't have a database :(")
-        return {"message": "Failure"}
+        return {"message": "Database not reachable"}
