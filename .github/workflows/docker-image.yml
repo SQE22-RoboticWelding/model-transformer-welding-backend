@@ -10,7 +10,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: low-code-ros
-  ORGANIZATION: SQE22-RoboticWelding
+  ORGANIZATION: sqe22
 
 jobs:
   build-and-push-image:
@@ -31,7 +31,7 @@ jobs:
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
-        password: ${{ secrets.GHCR_IO_PAT }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Generate version number
       id: semver
