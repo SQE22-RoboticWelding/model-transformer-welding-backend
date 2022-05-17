@@ -10,6 +10,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: low-code-ros
+  ORGANIZATION: sqe22
 
 jobs:
   build-and-push-image:
@@ -21,27 +22,26 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
 
     - name: Log in to the Container registry
-      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+      uses: docker/login-action@v2.0.0
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Set environment for tagging
-      run: echo "DOCKER_TAG=$(date +%s)" >> $GITHUB_ENV
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+    - name: Generate version number
+      id: semver
+      uses: paulhatch/semantic-version@v4.0.2
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        major_pattern: "/^MAJOR:.*$/"
+        format: "${major}-${increment}"
+        namespace: ${{ env.GITHUB_SHA }}
 
     - name: Build and push Docker image
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      uses: docker/build-push-action@v3.0.0
       with:
         context: ./src
         push: true
-        tags: ${{ env.DOCKER_TAG }}
-        labels: ${{ steps.meta.outputs.labels }}
+        tags: "${{ env.REGISTRY }}/${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
