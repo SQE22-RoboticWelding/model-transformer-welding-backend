@@ -10,7 +10,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: low-code-ros
-  ORGANIZATION: sqe22
+  ORGANIZATION: ${{ github.repository_owner }}
 
 jobs:
   build-and-push-image:
@@ -30,7 +30,7 @@ jobs:
       uses: docker/login-action@v2.0.0
       with:
         registry: ${{ env.REGISTRY }}
-        username: ${{ github.repository_owner }}
+        username: ${{ env.ORGANIZATION }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Generate version number
@@ -56,4 +56,4 @@ jobs:
       with:
         context: ./src
         push: true
-        tags: "${{ env.REGISTRY }}/${{ env.GITHUB_REPOSITORY_OWNER }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
+        tags: "${{ env.REGISTRY }}/${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}"
