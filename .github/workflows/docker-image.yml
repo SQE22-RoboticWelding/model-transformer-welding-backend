@@ -10,7 +10,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: low-code-ros
-  ORGANIZATION: sqe22
+  ORGANIZATION: SQE22-RoboticWelding
 
 jobs:
   build-and-push-image:
@@ -39,7 +39,8 @@ jobs:
       with:
         tag_prefix: "v"
         major_pattern: "/^MAJOR:.*$/"
-        format: "${major}-${increment}"
+        minor_pattern: "/^MINOR:.*$/"
+        format: "${major}.${minor}-${increment}"
         namespace: ${{ env.GITHUB_SHA }}
 
     - name: Create GitHub release
@@ -47,8 +48,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GHCR_IO_PAT }}
       with:
-        tag_name: ${{ steps.semver.outputs.version_tag }}
-        release_name: Release ${{ steps.semver.outputs.version_tag }}
+        tag_name: ${{ steps.semver.outputs.version }}
+        release_name: Release ${{ steps.semver.outputs.version }}
         draft: false
 
     - name: Build and push Docker image
