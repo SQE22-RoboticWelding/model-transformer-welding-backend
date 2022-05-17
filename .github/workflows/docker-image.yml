@@ -23,6 +23,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3.0.2
+      with:
+        fetch-depth: 0
 
     - name: Log in to the Container registry
       uses: docker/login-action@v2.0.0
@@ -35,9 +37,19 @@ jobs:
       id: semver
       uses: paulhatch/semantic-version@v4.0.2
       with:
+        tag_prefix: "v"
         major_pattern: "/^MAJOR:.*$/"
         format: "${major}-${increment}"
         namespace: ${{ env.GITHUB_SHA }}
+
+    - name: Create GitHub release
+      uses: actions/create-release@v1.1.4
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.semver.outputs.version_tag }}
+        release_name: Release ${{ steps.semver.outputs.version_tag }}
+        draft: false
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v3.0.0
