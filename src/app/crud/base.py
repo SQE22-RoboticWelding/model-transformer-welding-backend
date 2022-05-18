@@ -86,3 +86,4 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await db.delete(obj)
         await db.commit()
         return obj
+    
