@@ -4,7 +4,6 @@ on:
   push:
     branches:
     - main
-    - automatic-build
 
 env:
   REGISTRY: ghcr.io
@@ -53,8 +52,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GHCR_IO_PAT }}
       with:
-        tag_name: ${{ steps.semver.outputs.version }}-${{ env.SHORT_SHA }}
-        release_name: Release ${{ steps.semver.outputs.version }}-${{ env.SHORT_SHA }}
+        tag_name: v${{ steps.semver.outputs.version }}-${{ env.SHORT_SHA }}
+        release_name: Release v${{ steps.semver.outputs.version }}-${{ env.SHORT_SHA }}
         draft: false
 
     - name: Build and push Docker image
