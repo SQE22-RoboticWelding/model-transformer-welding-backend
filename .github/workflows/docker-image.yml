@@ -42,17 +42,15 @@ jobs:
       with:
         major_pattern: "/^MAJOR:.*$/"
         minor_pattern: "/^MINOR:.*$/"
-        tag_prefix: "v"
         format: "${major}.${minor}.${patch}"
-        namespace: ${{ env.GITHUB_SHA }}
 
     - name: Create GitHub release
       uses: actions/create-release@v1.1.4
       env:
         GITHUB_TOKEN: ${{ secrets.GHCR_IO_PAT }}
       with:
-        tag_name: ${{ steps.semver.outputs.version_tag }}
-        release_name: Release ${{ steps.semver.outputs.version_tag }}
+        tag_name: ${{ steps.semver.outputs.version }}-${{ env.GITHUB_SHA }}
+        release_name: Release ${{ steps.semver.outputs.version }}-${{ env.GITHUB_SHA }}
         draft: false
 
     - name: Build and push Docker image
