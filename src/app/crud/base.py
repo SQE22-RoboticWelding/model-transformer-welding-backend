@@ -1,12 +1,12 @@
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
-
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.expression import select
 
 from app.db.base_class import Base
-from sqlalchemy.sql.expression import select
+
 
 ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -23,11 +23,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         self.model = model
 
-
     async def get(self, db: AsyncSession, id: Any) -> Optional[ModelType]:
         result = await db.execute(select(self.model).filter(self.model.id == id))
         return result.scalars().first()
-
 
     async def get_multi(
         self, db: AsyncSession, *, skip: int = 0, limit: int = 100
@@ -36,7 +34,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         result = await db.execute(query)
         res = result.scalars().all()
         return res
-
 
     async def get_multi_by_owner(
         self, db: AsyncSession, *, owner_id: int, skip: int = 0, limit: int = 100
@@ -49,16 +46,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         )
         return result.scalars().all()
 
-
     async def create(self, db: AsyncSession, *, obj_in: CreateSchemaType) -> ModelType:
-        #obj_in_data = jsonable_encoder(obj_in)
         obj_in_data = obj_in.dict()
         db_obj = self.model(**obj_in_data)  # type: ignore
         db.add(db_obj)
         await db.commit()
         await db.refresh(db_obj)
         return db_obj
-
 
     async def update(
         self,
@@ -80,9 +74,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await db.refresh(db_obj)
         return db_obj
 
-
-    async def remove(self, db: AsyncSession, *, id: int) -> ModelType:
-        obj = await self.get(db, id)
+    async def remove(self, db: AsyncSession, *, obj: ModelType) -> ModelType:
         await db.delete(obj)
         await db.commit()
         return obj

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
-
 from app.api import deps
 from app.crud.crud_robot_type import *
 from app.schemas.robot_type import *
+
 
 router = APIRouter()
 
@@ -72,5 +72,5 @@ async def delete_robot_type(
     result = await robot_type.get_by_id(db=db, id=_id)
     if not result:
         raise HTTPException(status_code=404, detail="Robot type not found")
-    result = await robot_type.remove(db=db, id=_id)
+    result = await robot_type.remove(db=db, obj=result)
     return result

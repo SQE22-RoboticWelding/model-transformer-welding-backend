@@ -23,10 +23,7 @@ class CRUDRobotType(CRUDBase[RobotType, RobotTypeCreate, RobotTypeUpdate]):
     async def update(
             self, db: AsyncSession, *, db_obj: RobotType, obj_in: Union[RobotTypeUpdate, Dict[str, Any]]
     ) -> RobotType:
-        if isinstance(obj_in, dict):
-            update_data = obj_in
-        else:
-            update_data = obj_in.dict(exclude_unset=True)
+        update_data = obj_in if isinstance(obj_in, dict) else obj_in.dict(exclude_unset=True)
         return await super().update(db, db_obj=db_obj, obj_in=update_data)
 
     async def get_by_id( # noqa
