@@ -2,3 +2,9 @@ uvicorn
 fastapi
 requests
 validators
+sqlalchemy[asyncio]
+alembic
+asyncpg
+greenlet
+bson
+psycopg2-binary

@@ -1,7 +1,43 @@
-version: "3.9"
+version: "3.1"
 services:
-    backend:
-        build: src/
+    sqe_backend:
         container_name: sqe_backend
+        build: src/
         ports:
             - "8000:8000"
+        depends_on:
+            - sqe_database
+        environment:
+            DATABASE_URL_ASYNC: "postgresql+asyncpg://postgres:awesomepw@sqe_database:5432"
+            DATABASE_URL_SYNC: "postgresql://postgres:awesomepw@sqe_database:5432"
+
+    sqe_database:
+        container_name: sqe_database
+        image: postgres:14.2-alpine
+        restart: unless-stopped
+        ports:
+            - 5432:5432
+        environment:
+          POSTGRES_USER: ${POSTGRES_USER:-postgres}
+          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-awesomepw}
+        volumes:
+            - postgres:/data/postgres
+
+    sqe_database_ui:
+        container_name: sqe_database_ui
+        image: dpage/pgadmin4
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-sqe22@welding.com}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+            PGADMIN_CONFIG_SERVER_MODE: 'False'
+        volumes:
+            - pgadmin:/var/lib/pgadmin
+        ports:
+            - 8080:80
+        depends_on:
+            - sqe_database
+
+volumes:
+    postgres:
+    pgadmin:
+

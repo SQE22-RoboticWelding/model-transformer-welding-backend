@@ -1,7 +1,13 @@
 FROM python:slim
 
-COPY . .
+ENV PYTHONPATH "${PYTHONPATH}:/"
+ENV PORT=8000
 
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip
 
-CMD [ "uvicorn", "--host", "0.0.0.0", "app.main:app" ]
+COPY requirements.txt /app/
+RUN pip install -r /app/requirements.txt
+
+COPY ./app /app
+
+CMD ["uvicorn", "--host", "0.0.0.0", "app.main:app"]
