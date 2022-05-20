@@ -1,8 +1,8 @@
-"""Action.py describes the action a robot takes."""
+"""action.py describes the action a robot takes."""
 
 from typing import List
 
-from app.schemas.actions.ActionParameter import ActionParameter
+from app.schemas.actions.action_parameter import ActionParameter
 
 
 class Action:

@@ -1,4 +1,4 @@
-"""ActionParameter.py describes the parameter of an action a robot takes."""
+"""action_parameter.py describes the parameter of an action a robot takes."""
 
 from typing import Generic, TypeVar
 

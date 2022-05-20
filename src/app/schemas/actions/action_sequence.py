@@ -1,11 +1,11 @@
-"""Action.py describes the action a robot takes."""
+"""action.py describes the action a robot takes."""
 
 from typing import List, Optional
 
 from pydantic import BaseModel
 from pydantic.schema import datetime
 
-from app.schemas.actions.Action import Action
+from app.schemas.actions.action import Action
 
 
 class ActionSequence(BaseModel):

@@ -1,7 +1,7 @@
 from typing import List
 
-from app.transformation import AbstractModel
-from app.transformation.Template import Template
+from app.transformation import abstract_model as AbstractModel
+from app.transformation.template import Template
 
 
 class NamedParameter:
