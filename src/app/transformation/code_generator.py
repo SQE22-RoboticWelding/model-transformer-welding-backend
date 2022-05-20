@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.transformation.instance_model import InstanceModel
 
+
 templates = Jinja2Templates(directory="app/transformation/templates", keep_trailing_newline=True)
 
 
@@ -19,7 +20,7 @@ def generate_from_instance_model(instance_model: InstanceModel, request: Request
         raise HTTPException(status_code=404, detail=f"Unknown language '{instance_model.meta.language}'.")
 
 
-class Transformer:
+class CodeGenerator:
     @staticmethod
     def sequence_to_model(instance_model: InstanceModel, request: Request) -> Jinja2Templates.TemplateResponse:
         context = {
