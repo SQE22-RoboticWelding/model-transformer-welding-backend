@@ -15,7 +15,7 @@ def generate_from_instance_model(instance_model: InstanceModel, request: Request
         "model": instance_model
     }
     if instance_model.meta.language == "python3":
-        return templates.TemplateResponse("python3.template", context)
+        return templates.TemplateResponse("python3.jinja", context)
     else:
         raise HTTPException(status_code=404, detail=f"Unknown language '{instance_model.meta.language}'.")
 
@@ -27,4 +27,4 @@ class CodeGenerator:
             "request": request,
             "model": instance_model
         }
-        return templates.TemplateResponse("python3.template", context)
+        return templates.TemplateResponse("python3.jinja", context)
