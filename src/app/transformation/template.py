@@ -47,7 +47,7 @@ class Template:
     @staticmethod
     def instantiate_param(param_definition: abstract_model.NamedParameter, value: object):
         if param_definition.type == abstract_model.ParameterType.STRING:
-            return f"\"{value}\""
+            return f"'{value}'"
         elif param_definition.type == abstract_model.ParameterType.NUMBER:
             return f"{value}"
         raise HTTPException(status_code=404, detail=f"Unknown parameter type '{param_definition.type}'.")

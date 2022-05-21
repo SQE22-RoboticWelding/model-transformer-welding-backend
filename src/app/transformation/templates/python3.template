@@ -4,26 +4,32 @@
 {% endfor %}
 {% endfor %}
 def init():
-    {% for statement in model.setup.independent -%}
+    {%- for statement in model.setup.independent %}
     {{ statement }}
-    {% endfor %}
+    {%- endfor %}
+
 
 def run({% for dependee in model.setup.dependees -%}
             {{ dependee.generated_reference }}
-            {%- if loop.index != model.setup.dependees|length %},{% endif -%}
+            {%- if loop.index != model.setup.dependees|length %}, {% endif -%}
             {% endfor -%}
         ):
-    {% for action in model.actions -%}
+    {%- for action in model.actions %}
     {{ action.generated_actor }}.{{ action.generated_name }}(
-        {%- for param in action.parameters %}{% endfor -%}
-    )
-    {% endfor %}
+        {%- for param in action.parameters -%}
+            {{ param.generated_name }}={{ param.value_representation|safe }}
+            {%- if loop.index != model.actions|length %}, {% endif -%}
+        {% endfor -%}
+    ){% endfor %}
+
 
 if __name__ == '__main__':
     init()
 
-    {% for dependee in model.setup.dependees %}{{ dependee.generated_reference }} = {{ dependee.initializer }}
-    {% endfor %}
+    {% for dependee in model.setup.dependees -%}
+        {{ dependee.generated_reference }} = {{ dependee.initializer }}
+    {%- endfor %}
+
     run({% for dependee in model.setup.dependees -%}
-        {{ dependee.generated_reference }}{% if loop.index != model.setup.dependees|length %},{% endif -%}
+        {{ dependee.generated_reference }}{% if loop.index != model.setup.dependees|length %}, {% endif -%}
     {% endfor %})
