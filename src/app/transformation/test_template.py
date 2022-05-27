@@ -51,6 +51,8 @@ def test_instantiate_action():
               "\n"
               "    dependee = 5\n"
               "\n"
-              "    run(dependee)\n")
+              "    run(dependee)\n"
+              "\n"
+              "    return\n")
 
     assert result == expect
