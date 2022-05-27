@@ -3,8 +3,7 @@
 {{ statement }}
 {% endfor %}
 {% endfor %}
-
-{%- if model.setup.independent|length != 0 %}
+{% if model.setup.independent|length != 0 -%}
 def init():
     {%- for statement in model.setup.independent %}
     {{ statement }}
@@ -12,9 +11,9 @@ def init():
 
     return
 
-{% endif -%}
 
-{% if model.actions|length != 0 -%}
+{% endif -%}
+{%- if model.actions|length != 0 -%}
 def run({% for dependee in model.setup.dependees -%}
             {{ dependee.generated_reference }}
             {%- if loop.index != model.setup.dependees|length %}, {% endif -%}
@@ -34,7 +33,6 @@ def run({% for dependee in model.setup.dependees -%}
 
 
 {% endif -%}
-
 if __name__ == '__main__':
     {% if model.setup.independent|length != 0 -%}
     init()

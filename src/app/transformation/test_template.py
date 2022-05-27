@@ -14,7 +14,7 @@ request = Request(method="POST", url="127.0.0.1/test")
 
 class TestTemplate(unittest.TestCase):
     meta: abstract_model.MetaInformation
-    init: List[List[str]]
+    imports: List[List[str]]
     setup: abstract_model.Setup
 
     actions: List[abstract_model.Action]
@@ -22,7 +22,7 @@ class TestTemplate(unittest.TestCase):
     def setUp(self):
         # prepare test data
         self.meta = abstract_model.MetaInformation("python3", "My Test Template", "v0.0.1")
-        self.init = [["do this", "and this"], ["and that"]]
+        self.imports = [["do this", "and this"], ["and that"]]
         self.setup = abstract_model.Setup(["independent 1", "independent 2"],
                                           [abstract_model.Dependee("dependee", "5")])
 
@@ -38,13 +38,14 @@ class TestTemplate(unittest.TestCase):
         response = code_generator.CodeGenerator.sequence_to_model(model, request)
 
         result = response.body.decode("utf-8")
-        expect = ("if __name__ == '__main__':\n"
+        expect = ("\n"
+                  "if __name__ == '__main__':\n"
                   "    return\n")
 
         self.assertEqual(expect, result)
 
-    def test_instantiate_action_only_init(self):
-        t = template.Template(self.meta, self.init, abstract_model.Setup([], []), [])
+    def test_instantiate_action_only_imports(self):
+        t = template.Template(self.meta, self.imports, abstract_model.Setup([], []), [])
         model = instance_model.create_instance_model(t, [])
         response = code_generator.CodeGenerator.sequence_to_model(model, request)
 
@@ -54,7 +55,29 @@ class TestTemplate(unittest.TestCase):
                   "\n"
                   "and that\n"
                   "\n"
+                  "\n"
                   "if __name__ == '__main__':\n"
+                  "    return\n")
+
+        self.assertEqual(expect, result)
+
+    def test_instantiate_action_only_init(self):
+        t = template.Template(self.meta, [], abstract_model.Setup(["independent 1", "independent 2"], []), [])
+        model = instance_model.create_instance_model(t, [])
+        response = code_generator.CodeGenerator.sequence_to_model(model, request)
+
+        result = response.body.decode("utf-8")
+        expect = ("\n"
+                  "def init():\n"
+                  "    independent 1\n"
+                  "    independent 2\n"
+                  "\n"
+                  "    return\n"
+                  "\n"
+                  "\n"
+                  "if __name__ == '__main__':\n"
+                  "    init()\n"
+                  "\n"
                   "    return\n")
 
         self.assertEqual(expect, result)
@@ -71,7 +94,8 @@ class TestTemplate(unittest.TestCase):
         response = code_generator.CodeGenerator.sequence_to_model(model, request)
 
         result = response.body.decode("utf-8")
-        expect = ("def run():\n"
+        expect = ("\n"
+                  "def run():\n"
                   "    function(ins_param1=5, ins_param2='5')\n"
                   "\n"
                   "\n"
@@ -83,7 +107,7 @@ class TestTemplate(unittest.TestCase):
         self.assertEqual(expect, result)
 
     def test_instantiate_action(self):
-        t = template.Template(self.meta, self.init, self.setup, self.actions)
+        t = template.Template(self.meta, self.imports, self.setup, self.actions)
 
         action_1_params = [action.ActionParameter("abs_param1", 5), action.ActionParameter("abs_param2", "5")]
         abstract_action_1 = action.Action("action", action_1_params)
@@ -107,6 +131,7 @@ class TestTemplate(unittest.TestCase):
                   "    independent 2\n"
                   "\n"
                   "    return\n"
+                  "\n"
                   "\n"
                   "def run(dependee):\n"
                   "    dependee.function(ins_param1=5, ins_param2='5')\n"
