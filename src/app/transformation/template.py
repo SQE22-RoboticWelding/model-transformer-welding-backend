@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import HTTPException
 
@@ -18,7 +18,7 @@ class NamedParameter:
 
 class Action:
     generated_name: str
-    generated_actor: abstract_model.DependeeReference
+    generated_actor: Optional[abstract_model.DependeeReference]
     parameters: List[NamedParameter]
 
     def __init__(self, generated_name: str, generated_actor: abstract_model.DependeeReference,

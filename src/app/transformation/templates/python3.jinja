@@ -15,7 +15,11 @@ def run({% for dependee in model.setup.dependees -%}
             {% endfor -%}
         ):
     {%- for action in model.actions %}
-    {{ action.generated_actor }}.{{ action.generated_name }}(
+    {% if action.generated_actor is not none -%}
+        {{ action.generated_actor }}.{{ action.generated_name }}
+    {%- else -%}
+        {{ action.generated_name }}
+    {%- endif %}(
         {%- for param in action.parameters -%}
             {{ param.generated_name }}={{ param.value_representation|safe }}
             {%- if loop.index != model.actions|length %}, {% endif -%}
