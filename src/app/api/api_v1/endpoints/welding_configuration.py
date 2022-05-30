@@ -35,7 +35,7 @@ async def read_welding_configuration(
     return result
 
 
-@router.post("/", response_description="Add new robot type", response_model=WeldingConfiguration)
+@router.post("/", response_description="Add new welding configuration", response_model=WeldingConfiguration)
 async def create_welding_configuration(
         *,
         db: AsyncSession = Depends(deps.get_async_db),

@@ -36,7 +36,7 @@ async def read_robot(
     return result
 
 
-@router.post("/", response_description="Add new robot type", response_model=Robot)
+@router.post("/", response_description="Add new robot", response_model=Robot)
 async def create_robot(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
