@@ -7,6 +7,14 @@ class WeldingConfigurationBase(BaseModel):
     name: str
     description: Optional[str] = None
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "Death Star",
+                "description": "Welding configuration for the Death Star"
+            }
+        }
+
 
 class WeldingConfigurationCreate(WeldingConfigurationBase):
     name: str

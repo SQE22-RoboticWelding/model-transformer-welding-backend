@@ -6,6 +6,14 @@ class RobotBase(BaseModel):
     description: Optional[str] = None
     robot_type_id: int
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "robot_type_id": 1,
+                "description": "Robot with the scratch on arm"
+            }
+        }
+
 
 class RobotCreate(RobotBase):
     description: str

@@ -8,6 +8,17 @@ class RobotTypeBase(BaseModel):
     capacity_load_kg: Optional[float] = None
     range_m: Optional[float] = None
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "robot_type_id": 1,
+                "name": "Niryo One",
+                "vendor": "Niryo",
+                "capacity_load_kg": 50,
+                "range_m": 3
+            }
+        }
+
 
 class RobotTypeCreate(RobotTypeBase):
     name: str
