@@ -10,4 +10,4 @@ class WeldingConfiguration(Base):
     description = Column(String)
     created_at = Column(DateTime, server_default=func.now())
     modified_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
-    welding_points = relationship("WeldingPoint", lazy='joined')
+    welding_points = relationship("WeldingPoint", back_populates="welding_configuration", lazy='subquery')

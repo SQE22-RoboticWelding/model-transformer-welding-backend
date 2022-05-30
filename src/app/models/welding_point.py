@@ -16,4 +16,4 @@ class WeldingPoint(Base):
     pitch = Column(Float)
     yaw = Column(Float)
     tolerance = Column(Float)
-    welding_configuration = relationship("WeldingConfiguration", back_populates="welding_points", lazy='joined')
+    welding_configuration = relationship("WeldingConfiguration", back_populates="welding_points", lazy='subquery')

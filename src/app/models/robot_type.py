@@ -9,4 +9,4 @@ class RobotType(Base):
     vendor = Column(String)
     capacity_load_kg = Column(Float)
     range_m = Column(Float)
-    robots = relationship("Robot", back_populates="robot_type", lazy='joined')
+    robots = relationship("Robot", back_populates="robot_type", lazy='subquery')
