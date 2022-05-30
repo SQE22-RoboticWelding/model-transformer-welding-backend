@@ -3,18 +3,17 @@ from pydantic import BaseModel
 
 
 class WeldingPointBase(BaseModel):
-    robot_id: Optional[int] = None
     welding_configuration_id: int
-    description: Optional[str] = None
+    robot_id: Optional[int] = None
     welding_order: int
-    name: Optional[str] = None
+    description: Optional[str] = None
     x: float
     y: float
     z: float
     roll: float
     pitch: float
     yaw: float
-    tolerance: float
+    tolerance: Optional[float]
 
     class Config:
         schema_extra = {
@@ -22,7 +21,7 @@ class WeldingPointBase(BaseModel):
                 "welding_configuration_id": 1,
                 "robot_id": 1,
                 "welding_order": 1,
-                "name": "Reactor vulnerability entrance",
+                "description": "Reactor vulnerability entrance",
                 "x": 10,
                 "y": 15,
                 "z": 12.5,
@@ -35,7 +34,7 @@ class WeldingPointBase(BaseModel):
 
 
 class WeldingPointCreate(WeldingPointBase):
-    robot_type_id: int
+    robot_id: int
     welding_configuration_id: int
     description: str
     x: float
@@ -44,7 +43,7 @@ class WeldingPointCreate(WeldingPointBase):
     roll: float
     pitch: float
     yaw: float
-    tolerance: float
+    tolerance: Optional[float]
 
 
 class WeldingPointUpdate(WeldingPointBase):
