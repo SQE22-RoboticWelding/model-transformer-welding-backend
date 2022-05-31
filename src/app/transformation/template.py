@@ -1,5 +1,8 @@
+import json
+from types import SimpleNamespace
 from typing import List, Optional
 
+from pydantic import BaseModel
 from fastapi import HTTPException
 
 from app.schemas.actions import action
@@ -7,42 +10,30 @@ from app.schemas.actions.action_parameter import ActionParameter
 from app.transformation import abstract_model
 
 
-class NamedParameter:
+class NamedParameter(BaseModel):
     generated_name: str
     value_representation: str
 
-    def __init__(self, generated_name: str, value_representation: str):
-        self.generated_name = generated_name
-        self.value_representation = value_representation
 
-
-class Action:
+class Action(BaseModel):
     generated_name: str
     generated_actor: Optional[abstract_model.DependeeReference]
     parameters: List[NamedParameter]
 
-    def __init__(self, generated_name: str, generated_actor: abstract_model.DependeeReference,
-                 parameters: List[NamedParameter]):
-        self.generated_name = generated_name
-        self.generated_actor = generated_actor
-        self.parameters = parameters
 
-
-class Template:
+class Template(BaseModel):
     meta: abstract_model.MetaInformation
     init: List[List[abstract_model.ProgrammingStatement]]
     setup: abstract_model.Setup
     actions: List[abstract_model.Action]
 
-    def __init__(self,
-                 meta: abstract_model.MetaInformation,
-                 init: List[List[abstract_model.ProgrammingStatement]],
-                 setup: abstract_model.Setup,
-                 actions: List[abstract_model.Action]):
-        self.meta = meta
-        self.init = init
-        self.setup = setup
-        self.actions = actions
+    @classmethod
+    def from_string(cls, object_string: str):
+        obj = json.loads(object_string, object_hook=lambda d: SimpleNamespace(**d))
+        return cls(**obj)
+
+    def to_string(self):
+        return json.dumps(self)
 
     @staticmethod
     def instantiate_param(param_definition: abstract_model.NamedParameter, value: object):
@@ -58,7 +49,7 @@ class Template:
         for available_param in available_params:
             if target_param.name == available_param.abstract_name:
                 param = Template.instantiate_param(available_param, target_param.value)
-                return NamedParameter(available_param.generated_name, param)
+                return NamedParameter(generated_name=available_param.generated_name, value_representation=param)
 
         raise HTTPException(status_code=404, detail=f"Unknown parameter '{target_param.name}'.")
 
@@ -76,5 +67,7 @@ class Template:
             if action_models.abstract_name == act.name:
                 parameters = Template.map_params(action_models.named_parameters, act.parameters)
 
-                return Action(action_models.generated_name, action_models.generated_actor, parameters)
+                return Action(generated_name=action_models.generated_name,
+                              generated_actor=action_models.generated_actor,
+                              parameters=parameters)
         raise HTTPException(status_code=400, detail=f"Unknown action '{act.name}'.")

@@ -6,10 +6,8 @@ from requests import Request
 from app.schemas.actions import action
 from app.transformation import abstract_model, instance_model, template, code_generator
 
-
 # prepare request object required for starlette-inbuilt jinja engine
 request = Request(method="POST", url="127.0.0.1/test")
-
 
 
 class TestTemplate(unittest.TestCase):
@@ -21,19 +19,34 @@ class TestTemplate(unittest.TestCase):
 
     def setUp(self):
         # prepare test data
-        self.meta = abstract_model.MetaInformation("python3", "My Test Template", "v0.0.1")
+        self.meta = abstract_model.MetaInformation(language="python3", title="My Test Template", version="v0.0.1")
         self.imports = [["do this", "and this"], ["and that"]]
-        self.setup = abstract_model.Setup(["independent 1", "independent 2"],
-                                          [abstract_model.Dependee("dependee", "5")])
+        self.setup = abstract_model.Setup(independent=["independent 1", "independent 2"],
+                                          dependees=[abstract_model.Dependee(generated_reference="dependee",
+                                                                             initializer="5")])
 
-        param_1 = abstract_model.NamedParameter("abs_param1", "ins_param1", abstract_model.ParameterType.NUMBER, "Descr 1")
-        param_2 = abstract_model.NamedParameter("abs_param2", "ins_param2", abstract_model.ParameterType.STRING, "Descr 2")
-        action_1 = abstract_model.Action("action", "function", "dependee", [param_1, param_2])
-        action_2 = abstract_model.Action("dissatisfaction", "method", "dependee", [param_2, param_1])
+        param_1 = abstract_model.NamedParameter(abstract_name="abs_param1",
+                                                generated_name="ins_param1",
+                                                type=abstract_model.ParameterType.NUMBER,
+                                                description="Descr 1")
+        param_2 = abstract_model.NamedParameter(abstract_name="abs_param2",
+                                                generated_name="ins_param2",
+                                                type=abstract_model.ParameterType.STRING,
+                                                description="Descr 2")
+        action_1 = abstract_model.Action(abstract_name="action",
+                                         generated_name="function",
+                                         generated_actor="dependee",
+                                         named_parameters=[param_1, param_2])
+        action_2 = abstract_model.Action(abstract_name="dissatisfaction",
+                                         generated_name="method",
+                                         generated_actor="dependee",
+                                         named_parameters=[param_2, param_1])
         self.actions = [action_1, action_2]
 
     def test_instantiate_action_all_empty(self):
-        t = template.Template(self.meta, [], abstract_model.Setup([], []), [])
+        t = template.Template(meta=self.meta, init=[],
+                              setup=abstract_model.Setup(independent=[], dependees=[]),
+                              actions=[])
         model = instance_model.create_instance_model(t, [])
         response = code_generator.CodeGenerator.sequence_to_model(model, request)
 
@@ -45,7 +58,9 @@ class TestTemplate(unittest.TestCase):
         self.assertEqual(expect, result)
 
     def test_instantiate_action_only_imports(self):
-        t = template.Template(self.meta, self.imports, abstract_model.Setup([], []), [])
+        t = template.Template(meta=self.meta, init=self.imports,
+                              setup=abstract_model.Setup(independent=[], dependees=[]),
+                              actions=[])
         model = instance_model.create_instance_model(t, [])
         response = code_generator.CodeGenerator.sequence_to_model(model, request)
 
@@ -62,7 +77,9 @@ class TestTemplate(unittest.TestCase):
         self.assertEqual(expect, result)
 
     def test_instantiate_action_only_init(self):
-        t = template.Template(self.meta, [], abstract_model.Setup(["independent 1", "independent 2"], []), [])
+        t = template.Template(meta=self.meta, init=[],
+                              setup=abstract_model.Setup(independent=["independent 1", "independent 2"], dependees=[]),
+                              actions=[])
         model = instance_model.create_instance_model(t, [])
         response = code_generator.CodeGenerator.sequence_to_model(model, request)
 
@@ -85,7 +102,9 @@ class TestTemplate(unittest.TestCase):
     def test_instantiate_action_only_run(self):
         for a in self.actions:
             a.generated_actor = None
-        t = template.Template(self.meta, [], abstract_model.Setup([], []), self.actions)
+        t = template.Template(meta=self.meta, init=[],
+                              setup=abstract_model.Setup(independent=[], dependees=[]),
+                              actions=self.actions)
 
         action_1_params = [action.ActionParameter("abs_param1", 5), action.ActionParameter("abs_param2", "5")]
         abstract_action_1 = action.Action("action", action_1_params)
@@ -107,7 +126,9 @@ class TestTemplate(unittest.TestCase):
         self.assertEqual(expect, result)
 
     def test_instantiate_action(self):
-        t = template.Template(self.meta, self.imports, self.setup, self.actions)
+        t = template.Template(meta=self.meta, init=self.imports,
+                              setup=self.setup,
+                              actions=self.actions)
 
         action_1_params = [action.ActionParameter("abs_param1", 5), action.ActionParameter("abs_param2", "5")]
         abstract_action_1 = action.Action("action", action_1_params)
