@@ -34,7 +34,7 @@ jobs:
 
       - name: Run tests
         working-directory: ./src/
-        run: python3 -m pytest -vv
+        run: python3 -m pytest -vv --durations=0
 
   build-and-push-image:
     runs-on: ubuntu-latest
