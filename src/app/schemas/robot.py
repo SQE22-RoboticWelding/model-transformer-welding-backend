@@ -16,20 +16,15 @@ class RobotBase(BaseModel):
 
 
 class RobotCreate(RobotBase):
-    description: str
-    robot_type_id: int
-
+    pass
 
 class RobotUpdate(RobotBase):
-    description: str
-    robot_type_id: int
+    robot_type_id: Optional[int]
 
 
 # Properties shared by models stored in DB
 class RobotInDBBase(RobotBase):
     id: int
-    description: str
-    robot_type_id: int
 
     class Config:
         orm_mode = True

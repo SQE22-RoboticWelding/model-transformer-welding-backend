@@ -34,43 +34,21 @@ class WeldingPointBase(BaseModel):
 
 
 class WeldingPointCreate(WeldingPointBase):
-    robot_id: int
-    welding_configuration_id: int
-    description: str
-    x: float
-    y: float
-    z: float
-    roll: float
-    pitch: float
-    yaw: float
-    tolerance: Optional[float]
+    pass
 
 
 class WeldingPointUpdate(WeldingPointBase):
-    robot_id: int
-    description: str
-    x: float
-    y: float
-    z: float
-    roll: float
-    pitch: float
-    yaw: float
-    tolerance: float
+    x: Optional[float]
+    y: Optional[float]
+    z: Optional[float]
+    roll: Optional[float]
+    pitch: Optional[float]
+    yaw: Optional[float]
 
 
 # Properties shared by models stored in DB
 class WeldingPointInDBBase(WeldingPointBase):
     id: int
-    welding_configuration_id: int
-    description: str
-    robot_id: int
-    x: float
-    y: float
-    z: float
-    roll: float
-    pitch: float
-    yaw: float
-    tolerance: float
 
     class Config:
         orm_mode = True

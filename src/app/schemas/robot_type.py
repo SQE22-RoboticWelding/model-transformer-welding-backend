@@ -3,15 +3,14 @@ from pydantic import BaseModel
 
 
 class RobotTypeBase(BaseModel):
-    name: str = None
-    vendor: Optional[str] = None
+    name: str
+    vendor: str
     capacity_load_kg: Optional[float] = None
     range_m: Optional[float] = None
 
     class Config:
         schema_extra = {
             "example": {
-                "robot_type_id": 1,
                 "name": "Niryo One",
                 "vendor": "Niryo",
                 "capacity_load_kg": 50,
@@ -21,26 +20,17 @@ class RobotTypeBase(BaseModel):
 
 
 class RobotTypeCreate(RobotTypeBase):
-    name: str
-    vendor: str
-    capacity_load_kg: float
-    range_m: float
+    pass
 
 
 class RobotTypeUpdate(RobotTypeBase):
-    name: str
-    vendor: str
-    capacity_load_kg: float
-    range_m: float
+    name: Optional[str]
+    vendor: Optional[str]
 
 
 # Properties shared by models stored in DB
 class RobotTypeInDBBase(RobotTypeBase):
     id: int
-    name: str
-    vendor: str
-    capacity_load_kg: float
-    range_m: float
 
     class Config:
         orm_mode = True
