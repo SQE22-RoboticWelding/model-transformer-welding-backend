@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "language": "python3",
+    "title": "My python3 template",
+    "version": "1"
+  },
+  "init": [
+    [
+      "import json",
+      "import sys"
+    ],
+    [
+      "from rospy import *"
+    ]
+  ],
+  "setup": {
+    "independent": [
+      "rospy.setEnv(\"JAVA_HOME\", \"/dev/null\")",
+      "rospy.setEnv(\"PATH\", \"/dev/null\")"
+    ],
+    "dependees": [
+      {
+        "generated_name": "niryo",
+        "initializer": "NiryoOne()"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "abstract_name": "move",
+      "generated_name": "move_pos",
+      "generated_actor": "niryo",
+      "parameters": [
+        {
+          "abstract_name": "x_value",
+          "generated_name": "x",
+          "type": "number",
+          "description": "An X value"
+        },
+        {
+          "abstract_name": "log_message",
+          "generated_name": "log",
+          "type": "string",
+          "description": "A log message to be passed"
+        }
+      ]
+    },
+    {
+      "abstract_name": "grab",
+      "generated_name": "grab_with_tool",
+      "generated_actor": "niryo",
+      "parameters": [
+        {
+          "abstract_name": "tool",
+          "generated_name": "tool_id",
+          "type": "string",
+          "description": "The tool id"
+        },
+        {
+          "abstract_name": "count",
+          "generated_name": "num",
+          "type": "number",
+          "description": "The number of tools"
+        }
+      ]
+    }
+  ]
+}

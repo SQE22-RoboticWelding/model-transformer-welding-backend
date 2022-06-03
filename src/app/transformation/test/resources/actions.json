@@ -1,0 +1,26 @@
+[
+  {
+    "abstract_name": "move",
+    "parameters": [
+      {
+        "abstract_name": "x_value",
+        "value": "10.5"
+      },
+      {
+        "abstract_name": "log_message",
+        "value": "This is a wooden log."
+      }
+    ]
+  },
+  {
+    "abstract_name": "grab",
+    "parameters": [
+      {
+        "abstract_name": "tool", "value": "hand"
+      },
+      {
+        "abstract_name": "count", "value": 5
+      }
+    ]
+  }
+]
