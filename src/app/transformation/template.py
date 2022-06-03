@@ -27,14 +27,6 @@ class Template(BaseModel):
     setup: abstract_model.Setup
     actions: List[abstract_model.Action]
 
-    @classmethod
-    def from_string(cls, object_string: str):
-        obj = json.loads(object_string, object_hook=lambda d: SimpleNamespace(**d))
-        return cls(**obj)
-
-    def to_string(self):
-        return json.dumps(self)
-
     @staticmethod
     def instantiate_param(param_definition: abstract_model.NamedParameter, value: object):
         if param_definition.type == abstract_model.ParameterType.STRING:
