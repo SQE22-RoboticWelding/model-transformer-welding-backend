@@ -36,17 +36,19 @@ def run({% for dependee in model.setup.dependees -%}
 
 {% endif -%}
 if __name__ == '__main__':
-    {% if model.setup.independent|length != 0 %}init(){% endif %}
-    {%- if model.setup.independent|length == 0 %}{# eat newline #}{% endif -%}
-    {% if model.setup.dependees|length != 0 -%}
+    {%- if model.setup.independent|length != 0 %}
+    init()
+    {%- endif %}
+    {%- if model.setup.dependees|length != 0 %}
     {% for dependee in model.setup.dependees -%}
         {{ dependee.generated_name }} = {{ dependee.initializer }}
-    {%- endfor %}{% endif %}
-    {%- if model.setup.independent|length == 0 and model.setup.dependees|length == 0 %}{# eat newline #}{% endif -%}
-    {% if model.actions|length != 0 -%}
+    {%- endfor %}
+    {%- endif %}
+    {%- if model.actions|length != 0 %}
     run({% for dependee in model.setup.dependees -%}
         {{ dependee.generated_name }}{% if loop.index != model.setup.dependees|length %}, {% endif -%}
-    {% endfor %}){% endif -%}
-    {%- if model.setup.independent|length == 0 and model.setup.dependees|length == 0 and model.actions|length == 0 -%}
+    {% endfor %})
+    {%- endif %}
+    {%- if model.setup.independent|length == 0 and model.setup.dependees|length == 0 and model.actions|length == 0 %}
     pass
     {%- endif %}
