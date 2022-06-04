@@ -1,6 +1,6 @@
 """
-Classes defining the template in a low-code environment.
-The template is the descriptor by which any abstract model can be translated into a target platform's language.
+Classes defining the generation_config in a low-code environment.
+The generation_config is the descriptor by which any abstract model can be translated into a target platform's language.
 """
 from typing import List
 
@@ -22,18 +22,18 @@ class Setup(BaseModel):
     dependees: List[Dependee]
 
 
-class ParameterTemplate(AbstractBase, GenerationBase):
+class ParameterGenerationConfig(AbstractBase, GenerationBase):
     type: ParameterType
     description: str
 
 
-class ActionTemplate(AbstractBase, GenerationBase):
+class ActionGenerationConfig(AbstractBase, GenerationBase):
     generated_actor: DependeeReference
-    parameters: List[ParameterTemplate]
+    parameters: List[ParameterGenerationConfig]
 
 
-class Template(BaseModel):
+class GenerationConfig(BaseModel):
     meta: MetaInformation
     init: List[List[ProgrammingStatement]]
     setup: Setup
-    actions: List[ActionTemplate]
+    actions: List[ActionGenerationConfig]

@@ -8,21 +8,21 @@ from requests import Request
 # prepare request object required for starlette-inbuilt jinja engine
 from app.transformation.code_generator import CodeGenerator
 from app.transformation.model_lowcode import ActionLowCode
-from app.transformation.template import Template, Setup
+from app.transformation.generation_config import GenerationConfig, Setup
 
 request = Request(method="POST", url="127.0.0.1/test")
 
 
 class TestTemplate(unittest.TestCase):
-    template: Template
+    template: GenerationConfig
     actions: List[ActionLowCode]
 
     @classmethod
     def setUpClass(cls) -> None:
         cls.maxDiff = None
         # prepare test data
-        with open("app/transformation/test/resources/template.json", "r") as f:
-            cls.template = Template.parse_raw(f.read())
+        with open("app/transformation/test/resources/generation_config.json", "r") as f:
+            cls.template = GenerationConfig.parse_raw(f.read())
 
         with open("app/transformation/test/resources/actions.json", "r") as f:
             arr = json.load(f)
