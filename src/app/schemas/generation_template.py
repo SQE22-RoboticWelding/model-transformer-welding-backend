@@ -26,7 +26,7 @@ class GenerationTemplateInDBBase(GenerationTemplateBase):
     modified_at: datetime
 
     class Config:
-        orm_mode: True
+        orm_mode = True
 
 
 class GenerationTemplate(GenerationTemplateInDBBase):
