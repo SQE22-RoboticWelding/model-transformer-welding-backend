@@ -4,6 +4,7 @@ from pydantic.schema import datetime
 
 
 class WeldingConfigurationBase(BaseModel):
+    id: int
     name: str
     description: Optional[str] = None
 
@@ -17,16 +18,17 @@ class WeldingConfigurationBase(BaseModel):
 
 
 class WeldingConfigurationCreate(WeldingConfigurationBase):
+    id: Optional[int]
     name: str
 
 
 class WeldingConfigurationUpdate(WeldingConfigurationBase):
+    id: Optional[int]
     name: Optional[str]
 
 
 # Properties shared by models stored in DB
 class WeldingConfigurationInDBBase(WeldingConfigurationBase):
-    id: int
     created_at: datetime
     modified_at: datetime
 

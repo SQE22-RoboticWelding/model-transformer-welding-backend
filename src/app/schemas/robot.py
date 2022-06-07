@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 
 class RobotBase(BaseModel):
+    id: int
     description: Optional[str] = None
     robot_type_id: int
 
@@ -16,16 +17,16 @@ class RobotBase(BaseModel):
 
 
 class RobotCreate(RobotBase):
-    pass
+    id: Optional[int]
+
 
 class RobotUpdate(RobotBase):
+    id: Optional[int]
     robot_type_id: Optional[int]
 
 
 # Properties shared by models stored in DB
 class RobotInDBBase(RobotBase):
-    id: int
-
     class Config:
         orm_mode = True
 
