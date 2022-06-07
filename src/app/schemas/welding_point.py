@@ -5,9 +5,9 @@ from pydantic import BaseModel
 class WeldingPointBase(BaseModel):
     id: int
     welding_configuration_id: int
-    robot_id: Optional[int] = None
+    robot_id: Optional[int]
     welding_order: int
-    description: Optional[str] = None
+    description: Optional[str]
     x: float
     y: float
     z: float

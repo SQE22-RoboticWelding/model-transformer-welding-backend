@@ -6,8 +6,8 @@ class RobotTypeBase(BaseModel):
     id: int
     name: str
     vendor: str
-    capacity_load_kg: Optional[float] = None
-    range_m: Optional[float] = None
+    capacity_load_kg: Optional[float]
+    range_m: Optional[float]
 
     class Config:
         schema_extra = {

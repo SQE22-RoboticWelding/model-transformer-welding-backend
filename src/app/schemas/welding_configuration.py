@@ -6,7 +6,7 @@ from pydantic.schema import datetime
 class WeldingConfigurationBase(BaseModel):
     id: int
     name: str
-    description: Optional[str] = None
+    description: Optional[str]
 
     class Config:
         schema_extra = {

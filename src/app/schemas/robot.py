@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 class RobotBase(BaseModel):
     id: int
-    description: Optional[str] = None
+    description: Optional[str]
     robot_type_id: int
 
     class Config:
