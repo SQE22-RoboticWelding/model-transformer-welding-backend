@@ -19,7 +19,6 @@ class WeldingConfigurationBase(BaseModel):
 
 class WeldingConfigurationCreate(WeldingConfigurationBase):
     id: Optional[int]
-    name: str
 
 
 class WeldingConfigurationUpdate(WeldingConfigurationBase):
