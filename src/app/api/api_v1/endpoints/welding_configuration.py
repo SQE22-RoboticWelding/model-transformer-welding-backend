@@ -14,7 +14,7 @@ async def read_welding_configurations(
         limit: int = 100,
 ) -> Any:
     """
-    Retrieve multiple robot types
+    Retrieve multiple welding configuration
     """
     result = await welding_configuration.get_multi(db=db, skip=skip, limit=limit)
     return result
@@ -27,7 +27,7 @@ async def read_welding_configuration(
         _id: int
 ) -> Any:
     """
-    Retrieve robot type by ID
+    Retrieve welding configuration by ID
     """
     result = await welding_configuration.get_by_id(db=db, id=_id)
     if not result:
@@ -41,7 +41,7 @@ async def create_welding_configuration(
         db: AsyncSession = Depends(deps.get_async_db),
         welding_configuration_in: WeldingConfigurationCreate):
     """
-    Create new robot type
+    Create new welding configuration
     """
     result = await welding_configuration.create(db=db, obj_in=welding_configuration_in)
     return result
@@ -55,7 +55,7 @@ async def update_welding_configuration(
         welding_configuration_in: WeldingConfigurationUpdate
 ) -> Any:
     """
-    Update a robot type
+    Update a welding configuration
     """
     result = await welding_configuration.get_by_id(db=db, id=id)
     if not result:

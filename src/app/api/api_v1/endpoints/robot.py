@@ -14,7 +14,7 @@ async def read_robots(
         limit: int = 100,
 ) -> Any:
     """
-    Retrieve multiple robot types
+    Retrieve multiple robots
     """
     result = await robot.get_multi(db=db, skip=skip, limit=limit)
     return result
@@ -27,7 +27,7 @@ async def read_robot(
         _id: int
 ) -> Any:
     """
-    Retrieve robot type by ID
+    Retrieve robot by ID
     """
     result = await robot.get_by_id(db=db, id=_id)
     if not result:
@@ -42,7 +42,7 @@ async def create_robot(
         db: AsyncSession = Depends(deps.get_async_db),
         robot_in: RobotCreate):
     """
-    Create new robot type
+    Create new robot
     """
     result = await robot.create(db=db, obj_in=robot_in)
     return result
@@ -56,7 +56,7 @@ async def update_robot(
         robot_in: RobotUpdate
 ) -> Any:
     """
-    Update a robot type
+    Update a robot
     """
     result = await robot.get_by_id(db=db, id=id)
     if not result:
