@@ -21,7 +21,8 @@ class CRUDWeldingConfiguration(CRUDBase[WeldingConfiguration, WeldingConfigurati
         return db_obj
 
     async def update(
-            self, db: AsyncSession, *, db_obj: WeldingConfiguration, obj_in: Union[WeldingConfigurationUpdate, Dict[str, Any]]
+            self, db: AsyncSession, *, db_obj: WeldingConfiguration, obj_in: Union[WeldingConfigurationUpdate,
+                                                                                   Dict[str, Any]]
     ) -> WeldingConfiguration:
         update_data = obj_in if isinstance(obj_in, dict) else obj_in.dict(exclude_unset=True)
         return await super().update(db, db_obj=db_obj, obj_in=update_data)
