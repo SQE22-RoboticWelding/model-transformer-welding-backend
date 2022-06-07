@@ -3,15 +3,15 @@ from sqlalchemy.future import select
 from typing import Any, Dict, Optional, Union, List
 
 from app.crud.base import CRUDBase
-from app.models.generation_template import GenerationTemplate as GenerationTemplateDB
+from app.models.generation_template import GenerationTemplate
 from app.schemas.generation_template import GenerationTemplateCreate, GenerationTemplateUpdate
 
 
-class CRUDGenerationTemplate(CRUDBase[GenerationTemplateDB, GenerationTemplateCreate, GenerationTemplateUpdate]):
+class CRUDGenerationTemplate(CRUDBase[GenerationTemplate, GenerationTemplateCreate, GenerationTemplateUpdate]):
     async def create(
             self, db: AsyncSession, *, obj_in: GenerationTemplateCreate
-    ) -> GenerationTemplateDB:
-        db_obj = GenerationTemplateDB(
+    ) -> GenerationTemplate:
+        db_obj = GenerationTemplate(
             name=obj_in.name,
             description=obj_in.description,
             content=obj_in.content
@@ -22,21 +22,21 @@ class CRUDGenerationTemplate(CRUDBase[GenerationTemplateDB, GenerationTemplateCr
         return db_obj
 
     async def update(
-            self, db: AsyncSession, *, db_obj: GenerationTemplateDB,
+            self, db: AsyncSession, *, db_obj: GenerationTemplate,
             obj_in: Union[GenerationTemplateUpdate, Dict[str, Any]]
-    ) -> GenerationTemplateDB:
+    ) -> GenerationTemplate:
         update_data = obj_in if isinstance(obj_in, dict) else obj_in.dict(exclude_unset=True)
         return await super().update(db, db_obj=db_obj, obj_in=update_data)
 
     async def get_by_id( # noqa
             self, db: AsyncSession, *, id: int
-    ) -> Optional[GenerationTemplateDB]:
-        result = await db.execute(select(GenerationTemplateDB).filter(GenerationTemplateDB.id == id))
+    ) -> Optional[GenerationTemplate]:
+        result = await db.execute(select(GenerationTemplate).filter(GenerationTemplate.id == id))
         return result.scalars().first()
 
     async def get_multi(
             self, db: AsyncSession, *, skip: int = 0, limit: int = 100
-    ) -> List[GenerationTemplateDB]:
+    ) -> List[GenerationTemplate]:
         result = await db.execute(
             select(self.model)
             .offset(skip)
@@ -45,4 +45,4 @@ class CRUDGenerationTemplate(CRUDBase[GenerationTemplateDB, GenerationTemplateCr
         return result.scalars().all()
 
 
-generation_template = CRUDGenerationTemplate(GenerationTemplateDB)
+generation_template = CRUDGenerationTemplate(GenerationTemplate)
