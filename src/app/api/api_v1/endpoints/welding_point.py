@@ -14,7 +14,7 @@ async def read_welding_points(
         limit: int = 100,
 ) -> Any:
     """
-    Retrieve multiple robot types
+    Retrieve multiple welding points
     """
     result = await welding_point.get_multi(db=db, skip=skip, limit=limit)
     return result
@@ -27,7 +27,7 @@ async def read_welding_point(
         _id: int
 ) -> Any:
     """
-    Retrieve robot type by ID
+    Retrieve welding point by ID
     """
     result = await welding_point.get_by_id(db=db, id=_id)
     if not result:
@@ -41,7 +41,7 @@ async def create_welding_point(
         db: AsyncSession = Depends(deps.get_async_db),
         welding_point_in: WeldingPointCreate):
     """
-    Create new robot type
+    Create new welding point
     """
     result = await welding_point.create(db=db, obj_in=welding_point_in)
     return result
@@ -55,12 +55,34 @@ async def update_welding_point(
         welding_point_in: WeldingPointUpdate
 ) -> Any:
     """
-    Update a robot type
+    Update a welding point
     """
     result = await welding_point.get_by_id(db=db, id=id)
     if not result:
         raise HTTPException(status_code=404, detail="Welding point not found")
     return await welding_point.update(db=db, db_obj=result, obj_in=welding_point_in)
+
+
+@router.put("/", response_model=List[WeldingPoint])
+async def update_welding_points(
+        *,
+        db: AsyncSession = Depends(deps.get_async_db),
+        welding_points_in: List[WeldingPointUpdate]
+) -> Any:
+    """
+    Update multiple welding points. ID is then required in the WeldingPointUpdate
+    """
+    # Check, if each element has a proper ID
+    if not all(wp.id is not None for wp in welding_points_in):
+        raise HTTPException(status_code=400, detail="To update multiple welding points each element needs to contain "
+                                                    "its ID")
+
+    updates = []
+    for wp in welding_points_in:
+        element = await welding_point.get_by_id(db=db, id=wp.id)
+        updates.append(await welding_point.update(db=db, db_obj=element, obj_in=wp))
+
+    return updates
 
 
 @router.delete("/{id}", response_model=WeldingPoint)
