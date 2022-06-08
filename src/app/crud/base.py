@@ -72,7 +72,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     @staticmethod
-    async def remove(self, db: AsyncSession, *, obj: ModelType) -> ModelType:
+    async def remove(db: AsyncSession, *, obj: ModelType) -> ModelType:
         await db.delete(obj)
         await db.commit()
         return obj

@@ -50,14 +50,14 @@ async def create_welding_configuration(
 @router.put("/{id}", response_model=WeldingConfiguration)
 async def update_welding_configuration(
         *,
-        id: int,
+        _id: int,
         db: AsyncSession = Depends(deps.get_async_db),
         welding_configuration_in: WeldingConfigurationUpdate
 ) -> Any:
     """
     Update a welding configuration
     """
-    result = await welding_configuration.get_by_id(db=db, id=id)
+    result = await welding_configuration.get_by_id(db=db, id=_id)
     if not result:
         raise HTTPException(status_code=404, detail="Welding configuration not found")
     return await welding_configuration.update(db=db, db_obj=result, obj_in=welding_configuration_in)

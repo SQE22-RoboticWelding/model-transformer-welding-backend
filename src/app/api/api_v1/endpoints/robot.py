@@ -32,7 +32,6 @@ async def read_robot(
     result = await robot.get_by_id(db=db, id=_id)
     if not result:
         raise HTTPException(status_code=404, detail="Robot not found")
-    print(result.robot_type.name)
     return result
 
 
@@ -51,14 +50,14 @@ async def create_robot(
 @router.put("/{id}", response_model=Robot)
 async def update_robot(
         *,
-        id: int,
+        _id: int,
         db: AsyncSession = Depends(deps.get_async_db),
         robot_in: RobotUpdate
 ) -> Any:
     """
     Update a robot
     """
-    result = await robot.get_by_id(db=db, id=id)
+    result = await robot.get_by_id(db=db, id=_id)
     if not result:
         raise HTTPException(status_code=404, detail="Robot not found")
     return await robot.update(db=db, db_obj=result, obj_in=robot_in)

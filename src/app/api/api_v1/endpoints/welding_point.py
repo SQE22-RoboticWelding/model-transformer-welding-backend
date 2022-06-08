@@ -50,14 +50,14 @@ async def create_welding_point(
 @router.put("/{id}", response_model=WeldingPoint)
 async def update_welding_point(
         *,
-        id: int,
+        _id: int,
         db: AsyncSession = Depends(deps.get_async_db),
         welding_point_in: WeldingPointUpdate
 ) -> Any:
     """
     Update a welding point
     """
-    result = await welding_point.get_by_id(db=db, id=id)
+    result = await welding_point.get_by_id(db=db, id=_id)
     if not result:
         raise HTTPException(status_code=404, detail="Welding point not found")
     return await welding_point.update(db=db, db_obj=result, obj_in=welding_point_in)
@@ -73,9 +73,9 @@ async def update_welding_points(
     Update multiple welding points. ID is then required in the WeldingPointUpdate
     """
     # Check, if each element has a proper ID
-    if not all(wp.id is not None for wp in welding_points_in):
-        raise HTTPException(status_code=400, detail="To update multiple welding points each element needs to contain "
-                                                    "its ID")
+    if any(wp.id is None for wp in welding_points_in):
+        raise HTTPException(status_code=400,
+                            detail="To update multiple welding points each element needs to contain its ID")
 
     updates = []
     for wp in welding_points_in:

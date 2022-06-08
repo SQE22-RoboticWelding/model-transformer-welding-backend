@@ -14,8 +14,8 @@ class RobotTypeBase(BaseModel):
             "example": {
                 "name": "Niryo One",
                 "vendor": "Niryo",
-                "capacity_load_kg": 50,
-                "range_m": 3
+                "capacity_load_kg": 50.5,
+                "range_m": 3.141
             }
         }
 
