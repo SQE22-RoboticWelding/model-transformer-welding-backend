@@ -10,3 +10,4 @@ bson
 psycopg2-binary
 Jinja2
 pytest
+testing.postgresql
