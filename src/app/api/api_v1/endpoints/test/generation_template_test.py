@@ -30,8 +30,8 @@ class GenerationTemplateTest(unittest.TestCase):
         self.session_sync = sessionmaker(autocommit=False, autoflush=False, bind=self.engine_sync)
         session_async = sessionmaker(autocommit=False, autoflush=False, bind=self.engine, class_=AsyncSession)
 
-        self.engine_sync.execute(delete(GenerationTemplate))
         Base.metadata.create_all(bind=self.engine_sync)
+        self.engine_sync.execute(delete(GenerationTemplate))
 
         self.client = TestClient(app)
 
