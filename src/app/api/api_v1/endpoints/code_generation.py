@@ -27,11 +27,12 @@ async def generate(
     """
     Generate code by manually passing in welding points
     """
-    gen_template = await generation_template.get_by_id(db=db, id=body.generation_template_id)
-    welding_config = await welding_configuration.get_by_id(db=db, id=body.welding_configuration_id)
-    if not gen_template:
+    result_template = await generation_template.get_by_id(db=db, id=body.generation_template_id)
+    result_welding_configuration = await welding_configuration.get_by_id(db=db, id=body.welding_configuration_id)
+    if not result_template:
         raise HTTPException(status_code=404, detail="Generation template not found")
-    elif not welding_config:
+    elif not result_welding_configuration:
         raise HTTPException(status_code=404, detail="Welding configuration not found")
     else:
-        return CodeGenerator.generate(generation_template, welding_config)
+        result = CodeGenerator.generate(result_template, result_welding_configuration)
+        return result
