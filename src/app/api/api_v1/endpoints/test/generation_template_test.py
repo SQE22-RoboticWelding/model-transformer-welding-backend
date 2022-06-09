@@ -6,7 +6,6 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, select, delete
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.pool import NullPool
 
 from app.main import app
 from app.api.deps import get_async_db
@@ -47,10 +46,23 @@ class GenerationTemplateTest(unittest.TestCase):
     def tearDown(self) -> None:
         self.postgresql.stop()
 
-    def test_get(self):
+    def test_get_empty(self):
         response = self.client.get("/api/v1/generationtemplate/")
         self.assertEqual(200, response.status_code)
         self.assertEqual(b"[]", response.content)
+
+    def test_get_all(self):
+        with self.session_sync() as session:
+            session.add(GenerationTemplate(id=1, name="My Template #1", content="X"))
+            session.add(GenerationTemplate(id=2, name="My Template #2", content="Y"))
+            session.commit()
+        response = self.client.get("/api/v1/generationtemplate/")
+        self.assertEqual(200, response.status_code)
+
+        response_json = response.json()
+        self.assertEqual(2, len(response_json))
+        self.assertIn({**response_json[0], "id": 1, "name": "My Template #1", "content": "X"}, response_json)
+        self.assertIn({**response_json[1], "id": 2, "name": "My Template #2", "content": "Y"}, response_json)
 
     def test_post(self):
         response = self.client.post("/api/v1/generationtemplate/",
@@ -70,3 +82,23 @@ class GenerationTemplateTest(unittest.TestCase):
             self.assertEqual("My Template", result[0].name)
             self.assertEqual("Fill {{ this }}", result[0].content)
             self.assertEqual(None, result[0].description)
+
+    def test_post_wrong_content_type(self):
+        response = self.client.post("/api/v1/generationtemplate/",
+                                    b'{"name": "My Template", "content": { "value": "{{fill}}" }}')
+        self.assertEqual(422, response.status_code)
+
+    def test_post_wrong_name_type(self):
+        response = self.client.post("/api/v1/generationtemplate/",
+                                    b'{"name": [5], "content": ""}')
+        self.assertEqual(422, response.status_code)
+
+    def test_post_missing_content(self):
+        response = self.client.post("/api/v1/generationtemplate/",
+                                    b'{"name": [5]}')
+        self.assertEqual(422, response.status_code)
+
+    def test_post_missing_name(self):
+        response = self.client.post("/api/v1/generationtemplate/",
+                                    b'{"content": ""}')
+        self.assertEqual(422, response.status_code)
