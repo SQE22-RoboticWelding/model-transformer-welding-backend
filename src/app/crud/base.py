@@ -1,7 +1,6 @@
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import select
 
@@ -38,7 +37,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get_multi_by_owner(
         self, db: AsyncSession, *, owner_id: int, skip: int = 0, limit: int = 100
     ) -> List[ModelType]:
-        result =  await db.execute(
+        result = await db.execute(
             select(self.model)
             .filter(self.model.owner_id == owner_id)
             .offset(skip)
@@ -72,7 +71,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await db.refresh(db_obj)
         return db_obj
 
-    async def remove(self, db: AsyncSession, *, obj: ModelType) -> ModelType:
+    @staticmethod
+    async def remove(db: AsyncSession, *, obj: ModelType) -> ModelType:
         await db.delete(obj)
         await db.commit()
         return obj

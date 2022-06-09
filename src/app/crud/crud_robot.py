@@ -3,19 +3,17 @@ from sqlalchemy.future import select
 from typing import Any, Dict, Optional, Union, List
 
 from app.crud.base import CRUDBase
-from app.models.robot_type import RobotType
-from app.schemas.robot_type import RobotTypeCreate, RobotTypeUpdate
+from app.models.robot import Robot
+from app.schemas.robot import RobotCreate, RobotUpdate
 
 
-class CRUDRobotType(CRUDBase[RobotType, RobotTypeCreate, RobotTypeUpdate]):
+class CRUDRobot(CRUDBase[Robot, RobotCreate, RobotUpdate]):
     async def create(
-            self, db: AsyncSession, *, obj_in: RobotTypeCreate
-    ) -> RobotType:
-        db_obj = RobotType(
-            name=obj_in.name,
-            vendor=obj_in.vendor,
-            capacity_load_kg=obj_in.capacity_load_kg,
-            range_m=obj_in.range_m
+            self, db: AsyncSession, *, obj_in: RobotCreate
+    ) -> Robot:
+        db_obj = Robot(
+            robot_type_id=obj_in.robot_type_id,
+            description=obj_in.description
         )
         db.add(db_obj)
         await db.commit()
@@ -23,20 +21,20 @@ class CRUDRobotType(CRUDBase[RobotType, RobotTypeCreate, RobotTypeUpdate]):
         return db_obj
 
     async def update(
-            self, db: AsyncSession, *, db_obj: RobotType, obj_in: Union[RobotTypeUpdate, Dict[str, Any]]
-    ) -> RobotType:
+            self, db: AsyncSession, *, db_obj: Robot, obj_in: Union[RobotUpdate, Dict[str, Any]]
+    ) -> Robot:
         update_data = obj_in if isinstance(obj_in, dict) else obj_in.dict(exclude_unset=True)
         return await super().update(db, db_obj=db_obj, obj_in=update_data)
 
     async def get_by_id( # noqa
             self, db: AsyncSession, *, id: int
-    ) -> Optional[RobotType]:
-        result = await db.execute(select(RobotType).filter(RobotType.id == id))
+    ) -> Optional[Robot]:
+        result = await db.execute(select(Robot).filter(Robot.id == id))
         return result.scalars().first()
 
     async def get_multi(
             self, db: AsyncSession, *, skip: int = 0, limit: int = 100
-    ) -> List[RobotType]:
+    ) -> List[Robot]:
         result = await db.execute(
             select(self.model)
             .offset(skip)
@@ -45,4 +43,4 @@ class CRUDRobotType(CRUDBase[RobotType, RobotTypeCreate, RobotTypeUpdate]):
         return result.scalars().all()
 
 
-robot_type = CRUDRobotType(RobotType)
+robot = CRUDRobot(Robot)
