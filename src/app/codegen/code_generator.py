@@ -7,4 +7,4 @@ from app.models.welding_configuration import WeldingConfiguration
 class CodeGenerator:
     @staticmethod
     def generate(template: GenerationTemplate, welding_configuration: WeldingConfiguration) -> str:
-        return Template(template.content).render({"weldingPoints: welding_configuration.welding_points"})
+        return Template(template.content).render({"welding_points": welding_configuration.welding_points})
