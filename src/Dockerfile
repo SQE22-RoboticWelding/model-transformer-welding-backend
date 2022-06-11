@@ -1,13 +1,14 @@
-FROM python:slim
-
+FROM continuumio/anaconda3:latest
 ENV PYTHONPATH "${PYTHONPATH}:/"
 ENV PORT=8000
 
-RUN pip install --upgrade pip
+RUN conda update conda
+# Add community repository, since e.g. FastAPI is not available in the official repos
+RUN conda config --add channels conda-forge
+RUN conda config --set channel_priority strict
 
 COPY requirements.txt /app/
-RUN pip install -r /app/requirements.txt
-
+RUN conda create --name sqe-backend --file /app/requirements.txt
 COPY ./app /app
 
-CMD ["uvicorn", "--host", "0.0.0.0", "app.main:app"]
+CMD ["conda", "run", "-n", "sqe-backend", "uvicorn", "--host", "0.0.0.0", "app.main:app"]
