@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Body, HTTPException, Depends
+from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.api import deps
+from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 
 
-router = APIRouter()
+router = APIRouterWithGenericExceptionHandler()
 
 
 @router.get("/test/{id}")

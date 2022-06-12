@@ -1,11 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import Depends, HTTPException
 from app.api import deps
+from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 from app.crud.crud_welding_point import *
 from app.crud.crud_welding_configuration import *
 from app.schemas.welding_point import *
 
 
-router = APIRouter()
+router = APIRouterWithGenericExceptionHandler()
 
 
 @router.get("/", response_model=List[WeldingPoint])
