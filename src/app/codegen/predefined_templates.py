@@ -1,8 +1,7 @@
 
 
 class PredefinedTemplates:
-    NIRYO_ONE_ROS = """
-    from niryo_one_python_api.niryo_one_api import NiryoOne
+    NIRYO_ONE_ROS = """from niryo_one_python_api.niryo_one_api import NiryoOne
     import rospy
     import time
     

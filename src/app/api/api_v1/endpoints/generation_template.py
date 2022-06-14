@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException
 from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
+from app.codegen.predefined_templates import PredefinedTemplates
 from app.crud.crud_generation_template import *
 from app.schemas.generation_template import *
 
@@ -74,4 +75,15 @@ async def delete_generation_template(
     if not result:
         raise HTTPException(status_code=404, detail="Generation template not found")
     result = await generation_template.remove(db=db, obj=result)
+    return result
+
+
+@router.post("/init-predefined", response_model=GenerationTemplate)
+async def init_predefined(
+        db: AsyncSession = Depends(deps.get_async_db)
+):
+    template = GenerationTemplateCreate(name="NiryoOne-ROS Predefined",
+                                        description="Predefined template for python api niryo_one_ros",
+                                        content=PredefinedTemplates.NIRYO_ONE_ROS)
+    result = await generation_template.create(db=db, obj_in=template)
     return result
