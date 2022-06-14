@@ -90,4 +90,4 @@ class GenerationTemplateTest(unittest.TestCase):
         response = self.client.post("/api/v1/codegeneration/generate",
                                     b'{"generation_template_id": 1, "welding_configuration_id": 1}')
         self.assertEqual(200, response.status_code)
-        self.assertEqual(b'""', response.content)
+        self.assertEqual(b'', response.content)
