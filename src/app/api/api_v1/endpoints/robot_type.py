@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import Depends, HTTPException
 from app.api import deps
+from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 from app.crud.crud_robot_type import *
 from app.schemas.robot_type import *
 
 
-router = APIRouter()
+router = APIRouterWithGenericExceptionHandler()
 
 
 @router.get("/", response_model=List[RobotType])

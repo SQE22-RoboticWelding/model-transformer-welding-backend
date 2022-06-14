@@ -1,8 +1,8 @@
-from fastapi import APIRouter
 from app.api.api_v1.endpoints import (test, robot, robot_type, welding_configuration, welding_point,
                                       generation_template, code_generation)
+from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 
-api_router = APIRouter()
+api_router = APIRouterWithGenericExceptionHandler()
 api_router.include_router(robot_type.router, prefix="/robottype", tags=["RobotType"])
 api_router.include_router(robot.router, prefix="/robot", tags=["Robot"])
 api_router.include_router(welding_configuration.router, prefix="/weldingconfiguration", tags=["WeldingConfiguration"])

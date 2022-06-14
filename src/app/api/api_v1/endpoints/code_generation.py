@@ -1,16 +1,17 @@
 from typing import Any
-from fastapi import APIRouter, HTTPException
+from fastapi import HTTPException
 from fastapi.params import Depends
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
+from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 from app.crud.crud_generation_template import generation_template
 from app.crud.crud_welding_configuration import welding_configuration
 from app.codegen.code_generator import CodeGenerator
 
 
-router = APIRouter()
+router = APIRouterWithGenericExceptionHandler()
 
 
 class RequestBodyGenerate(BaseModel):
