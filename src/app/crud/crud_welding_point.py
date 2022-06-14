@@ -29,6 +29,11 @@ class CRUDWeldingPoint(CRUDBase[WeldingPoint, WeldingPointCreate, WeldingPointUp
         await db.refresh(db_obj)
         return db_obj
 
+    async def create_multi(
+            self, db: AsyncSession, *, obj_in: List[WeldingPointCreate]
+    ) -> List[WeldingPoint]:
+        return await super().create_multi(db=db, obj_in=obj_in)
+
     async def update(
             self, db: AsyncSession, *, db_obj: WeldingPoint, obj_in: Union[WeldingPointUpdate, Dict[str, Any]]
     ) -> WeldingPoint:
