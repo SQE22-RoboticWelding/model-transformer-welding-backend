@@ -27,7 +27,7 @@ class PandasParser(ParserBase):
 
     def validate(self) -> bool:
         if (self.content_type in SUPPORTED_CONTENT_TYPES and
-                self.file_type in SUPPORTED_FILE_TYPES):
+            self.file_type in SUPPORTED_FILE_TYPES):
             return True
         return False
 
@@ -64,7 +64,7 @@ class PandasParser(ParserBase):
         for row in self.welding_points:
             result.append(
                 WeldingPointCreate(welding_configuration_id=welding_configuration.id,
-                                   welding_order=getattr(row, "Index") + 1,
+                                   welding_order=getattr(row, "Index"),
                                    name=getattr(row, "ID"),
                                    x=getattr(row, "x"),
                                    y=getattr(row, "y"),
