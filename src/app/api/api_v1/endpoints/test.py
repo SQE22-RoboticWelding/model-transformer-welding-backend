@@ -3,6 +3,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
+from app.codegen.predefined_templates import PredefinedTemplates
+from app.crud.crud_generation_template import generation_template
+from app.schemas.generation_template import GenerationTemplateCreate
 
 
 router = APIRouterWithGenericExceptionHandler()
@@ -21,3 +24,13 @@ async def database(
         return {"message": "Database reachable"}
     else:
         return {"message": "Database not reachable"}
+
+
+@router.post("/init-predefined")
+async def init_predefined(
+        db: AsyncSession = Depends(deps.get_async_db)
+):
+    template = GenerationTemplateCreate(name="NiryoOne-ROS Predefined",
+                                        description="Predefined template for python api niryo_one_ros",
+                                        content=PredefinedTemplates.NIRYO_ONE_ROS)
+    return await generation_template.create(db, template)
