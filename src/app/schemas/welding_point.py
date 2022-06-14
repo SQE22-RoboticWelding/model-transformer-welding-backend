@@ -7,6 +7,7 @@ class WeldingPointBase(BaseModel):
     welding_configuration_id: int
     robot_id: Optional[int]
     welding_order: int
+    name: Optional[str]
     description: Optional[str]
     x: float
     y: float
@@ -22,6 +23,7 @@ class WeldingPointBase(BaseModel):
                 "welding_configuration_id": 1,
                 "robot_id": 1,
                 "welding_order": 1,
+                "name": "P1",
                 "description": "Reactor vulnerability entrance",
                 "x": 10,
                 "y": 15,

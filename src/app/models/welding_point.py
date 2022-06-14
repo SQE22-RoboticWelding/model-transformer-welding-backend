@@ -8,6 +8,7 @@ class WeldingPoint(Base):
     welding_configuration_id = Column(Integer, ForeignKey("weldingconfiguration.id"))
     robot_id = Column(Integer, ForeignKey("robot.id"))
     welding_order = Column(Integer, index=True)
+    name = Column(String)
     description = Column(String)
     x = Column(Float)
     y = Column(Float)
