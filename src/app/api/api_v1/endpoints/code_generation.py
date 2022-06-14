@@ -1,6 +1,7 @@
 from typing import Any
 from fastapi import HTTPException
 from fastapi.params import Depends
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,7 +20,7 @@ class RequestBodyGenerate(BaseModel):
     welding_configuration_id: int
 
 
-@router.post("/generate", response_model=str, deprecated=True)
+@router.post("/generate", response_class=PlainTextResponse)
 async def generate(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
