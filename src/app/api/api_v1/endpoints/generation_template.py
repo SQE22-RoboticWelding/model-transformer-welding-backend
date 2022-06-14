@@ -55,7 +55,7 @@ async def update_generation_template(
         generation_template_in: GenerationTemplateUpdate
 ) -> Any:
     """
-    Update a generation_template
+    Update a generation template
     """
     result = await generation_template.get_by_id(db=db, id=id)
     if not result:
