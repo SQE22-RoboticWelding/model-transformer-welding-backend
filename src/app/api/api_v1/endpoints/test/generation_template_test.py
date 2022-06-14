@@ -86,19 +86,19 @@ class GenerationTemplateTest(unittest.TestCase):
     def test_post_wrong_content_type(self):
         response = self.client.post("/api/v1/generationtemplate/",
                                     b'{"name": "My Template", "content": { "value": "{{fill}}" }}')
-        self.assertEqual(422, response.status_code)
+        self.assertEqual(400, response.status_code)
 
     def test_post_wrong_name_type(self):
         response = self.client.post("/api/v1/generationtemplate/",
                                     b'{"name": [5], "content": ""}')
-        self.assertEqual(422, response.status_code)
+        self.assertEqual(400, response.status_code)
 
     def test_post_missing_content(self):
         response = self.client.post("/api/v1/generationtemplate/",
                                     b'{"name": [5]}')
-        self.assertEqual(422, response.status_code)
+        self.assertEqual(400, response.status_code)
 
     def test_post_missing_name(self):
         response = self.client.post("/api/v1/generationtemplate/",
                                     b'{"content": ""}')
-        self.assertEqual(422, response.status_code)
+        self.assertEqual(400, response.status_code)
