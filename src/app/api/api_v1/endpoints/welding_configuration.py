@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, UploadFile
 from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 from app.crud.crud_welding_configuration import *
@@ -62,10 +62,10 @@ async def upload_welding_configuration(
         raise HTTPException(status_code=500, detail="Could not create new welding configuration")
 
     # Create welding points
-    for welding_point_obj in parser.get_welding_points(welding_configuration=welding_configuration_obj):
-        result = await welding_point.create(db=db, obj_in=welding_point_obj)
-        if result is None:
-            raise HTTPException(status_code=500, detail="Could not create welding point")
+    result = await welding_point.create_multi(
+        db=db, obj_in=parser.get_welding_points(welding_configuration=welding_configuration_obj))
+    if result is None:
+        raise HTTPException(status_code=500, detail="Could not create welding point")
 
     return welding_configuration_obj
 
