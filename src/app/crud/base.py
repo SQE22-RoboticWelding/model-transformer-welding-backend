@@ -6,7 +6,6 @@ from sqlalchemy.sql.expression import select
 
 from app.db.base_class import Base
 
-
 ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
@@ -27,7 +26,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return result.scalars().first()
 
     async def get_multi(
-        self, db: AsyncSession, *, skip: int = 0, limit: int = 100
+            self, db: AsyncSession, *, skip: int = 0, limit: int = 100
     ) -> List[ModelType]:
         query = select(self.model).offset(skip).limit(limit)
         result = await db.execute(query)
@@ -35,7 +34,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return res
 
     async def get_multi_by_owner(
-        self, db: AsyncSession, *, owner_id: int, skip: int = 0, limit: int = 100
+            self, db: AsyncSession, *, owner_id: int, skip: int = 0, limit: int = 100
     ) -> List[ModelType]:
         result = await db.execute(
             select(self.model)
@@ -53,12 +52,24 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await db.refresh(db_obj)
         return db_obj
 
+    async def create_multi(self, db: AsyncSession, *, obj_in: List[CreateSchemaType]) -> List[ModelType]:
+        db_objs = []
+        for obj_in_data in obj_in:
+            encoded_obj = jsonable_encoder(obj_in_data)
+            db_objs.append(self.model(**encoded_obj))  # type: ignore
+        db.add_all(db_objs)
+        await db.commit()
+
+        for obj in db_objs:
+            await db.refresh(obj)
+        return db_objs
+
     async def update(
-        self,
-        db: AsyncSession,
-        *,
-        db_obj: ModelType,
-        obj_in: Union[UpdateSchemaType, Dict[str, Any]]
+            self,
+            db: AsyncSession,
+            *,
+            db_obj: ModelType,
+            obj_in: Union[UpdateSchemaType, Dict[str, Any]]
     ) -> ModelType:
         obj_data = jsonable_encoder(db_obj)
         update_data = obj_in if isinstance(obj_in, dict) else obj_in.dict(exclude_unset=True)
