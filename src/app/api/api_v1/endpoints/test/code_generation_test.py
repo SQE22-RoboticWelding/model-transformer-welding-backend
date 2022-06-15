@@ -64,7 +64,7 @@ class GenerationTemplateTest(unittest.TestCase):
         response = self.client.post("/api/v1/codegeneration/generate",
                                     b'{"generation_template_id": 1, "welding_configuration_id": 1}')
         self.assertEqual(200, response.status_code)
-        self.assertEqual(b'"10.0, 5.5, 0.25 / 0.35, 3.0, 0.0 / 0"', response.content)
+        self.assertEqual(b'10.0, 5.5, 0.25 / 0.35, 3.0, 0.0 / 0', response.content)
 
     def test_post_unknown_generation_template(self):
         with self.session_sync() as session:
