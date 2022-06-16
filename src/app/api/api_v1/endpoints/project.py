@@ -1,4 +1,6 @@
 from fastapi import Depends, HTTPException, UploadFile
+
+import app.schemas.welding_point
 from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 from app.crud.crud_project import *
@@ -8,6 +10,10 @@ from app.schemas.project import *
 
 
 router = APIRouterWithGenericExceptionHandler()
+
+
+class ProjectWithData(Project):
+    welding_points: List[app.schemas.welding_point.WeldingPoint]
 
 
 @router.get("/", response_model=List[Project])
@@ -39,7 +45,7 @@ async def read_project(
 
 
 @router.post("/upload", response_description="Upload file to create a new project",
-             response_model=Project)
+             response_model=ProjectWithData)
 async def upload_project(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
@@ -70,7 +76,12 @@ async def upload_project(
     if result is None:
         raise HTTPException(status_code=500, detail="Could not create welding point")
 
-    return project_obj
+    return ProjectWithData(id=project_obj.id,
+                           name=project_obj.name,
+                           description=project_obj.description,
+                           created_at=project_obj.created_at,
+                           modified_at=project_obj.modified_at,
+                           welding_points=result)
 
 
 @router.post("/", response_description="Add new project", response_model=Project)
