@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 from app.crud.crud_generation_template import generation_template
-from app.crud.crud_welding_configuration import welding_configuration
+from app.crud.crud_project import project
 from app.codegen.code_generator import CodeGenerator
 
 
@@ -16,7 +16,7 @@ router = APIRouterWithGenericExceptionHandler()
 
 class RequestBodyGenerate(BaseModel):
     generation_template_id: int
-    welding_configuration_id: int
+    project_id: int
 
 
 @router.post("/generate", response_model=str, deprecated=True)
@@ -29,11 +29,11 @@ async def generate(
     Generate code by manually passing in welding points
     """
     result_template = await generation_template.get_by_id(db=db, id=body.generation_template_id)
-    result_welding_configuration = await welding_configuration.get_by_id(db=db, id=body.welding_configuration_id)
+    result_project = await project.get_by_id(db=db, id=body.project_id)
     if not result_template:
         raise HTTPException(status_code=404, detail="Generation template not found")
-    elif not result_welding_configuration:
-        raise HTTPException(status_code=404, detail="Welding configuration not found")
+    elif not result_project:
+        raise HTTPException(status_code=404, detail="Project not found")
     else:
-        result = CodeGenerator.generate(result_template, result_welding_configuration)
+        result = CodeGenerator.generate(result_template, result_project)
         return result

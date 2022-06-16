@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException
 from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 from app.crud.crud_welding_point import *
-from app.crud.crud_welding_configuration import *
+from app.crud.crud_project import *
 from app.schemas.welding_point import *
 
 
@@ -22,21 +22,21 @@ async def read_welding_points(
     return result
 
 
-@router.get("/{welding_configuration_id}",
-            response_description="Welding points belonging to a welding point configuration",
+@router.get("/{project_id}",
+            response_description="Welding points belonging to a project",
             response_model=List[WeldingPoint])
 async def read_welding_point(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        welding_configuration_id: int
+        project_id: int
 ) -> Any:
     """
-    Retrieve list of welding points belonging to a welding point configuration
+    Retrieve list of welding points belonging to a project
     """
-    welding_configuration_obj = await welding_configuration.get_by_id(db=db, id=welding_configuration_id)
-    if not welding_configuration_obj:
-        raise HTTPException(status_code=404, detail="Welding configuration not found")
-    return welding_configuration_obj.welding_points
+    project_obj = await project.get_by_id(db=db, id=project_id)
+    if not project_obj:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project_obj.welding_points
 
 
 @router.post("/", response_description="Add new welding point", response_model=WeldingPoint)
