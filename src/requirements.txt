@@ -7,7 +7,7 @@ alembic
 asyncpg
 greenlet
 bson
-psycopg2-binary
+psycopg2
 Jinja2
 pytest
 testing.postgresql
