@@ -1,8 +1,10 @@
 FROM python:slim
 
-ENV PYTHONPATH "${PYTHONPATH}:/"
-ENV PORT=8000
-
+# Build dependencies for psycopg2
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq5 \
+    libpq-dev
 RUN pip install --upgrade pip
 
 COPY requirements.txt /app/
