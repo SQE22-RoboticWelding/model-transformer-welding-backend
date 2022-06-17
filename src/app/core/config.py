@@ -14,5 +14,12 @@ class Settings(BaseSettings):
     DATABASE_URL_SYNC: str = os.getenv("DATABASE_URL_SYNC", "postgresql://postgres:awesomepw@localhost:5432")
     CORS_ORIGINS: List[str] = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",")
 
+    class Config:
+        """
+        Prefix for automatically parsing environment variables by pydantic. E.g. when an attribute is named
+        `SQE_BACKEND_SERVER_HOST` pydantic tries to parse it automatically from the environment if set.
+        """
+        env_prefix = "SQE_BACKEND_"
+
 
 settings = Settings()
