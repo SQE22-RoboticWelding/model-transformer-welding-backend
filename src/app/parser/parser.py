@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from app.models.welding_configuration import WeldingConfiguration
+from app.models.project import Project
 from app.schemas.welding_point import WeldingPointCreate
 
 
@@ -39,10 +39,10 @@ class ParserBase(ABC):
         pass
 
     @abstractmethod
-    def get_welding_points(self, welding_configuration: WeldingConfiguration) -> List[WeldingPointCreate]:
+    def get_welding_points(self, project: Project) -> List[WeldingPointCreate]:
         """
-        Returns a list of creatable welding points assigned to the provided welding configuration
-        :param welding_configuration: Existing welding configuration to which the welding points will be assigned
+        Returns a list of creatable welding points assigned to the provided project
+        :param project: Existing project to which the welding points will be assigned
         :return: List of creatable welding point objects, which can then be created in the database
         """
         pass

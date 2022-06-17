@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 class WeldingPointBase(BaseModel):
     id: int
-    welding_configuration_id: int
+    project_id: int
     robot_id: Optional[int]
     welding_order: int
     name: Optional[str]
@@ -20,7 +20,7 @@ class WeldingPointBase(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "welding_configuration_id": 1,
+                "project_id": 1,
                 "robot_id": 1,
                 "welding_order": 1,
                 "name": "P1",
@@ -43,7 +43,7 @@ class WeldingPointCreate(WeldingPointBase):
 
 class WeldingPointUpdate(WeldingPointBase):
     id: Optional[int]
-    welding_configuration_id: Optional[int]
+    project_id: Optional[int]
     x: Optional[float]
     y: Optional[float]
     z: Optional[float]

@@ -3,7 +3,7 @@ from typing import List, Iterable, Any
 from fastapi import UploadFile
 import pandas as pd
 
-from app.models.welding_configuration import WeldingConfiguration
+from app.models.project import Project
 from app.parser.parser import ParserBase, ParseResult
 from app.schemas.welding_point import WeldingPointCreate
 
@@ -59,11 +59,11 @@ class PandasParser(ParserBase):
         self.welding_points = df.itertuples(name="WeldingPoint", index=True)
         return ParseResult(error=False)
 
-    def get_welding_points(self, welding_configuration: WeldingConfiguration) -> List[WeldingPointCreate]:
+    def get_welding_points(self, project: Project) -> List[WeldingPointCreate]:
         result = []
         for row in self.welding_points:
             result.append(
-                WeldingPointCreate(welding_configuration_id=welding_configuration.id,
+                WeldingPointCreate(project_id=project.id,
                                    welding_order=getattr(row, "Index"),
                                    name=getattr(row, "ID"),
                                    x=getattr(row, "x"),

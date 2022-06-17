@@ -4,4 +4,4 @@ from app.db.base_class import Base # noqa
 from app.models.robot_type import RobotType # noqa
 from app.models.robot import Robot # noqa
 from app.models.welding_point import WeldingPoint # noqa
-from app.models.welding_configuration import WeldingConfiguration # noqa
+from app.models.project import Project # noqa

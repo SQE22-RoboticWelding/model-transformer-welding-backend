@@ -5,7 +5,7 @@ from app.db.base_class import Base
 
 class WeldingPoint(Base):
     id = Column(Integer, primary_key=True, index=True)
-    welding_configuration_id = Column(Integer, ForeignKey("weldingconfiguration.id"))
+    project_id = Column(Integer, ForeignKey("project.id"))
     robot_id = Column(Integer, ForeignKey("robot.id"))
     welding_order = Column(Integer, index=True)
     name = Column(String)
@@ -17,4 +17,4 @@ class WeldingPoint(Base):
     pitch = Column(Float)
     yaw = Column(Float)
     tolerance = Column(Float)
-    welding_configuration = relationship("WeldingConfiguration", back_populates="welding_points", lazy='subquery')
+    project = relationship("Project", back_populates="welding_points", lazy='subquery')

@@ -11,7 +11,7 @@ from app.main import app
 from app.api.deps import get_async_db
 from app.db.base import Base
 from app.models.generation_template import GenerationTemplate
-from app.models.welding_configuration import WeldingConfiguration
+from app.models.project import Project
 from app.models.welding_point import WeldingPoint
 
 
@@ -37,7 +37,7 @@ class GenerationTemplateTest(unittest.TestCase):
 
         Base.metadata.create_all(bind=self.engine_sync)
         self.engine_sync.execute(delete(WeldingPoint))
-        self.engine_sync.execute(delete(WeldingConfiguration))
+        self.engine_sync.execute(delete(Project))
         self.engine_sync.execute(delete(GenerationTemplate))
 
         self.client = TestClient(app)
@@ -56,38 +56,38 @@ class GenerationTemplateTest(unittest.TestCase):
     def test_post(self):
         with self.session_sync() as session:
             session.add(GenerationTemplate(id=1, name="My Template", content=self.template))
-            session.add(WeldingConfiguration(id=1, name="My WeldingConfig"))
-            session.add(WeldingPoint(welding_configuration_id=1,
+            session.add(Project(id=1, name="My welding project"))
+            session.add(WeldingPoint(project_id=1,
                                      welding_order=0,
                                      x=10, y=5.5, z=0.25, roll=0.35, pitch=3, yaw=0))
             session.commit()
         response = self.client.post("/api/v1/codegeneration/generate",
-                                    b'{"generation_template_id": 1, "welding_configuration_id": 1}')
+                                    b'{"generation_template_id": 1, "project_id": 1}')
         self.assertEqual(200, response.status_code)
         self.assertEqual(b'"10.0, 5.5, 0.25 / 0.35, 3.0, 0.0 / 0"', response.content)
 
     def test_post_unknown_generation_template(self):
         with self.session_sync() as session:
-            session.add(WeldingConfiguration(id=1, name="My WeldingConfig"))
+            session.add(Project(id=1, name="My welding project"))
             session.commit()
         response = self.client.post("/api/v1/codegeneration/generate",
-                                    b'{"generation_template_id": 1, "welding_configuration_id": 1}')
+                                    b'{"generation_template_id": 1, "project_id": 1}')
         self.assertEqual(404, response.status_code)
 
-    def test_post_unknown_welding_configuration(self):
+    def test_post_unknown_project(self):
         with self.session_sync() as session:
             session.add(GenerationTemplate(id=1, name="My Template", content=self.template))
             session.commit()
         response = self.client.post("/api/v1/codegeneration/generate",
-                                    b'{"generation_template_id": 1, "welding_configuration_id": 1}')
+                                    b'{"generation_template_id": 1, "project_id": 1}')
         self.assertEqual(404, response.status_code)
 
     def test_post_nothing_to_fill(self):
         with self.session_sync() as session:
             session.add(GenerationTemplate(id=1, name="My Template", content=self.template))
-            session.add(WeldingConfiguration(id=1, name="My WeldingConfig"))
+            session.add(Project(id=1, name="My welding project"))
             session.commit()
         response = self.client.post("/api/v1/codegeneration/generate",
-                                    b'{"generation_template_id": 1, "welding_configuration_id": 1}')
+                                    b'{"generation_template_id": 1, "project_id": 1}')
         self.assertEqual(200, response.status_code)
         self.assertEqual(b'""', response.content)

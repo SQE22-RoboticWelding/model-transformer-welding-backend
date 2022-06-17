@@ -3,15 +3,15 @@ from sqlalchemy.future import select
 from typing import Any, Dict, Optional, Union, List
 
 from app.crud.base import CRUDBase
-from app.models.welding_configuration import WeldingConfiguration
-from app.schemas.welding_configuration import WeldingConfigurationCreate, WeldingConfigurationUpdate
+from app.models.project import Project
+from app.schemas.project import ProjectCreate, ProjectUpdate
 
 
-class CRUDWeldingConfiguration(CRUDBase[WeldingConfiguration, WeldingConfigurationCreate, WeldingConfigurationUpdate]):
+class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate]):
     async def create(
-            self, db: AsyncSession, *, obj_in: WeldingConfigurationCreate
-    ) -> WeldingConfiguration:
-        db_obj = WeldingConfiguration(
+            self, db: AsyncSession, *, obj_in: ProjectCreate
+    ) -> Project:
+        db_obj = Project(
             name=obj_in.name,
             description=obj_in.description
         )
@@ -21,21 +21,21 @@ class CRUDWeldingConfiguration(CRUDBase[WeldingConfiguration, WeldingConfigurati
         return db_obj
 
     async def update(
-            self, db: AsyncSession, *, db_obj: WeldingConfiguration, obj_in: Union[WeldingConfigurationUpdate,
-                                                                                   Dict[str, Any]]
-    ) -> WeldingConfiguration:
+            self, db: AsyncSession, *, db_obj: Project, obj_in: Union[ProjectUpdate,
+                                                                      Dict[str, Any]]
+    ) -> Project:
         update_data = obj_in if isinstance(obj_in, dict) else obj_in.dict(exclude_unset=True)
         return await super().update(db, db_obj=db_obj, obj_in=update_data)
 
     async def get_by_id( # noqa
             self, db: AsyncSession, *, id: int
-    ) -> Optional[WeldingConfiguration]:
-        result = await db.execute(select(WeldingConfiguration).filter(WeldingConfiguration.id == id))
+    ) -> Optional[Project]:
+        result = await db.execute(select(Project).filter(Project.id == id))
         return result.scalars().first()
 
     async def get_multi(
             self, db: AsyncSession, *, skip: int = 0, limit: int = 100
-    ) -> List[WeldingConfiguration]:
+    ) -> List[Project]:
         result = await db.execute(
             select(self.model)
             .offset(skip)
@@ -44,4 +44,4 @@ class CRUDWeldingConfiguration(CRUDBase[WeldingConfiguration, WeldingConfigurati
         return result.scalars().all()
 
 
-welding_configuration = CRUDWeldingConfiguration(WeldingConfiguration)
+project = CRUDProject(Project)

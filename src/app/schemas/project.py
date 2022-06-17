@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from pydantic.schema import datetime
 
 
-class WeldingConfigurationBase(BaseModel):
+class ProjectBase(BaseModel):
     id: int
     name: str
     description: Optional[str]
@@ -12,22 +12,22 @@ class WeldingConfigurationBase(BaseModel):
         schema_extra = {
             "example": {
                 "name": "Death Star",
-                "description": "Welding configuration for the Death Star"
+                "description": "Project for the Death Star"
             }
         }
 
 
-class WeldingConfigurationCreate(WeldingConfigurationBase):
+class ProjectCreate(ProjectBase):
     id: Optional[int]
 
 
-class WeldingConfigurationUpdate(WeldingConfigurationBase):
+class ProjectUpdate(ProjectBase):
     id: Optional[int]
     name: Optional[str]
 
 
 # Properties shared by models stored in DB
-class WeldingConfigurationInDBBase(WeldingConfigurationBase):
+class ProjectInDBBase(ProjectBase):
     created_at: datetime
     modified_at: datetime
 
@@ -35,9 +35,9 @@ class WeldingConfigurationInDBBase(WeldingConfigurationBase):
         orm_mode = True
 
 
-class WeldingConfiguration(WeldingConfigurationInDBBase):
+class Project(ProjectInDBBase):
     pass
 
 
-class WeldingConfigurationInDB(WeldingConfigurationInDBBase):
+class ProjectInDB(ProjectInDBBase):
     pass

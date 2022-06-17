@@ -13,7 +13,7 @@ class CRUDWeldingPoint(CRUDBase[WeldingPoint, WeldingPointCreate, WeldingPointUp
     ) -> WeldingPoint:
         db_obj = WeldingPoint(
             description=obj_in.description,
-            welding_configuration_id=obj_in.welding_configuration_id,
+            project_id=obj_in.project_id,
             robot_id=obj_in.robot_id,
             welding_order=obj_in.welding_order,
             x=obj_in.x,
