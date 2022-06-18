@@ -7,6 +7,7 @@ alembic
 asyncpg
 greenlet
 bson
+psycopg
 psycopg2
 Jinja2
 pytest
