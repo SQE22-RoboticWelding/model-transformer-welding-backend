@@ -16,6 +16,7 @@ class CRUDWeldingPoint(CRUDBase[WeldingPoint, WeldingPointCreate, WeldingPointUp
             project_id=obj_in.project_id,
             robot_id=obj_in.robot_id,
             welding_order=obj_in.welding_order,
+            name=obj_in.name,
             x=obj_in.x,
             y=obj_in.y,
             z=obj_in.z,
