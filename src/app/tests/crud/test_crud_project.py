@@ -35,3 +35,13 @@ async def test_crud_project_update(database: AsyncSession):
 
     await project.update(db=database, db_obj=project_obj, obj_in=ProjectUpdate(name="modified again"))
     assert project_obj.name == "modified again"
+
+
+async def test_crud_project_delete(database: AsyncSession):
+    project_obj = await create_project(db=database)
+
+    result = await project.remove(db=database, obj=project_obj)
+    assert isinstance(result, Project)
+
+    result = await project.get(db=database, id=project_obj.id)
+    assert result is None
