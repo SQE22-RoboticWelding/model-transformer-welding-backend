@@ -1,10 +1,14 @@
 from datetime import datetime
+
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.tests.utils.models import create_project
+from app.crud.crud_project import project
+from testdata.getter import get_file
+from testdata.validation import validate_project_file_welding_points
 
 pytestmark = pytest.mark.asyncio
 
@@ -51,3 +55,17 @@ async def test_delete_project(client: AsyncClient, database: AsyncSession):
     await client.delete(f"{settings.API_V1_STR}/project/:id?_id={project_obj.id}")
     response = await client.get(f"{settings.API_V1_STR}/project/:id?_id={project_obj.id}")
     assert response.status_code == 404
+
+
+async def test_upload_project(client: AsyncClient, database: AsyncSession):
+    file = get_file(filename="project_file.xlsx")
+
+    response = await client.post(f"{settings.API_V1_STR}/project/upload?name=testproject", files={'file': file})
+    assert response.status_code == 200
+
+    content = response.json()
+    assert "id" in content
+    assert content["name"] == "testproject"
+
+    project_obj = await project.get_by_id(db=database, id=content["id"])
+    validate_project_file_welding_points(project_obj.welding_points)

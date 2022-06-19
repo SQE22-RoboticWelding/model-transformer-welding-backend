@@ -1,9 +1,10 @@
-from typing import List
+from typing import List, Union
 
+from app.models.welding_point import WeldingPoint
 from app.schemas.welding_point import WeldingPointCreate
 
 
-def validate_project_file_welding_points(welding_points: List[WeldingPointCreate]) -> None:
+def validate_project_file_welding_points(welding_points: Union[List[WeldingPoint], List[WeldingPointCreate]]) -> None:
     assert welding_points[0].name == "P1"
     assert welding_points[1].name == "P2"
 
