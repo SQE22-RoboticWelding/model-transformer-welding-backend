@@ -36,3 +36,13 @@ async def test_crud_generation_template_update(database: AsyncSession):
     await generation_template.update(db=database, db_obj=generation_template_obj,
                                      obj_in=GenerationTemplateUpdate(name="modified again"))
     assert generation_template_obj.name == "modified again"
+
+
+async def test_crud_generation_template_delete(database: AsyncSession):
+    generation_template_obj = await create_generation_template(db=database)
+
+    result = await generation_template.remove(db=database, obj=generation_template_obj)
+    assert isinstance(result, GenerationTemplate)
+
+    result = await generation_template.get(db=database, id=generation_template_obj.id)
+    assert result is None
