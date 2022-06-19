@@ -41,10 +41,22 @@ async def create_robot(db: AsyncSession, robot_type_obj: RobotType) -> Robot:
     return await robot.create(db=db, obj_in=robot_in)
 
 
-async def create_welding_point(db: AsyncSession,
-                               project_obj: Project,
-                               welding_order_in: int = 0) -> WeldingPoint:
-    welding_point_in = WeldingPointCreate(
+async def create_welding_point(db: AsyncSession, project_obj: Project, welding_order_in: int = 0) -> WeldingPoint:
+    welding_point_in = get_welding_point_create(project_obj=project_obj, welding_order_in=welding_order_in)
+    return await welding_point.create(db=db, obj_in=welding_point_in)
+
+
+async def create_generation_template(db: AsyncSession) -> GenerationTemplate:
+    generation_template_in = GenerationTemplateCreate(
+        name=random_string(),
+        description=random_string(),
+        content=get_example_template()
+    )
+    return await generation_template.create(db=db, obj_in=generation_template_in)
+
+
+def get_welding_point_create(project_obj: Project, welding_order_in: int = 0) -> WeldingPointCreate:
+    return WeldingPointCreate(
         project_id=project_obj.id,
         welding_order=welding_order_in,
         name=random_string(),
@@ -57,13 +69,3 @@ async def create_welding_point(db: AsyncSession,
         yaw=random_float(),
         tolerance=random_float(negative=False)
     )
-    return await welding_point.create(db=db, obj_in=welding_point_in)
-
-
-async def create_generation_template(db: AsyncSession) -> GenerationTemplate:
-    generation_template_in = GenerationTemplateCreate(
-        name=random_string(),
-        description=random_string(),
-        content=get_example_template()
-    )
-    return await generation_template.create(db=db, obj_in=generation_template_in)
