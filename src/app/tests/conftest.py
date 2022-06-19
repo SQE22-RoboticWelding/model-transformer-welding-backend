@@ -1,4 +1,5 @@
 import pytest
+import pytest_asyncio
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
@@ -9,8 +10,8 @@ from app.db.base_class import Base
 from app.main import app
 
 
-@pytest.fixture(scope="function")
-def database(postgresql):
+@pytest_asyncio.fixture(scope="function")
+async def database(postgresql):
     connection_sync = f"postgresql+psycopg2://{postgresql.info.user}:@{postgresql.info.host}:" \
                       f"{postgresql.info.port}/{postgresql.info.dbname}"
     connection_async = f'postgresql+asyncpg://{postgresql.info.user}:@{postgresql.info.host}:' \
@@ -23,7 +24,11 @@ def database(postgresql):
     Base.metadata.create_all(bind=engine_sync)
 
     sessionmaker_async = sessionmaker(autocommit=False, autoflush=False, bind=engine_async, class_=AsyncSession)
-    yield sessionmaker_async()
+    session_async = sessionmaker_async()
+    try:
+        yield session_async
+    finally:
+        await session_async.close()
 
 
 @pytest.fixture(scope="function")
@@ -31,11 +36,8 @@ def client(database):
     db = database
     client = AsyncClient(app=app, base_url="http://localhost")
 
-    async def override_get_db():
-        try:
-            yield db
-        finally:
-            await db.close()
+    def override_get_db():
+        yield db
     app.dependency_overrides[get_async_db] = override_get_db
 
     yield client
