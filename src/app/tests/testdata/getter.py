@@ -9,7 +9,7 @@ content_types = {"excel": "application/vnd.openxmlformats-officedocument.spreads
 
 
 def get_upload_file(filename: str, content_type: str) -> UploadFile:
-    file = open(f"{__path_to_testdata}/{filename}", mode="rb")
+    file = get_file(filename=filename)
     return UploadFile(filename=file.name,
                       file=file,
                       content_type=content_type)
