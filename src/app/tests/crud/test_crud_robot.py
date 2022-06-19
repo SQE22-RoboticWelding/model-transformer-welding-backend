@@ -53,3 +53,14 @@ async def test_crud_robot_update(database: AsyncSession):
 
     await robot.update(db=database, db_obj=robot_obj, obj_in=RobotUpdate(description="modified again"))
     assert robot_obj.description == "modified again"
+
+
+async def test_crud_robot_delete(database: AsyncSession):
+    robot_type_obj = await create_robot_type(db=database)
+    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj)
+
+    result = await robot.remove(db=database, obj=robot_obj)
+    assert isinstance(result, Robot)
+
+    result = await robot.get(db=database, id=robot_obj.id)
+    assert result is None
