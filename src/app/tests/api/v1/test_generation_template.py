@@ -40,7 +40,6 @@ async def test_update_generation_template(client: AsyncClient, database: AsyncSe
     data = {"content": "modified"}
     response = await client.put(f"{settings.API_V1_STR}/generationtemplate/:id?_id={generation_template_obj.id}",
                                 json=data)
-    print(response.content)
     assert response.status_code == 200
 
     content = response.json()
