@@ -27,6 +27,8 @@ async def test_create_robot(client: AsyncClient, database: AsyncSession):
     assert content["description"] == data["description"]
     assert content["robot_type_id"] == data["robot_type_id"]
 
+    assert (await robot.get(db=database, id=content["id"])) is not None
+
 
 async def test_read_robot(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database)

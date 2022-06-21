@@ -57,6 +57,8 @@ async def test_create_welding_point(client: AsyncClient, database: AsyncSession)
     assert content["pitch"] == data["pitch"]
     assert content["yaw"] == data["yaw"]
 
+    assert (await welding_point.get(db=database, id=content["id"])) is not None
+
 
 async def test_read_welding_point(client: AsyncClient, database: AsyncSession):
     project_obj = await create_project(db=database)

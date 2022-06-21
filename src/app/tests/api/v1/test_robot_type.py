@@ -9,7 +9,7 @@ from app.tests.utils.models import create_robot_type
 pytestmark = pytest.mark.asyncio
 
 
-async def test_create_robot_type(client: AsyncClient):
+async def test_create_robot_type(client: AsyncClient, database: AsyncSession):
     data = {"name": "Niryo Ten", "vendor": "Niryo", "capacity_load_kg": 10.512, "range_m": 5120}
     response = await client.post(f"{settings.API_V1_STR}/robottype/", json=data)
     assert response.status_code == 200
@@ -20,6 +20,8 @@ async def test_create_robot_type(client: AsyncClient):
     assert content["capacity_load_kg"] == data["capacity_load_kg"]
     assert content["range_m"] == data["range_m"]
     assert "id" in content
+
+    assert (await robot_type.get(db=database, id=content["id"])) is not None
 
 
 async def test_read_robot_type(client: AsyncClient, database: AsyncSession):

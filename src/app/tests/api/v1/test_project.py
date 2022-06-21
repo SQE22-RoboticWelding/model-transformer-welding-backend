@@ -14,7 +14,7 @@ from testdata.validation import validate_project_file_welding_points
 pytestmark = pytest.mark.asyncio
 
 
-async def test_create_project(client: AsyncClient):
+async def test_create_project(client: AsyncClient, database: AsyncSession):
     data = {"name": "Test", "description": "Test description"}
     response = await client.post(f"{settings.API_V1_STR}/project/", json=data)
     assert response.status_code == 200
@@ -25,6 +25,8 @@ async def test_create_project(client: AsyncClient):
     assert "id" in content
     assert "created_at" in content
     assert "modified_at" in content
+
+    assert (await project.get(db=database, id=content["id"])) is not None
 
 
 async def test_read_project(client: AsyncClient, database: AsyncSession):

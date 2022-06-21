@@ -1,19 +1,18 @@
 from datetime import datetime
 
 import pytest
-from fastapi.encoders import jsonable_encoder
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.crud.crud_generation_template import generation_template
 from app.crud.crud_robot_type import robot_type
-from app.models.robot_type import RobotType
 from app.tests.utils.models import get_example_template, create_generation_template
 
 pytestmark = pytest.mark.asyncio
 
 
-async def test_create_generation_template(client: AsyncClient):
+async def test_create_generation_template(client: AsyncClient, database: AsyncSession):
     data = {
         "name": "Test template",
         "description": "Test template description",
@@ -27,6 +26,8 @@ async def test_create_generation_template(client: AsyncClient):
     assert content["name"] == data["name"]
     assert content["description"] == data["description"]
     assert content["content"] == data["content"]
+
+    assert (await generation_template.get(db=database, id=content["id"])) is not None
 
 
 async def test_read_generation_template(client: AsyncClient, database: AsyncSession):
