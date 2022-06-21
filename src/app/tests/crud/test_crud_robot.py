@@ -11,7 +11,7 @@ from app.tests.utils.models import create_robot, create_robot_type
 pytestmark = pytest.mark.asyncio
 
 
-async def test_crud_robot_create_fail(database: AsyncSession):
+async def test_crud_robot_create_integrity_fail(database: AsyncSession):
     robot_type_obj = RobotType(id=1, name="Test")
     try:
         await create_robot(db=database, robot_type_obj=robot_type_obj)
@@ -24,16 +24,16 @@ async def test_crud_robot_create(database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database)
 
     robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj)
-    assert robot_obj is not None
-    assert isinstance(robot_obj, Robot)
+    robot_obj_get = await robot.get(db=database, id=robot_obj.id)
+    assert robot_obj.as_dict() == robot_obj_get.as_dict()
 
 
 async def test_crud_robot_get(database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database)
 
     robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj)
-    tmp = await robot.get_by_id(db=database, id=robot_obj.id)
-    assert robot_obj.__eq__(tmp)
+    robot_obj_get = await robot.get_by_id(db=database, id=robot_obj.id)
+    assert robot_obj.__eq__(robot_obj_get)
 
 
 async def test_crud_robot_get_multi(database: AsyncSession):
@@ -60,7 +60,7 @@ async def test_crud_robot_delete(database: AsyncSession):
     robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj)
 
     result = await robot.remove(db=database, obj=robot_obj)
-    assert isinstance(result, Robot)
+    assert robot_obj.as_dict() == result.as_dict()
 
     result = await robot.get(db=database, id=robot_obj.id)
     assert result is None

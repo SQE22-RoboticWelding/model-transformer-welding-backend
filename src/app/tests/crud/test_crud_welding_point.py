@@ -13,7 +13,7 @@ from app.tests.utils.models import create_welding_point, create_project, get_wel
 pytestmark = pytest.mark.asyncio
 
 
-async def test_crud_welding_point_create_fail(database: AsyncSession):
+async def test_crud_welding_point_create_integrity_fail(database: AsyncSession):
     project_obj = Project(id=1, name="Test")
     try:
         await create_welding_point(db=database, project_obj=project_obj)
@@ -26,8 +26,8 @@ async def test_crud_welding_point_create(database: AsyncSession):
     project_obj = await create_project(db=database)
 
     welding_point_obj = await create_welding_point(db=database, project_obj=project_obj)
-    assert welding_point_obj is not None
-    assert isinstance(welding_point_obj, WeldingPoint)
+    welding_point_obj_get = await welding_point.get(db=database, id=welding_point_obj.id)
+    assert welding_point_obj.as_dict() == welding_point_obj_get.as_dict()
 
 
 async def test_crud_welding_point_create_multi(database: AsyncSession):
@@ -45,8 +45,8 @@ async def test_crud_welding_point_get(database: AsyncSession):
     project_obj = await create_project(db=database)
 
     welding_point_obj = await create_welding_point(db=database, project_obj=project_obj)
-    tmp = await welding_point.get_by_id(db=database, id=welding_point_obj.id)
-    assert welding_point_obj.__eq__(tmp)
+    welding_point_obj_get = await welding_point.get_by_id(db=database, id=welding_point_obj.id)
+    assert welding_point_obj.__eq__(welding_point_obj_get)
 
 
 async def test_crud_welding_point_get_multi(database: AsyncSession):
@@ -73,7 +73,7 @@ async def test_crud_welding_point_delete(database: AsyncSession):
     welding_point_obj = await create_welding_point(db=database, project_obj=project_obj)
 
     result = await welding_point.remove(db=database, obj=welding_point_obj)
-    assert isinstance(result, WeldingPoint)
+    assert welding_point_obj.as_dict() == result.as_dict()
 
     result = await welding_point.get(db=database, id=welding_point_obj.id)
     assert result is None

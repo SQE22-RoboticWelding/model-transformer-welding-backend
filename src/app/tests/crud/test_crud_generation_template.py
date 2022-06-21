@@ -11,14 +11,14 @@ pytestmark = pytest.mark.asyncio
 
 async def test_crud_generation_template_create(database: AsyncSession):
     generation_template_obj = await create_generation_template(db=database)
-    assert generation_template_obj is not None
-    assert isinstance(generation_template_obj, GenerationTemplate)
+    generation_template_obj_get = await generation_template.get(db=database, id=generation_template_obj.id)
+    assert generation_template_obj.as_dict() == generation_template_obj_get.as_dict()
 
 
 async def test_crud_generation_template_get(database: AsyncSession):
     generation_template_obj = await create_generation_template(db=database)
-    tmp = await generation_template.get_by_id(db=database, id=generation_template_obj.id)
-    assert generation_template_obj.__eq__(tmp)
+    generation_template_obj_get = await generation_template.get_by_id(db=database, id=generation_template_obj.id)
+    assert generation_template_obj.__eq__(generation_template_obj_get)
 
 
 async def test_crud_generation_template_get_multi(database: AsyncSession):
@@ -42,7 +42,7 @@ async def test_crud_generation_template_delete(database: AsyncSession):
     generation_template_obj = await create_generation_template(db=database)
 
     result = await generation_template.remove(db=database, obj=generation_template_obj)
-    assert isinstance(result, GenerationTemplate)
+    assert generation_template_obj.as_dict() == result.as_dict()
 
     result = await generation_template.get(db=database, id=generation_template_obj.id)
     assert result is None

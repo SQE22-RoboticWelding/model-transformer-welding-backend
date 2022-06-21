@@ -11,14 +11,14 @@ pytestmark = pytest.mark.asyncio
 
 async def test_crud_project_create(database: AsyncSession):
     project_obj = await create_project(db=database)
-    assert project_obj is not None
-    assert isinstance(project_obj, Project)
+    project_obj_get = await project.get(db=database, id=project_obj.id)
+    assert project_obj.as_dict() == project_obj_get.as_dict()
 
 
 async def test_crud_project_get(database: AsyncSession):
     project_obj = await create_project(db=database)
-    tmp = await project.get_by_id(db=database, id=project_obj.id)
-    assert project_obj.__eq__(tmp)
+    project_obj_get = await project.get_by_id(db=database, id=project_obj.id)
+    assert project_obj.__eq__(project_obj_get)
 
 
 async def test_crud_project_get_multi(database: AsyncSession):
@@ -41,7 +41,7 @@ async def test_crud_project_delete(database: AsyncSession):
     project_obj = await create_project(db=database)
 
     result = await project.remove(db=database, obj=project_obj)
-    assert isinstance(result, Project)
+    assert project_obj.as_dict() == result.as_dict()
 
     result = await project.get(db=database, id=project_obj.id)
     assert result is None
