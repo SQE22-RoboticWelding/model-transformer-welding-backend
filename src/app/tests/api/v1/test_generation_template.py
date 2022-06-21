@@ -62,7 +62,9 @@ async def test_update_generation_template(client: AsyncClient, database: AsyncSe
 
 async def test_delete_robot_type(client: AsyncClient, database: AsyncSession):
     generation_template_obj = await create_generation_template(db=database)
-    response_delete = await client.delete(f"{settings.API_V1_STR}/generationtemplate/:id?_id={generation_template_obj.id}")
+    response_delete = await client\
+        .delete(f"{settings.API_V1_STR}/generationtemplate/:id?_id={generation_template_obj.id}")
+    assert response_delete.status_code == 200
     content = response_delete.json()
 
     # No dict comparison, as created_at and modified_at is stored as datetime in pydantic Project object and not as

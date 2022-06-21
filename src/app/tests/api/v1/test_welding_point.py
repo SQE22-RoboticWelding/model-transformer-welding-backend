@@ -106,5 +106,7 @@ async def test_delete_welding_point(client: AsyncClient, database: AsyncSession)
 
     welding_point_obj = await create_welding_point(db=database, project_obj=project_obj)
     response_delete = await client.delete(f"{settings.API_V1_STR}/weldingpoint/:id?_id={welding_point_obj.id}")
+    assert response_delete.status_code == 200
+
     assert welding_point_obj.as_dict() == response_delete.json()
     assert len(await welding_point.get_multi(db=database)) == 0

@@ -61,6 +61,7 @@ async def test_update_project(client: AsyncClient, database: AsyncSession):
 async def test_delete_project(client: AsyncClient, database: AsyncSession):
     project_obj = await create_project(db=database)
     response_delete = await client.delete(f"{settings.API_V1_STR}/project/:id?_id={project_obj.id}")
+    assert response_delete.status_code == 200
     content = response_delete.json()
 
     # No dict comparison, as created_at and modified_at is stored as datetime in pydantic Project object and not as
