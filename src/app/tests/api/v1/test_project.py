@@ -52,9 +52,18 @@ async def test_update_project(client: AsyncClient, database: AsyncSession):
 
 async def test_delete_project(client: AsyncClient, database: AsyncSession):
     project_obj = await create_project(db=database)
-    await client.delete(f"{settings.API_V1_STR}/project/:id?_id={project_obj.id}")
-    response = await client.get(f"{settings.API_V1_STR}/project/:id?_id={project_obj.id}")
-    assert response.status_code == 404
+    response_delete = await client.delete(f"{settings.API_V1_STR}/project/:id?_id={project_obj.id}")
+    content = response_delete.json()
+
+    # No dict comparison, as created_at and modified_at is stored as datetime in pydantic Project object and not as
+    # string as in the response
+    assert content["id"] == project_obj.id
+    assert content["name"] == project_obj.name
+    assert content["description"] == project_obj.description
+    assert datetime.fromisoformat(content["created_at"]) == project_obj.created_at
+    assert datetime.fromisoformat(content["modified_at"]) == project_obj.modified_at
+
+    assert (await project.get(db=database, id=project_obj.id)) is None
 
 
 async def test_upload_project(client: AsyncClient, database: AsyncSession):

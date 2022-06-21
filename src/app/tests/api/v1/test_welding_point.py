@@ -97,9 +97,6 @@ async def test_delete_welding_point(client: AsyncClient, database: AsyncSession)
     project_obj = await create_project(db=database)
 
     welding_point_obj = await create_welding_point(db=database, project_obj=project_obj)
-    await client.delete(f"{settings.API_V1_STR}/weldingpoint/:id?_id={welding_point_obj.id}")
-    response = await client.get(f"{settings.API_V1_STR}/weldingpoint/{welding_point_obj.project_id}")
-    assert response.status_code == 200
-
-    # GET endpoint returns a list of welding points associated to a project
-    assert len(response.json()) == 0
+    response_delete = await client.delete(f"{settings.API_V1_STR}/weldingpoint/:id?_id={welding_point_obj.id}")
+    assert welding_point_obj.as_dict() == response_delete.json()
+    assert len(await welding_point.get_multi(db=database)) == 0

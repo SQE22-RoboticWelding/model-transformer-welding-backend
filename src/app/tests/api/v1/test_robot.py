@@ -57,6 +57,7 @@ async def test_delete_robot(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database)
 
     robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj)
-    await client.delete(f"{settings.API_V1_STR}/robot/:id?_id={robot_obj.id}")
-    response = await client.get(f"{settings.API_V1_STR}/robot/:id?_id={robot_obj.id}")
-    assert response.status_code == 404
+    response_delete = await client.delete(f"{settings.API_V1_STR}/robot/:id?_id={robot_obj.id}")
+    assert robot_obj.as_dict() == response_delete.json()
+
+    assert (await robot.get(db=database, id=robot_obj.id)) is None
