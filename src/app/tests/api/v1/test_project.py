@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+from fastapi.encoders import jsonable_encoder
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -37,6 +38,11 @@ async def test_read_project(client: AsyncClient, database: AsyncSession):
     assert content["description"] == project_obj.description
     assert datetime.fromisoformat(content["created_at"]) == project_obj.created_at
     assert datetime.fromisoformat(content["modified_at"]) == project_obj.modified_at
+
+
+async def test_read_project_not_found(client: AsyncClient):
+    response_get = await client.get(f"{settings.API_V1_STR}/project/:id?_id=1")
+    assert response_get.status_code == 404
 
 
 async def test_update_project(client: AsyncClient, database: AsyncSession):

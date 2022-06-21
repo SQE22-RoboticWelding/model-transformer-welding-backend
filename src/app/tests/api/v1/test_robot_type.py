@@ -3,6 +3,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.crud.crud_robot_type import robot_type
 from app.tests.utils.models import create_robot_type
 
 pytestmark = pytest.mark.asyncio
@@ -32,6 +33,11 @@ async def test_read_robot_type(client: AsyncClient, database: AsyncSession):
     assert content["vendor"] == robot_type_obj.vendor
     assert content["capacity_load_kg"] == robot_type_obj.capacity_load_kg
     assert content["range_m"] == robot_type_obj.range_m
+
+
+async def test_read_robot_type_not_found(client: AsyncClient):
+    response_get = await client.get(f"{settings.API_V1_STR}/robottype/:id?_id=1")
+    assert response_get.status_code == 404
 
 
 async def test_update_robot_type(client: AsyncClient, database: AsyncSession):

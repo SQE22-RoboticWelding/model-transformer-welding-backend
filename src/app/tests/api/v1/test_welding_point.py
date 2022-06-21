@@ -3,12 +3,13 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.crud.crud_welding_point import welding_point
 from app.tests.utils.models import create_project, create_welding_point
 
 pytestmark = pytest.mark.asyncio
 
 
-async def test_create_welding_point_fail(client: AsyncClient, database: AsyncSession):
+async def test_create_welding_point_integrity_fail(client: AsyncClient, database: AsyncSession):
     data = {
         "project_id": 1,
         "welding_order": 1,
@@ -77,6 +78,11 @@ async def test_read_welding_point(client: AsyncClient, database: AsyncSession):
     assert content["roll"] == welding_point_obj.roll
     assert content["pitch"] == welding_point_obj.pitch
     assert content["yaw"] == welding_point_obj.yaw
+
+
+async def test_read_welding_point_not_found(client: AsyncClient):
+    response = await client.get(f"{settings.API_V1_STR}/weldingpoint/1")
+    assert response.status_code == 404
 
 
 async def test_update_welding_point(client: AsyncClient, database: AsyncSession):
