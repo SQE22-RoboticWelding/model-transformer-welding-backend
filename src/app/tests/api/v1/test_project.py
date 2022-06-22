@@ -25,7 +25,9 @@ async def test_create_project(client: AsyncClient, database: AsyncSession):
     assert "created_at" in content
     assert "modified_at" in content
 
-    assert (await project.get(db=database, id=content["id"])) is not None
+    project_get = await project.get(db=database, id=content["id"])
+    assert project_get.name == content["name"]
+    assert project_get.description == content["description"]
 
 
 async def test_read_project(client: AsyncClient, database: AsyncSession):
@@ -55,6 +57,12 @@ async def test_update_project(client: AsyncClient, database: AsyncSession):
     content = response.json()
     assert content["id"] == project_obj.id
     assert content["description"] == "modified"
+
+    project_obj_get = await project.get(db=database, id=project_obj.id)
+    assert project_obj_get.description == content["description"]
+    assert project_obj_get.name == project_obj.name
+    assert project_obj_get.created_at == project_obj.created_at
+    assert project_obj_get.modified_at >= project_obj.modified_at
 
 
 async def test_delete_project(client: AsyncClient, database: AsyncSession):

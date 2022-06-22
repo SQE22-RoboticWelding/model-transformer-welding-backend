@@ -57,7 +57,7 @@ async def test_create_welding_point(client: AsyncClient, database: AsyncSession)
     assert content["pitch"] == data["pitch"]
     assert content["yaw"] == data["yaw"]
 
-    assert (await welding_point.get(db=database, id=content["id"])) is not None
+    assert (await welding_point.get(db=database, id=content["id"])).as_dict() == content
 
 
 async def test_read_welding_point(client: AsyncClient, database: AsyncSession):
@@ -99,6 +99,10 @@ async def test_update_welding_point(client: AsyncClient, database: AsyncSession)
     assert content["id"] == welding_point_obj.id
     assert content["x"] == data["x"]
     assert content["y"] == data["y"]
+
+    welding_point_obj.x = data["x"]
+    welding_point_obj.y = data["y"]
+    assert (await welding_point.get(db=database, id=welding_point_obj.id)).as_dict() == welding_point_obj.as_dict()
 
 
 async def test_delete_welding_point(client: AsyncClient, database: AsyncSession):

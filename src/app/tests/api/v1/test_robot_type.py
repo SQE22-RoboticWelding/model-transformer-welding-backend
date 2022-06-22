@@ -21,7 +21,7 @@ async def test_create_robot_type(client: AsyncClient, database: AsyncSession):
     assert content["range_m"] == data["range_m"]
     assert "id" in content
 
-    assert (await robot_type.get(db=database, id=content["id"])) is not None
+    assert (await robot_type.get(db=database, id=content["id"])).as_dict() == content
 
 
 async def test_read_robot_type(client: AsyncClient, database: AsyncSession):
@@ -52,6 +52,10 @@ async def test_update_robot_type(client: AsyncClient, database: AsyncSession):
     assert content["id"] == robot_type_obj.id
     assert content["name"] == data["name"]
     assert content["range_m"] == data["range_m"]
+
+    robot_type_obj.name = data["name"]
+    robot_type_obj.range_m = data["range_m"]
+    assert (await robot_type.get(db=database, id=robot_type_obj.id)).as_dict() == robot_type_obj.as_dict()
 
 
 async def test_delete_robot_type(client: AsyncClient, database: AsyncSession):
