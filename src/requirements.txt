@@ -11,6 +11,7 @@ psycopg
 psycopg2
 Jinja2
 pytest
+pytest-randomly
 pytest-postgresql
 pytest-asyncio
 python-multipart
