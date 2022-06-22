@@ -22,7 +22,12 @@ async def create_project(db: AsyncSession) -> Project:
     project_in = ProjectCreate(
         name=random_string(),
         description=random_string())
-    return await project.create(db=db, obj_in=project_in)
+
+    project_obj = await project.create(db=db, obj_in=project_in)
+    assert project_obj.name == project_in.name
+    assert project_obj.description == project_in.description
+
+    return project_obj
 
 
 async def create_robot_type(db: AsyncSession) -> RobotType:
@@ -31,19 +36,44 @@ async def create_robot_type(db: AsyncSession) -> RobotType:
         vendor=random_string(),
         capacity_load_kg=random_float(),
         range_m=random_float())
-    return await robot_type.create(db=db, obj_in=robot_type_in)
+
+    robot_type_obj = await robot_type.create(db=db, obj_in=robot_type_in)
+    assert robot_type_obj.name == robot_type_in.name
+    assert robot_type_obj.vendor == robot_type_in.vendor
+    assert robot_type_obj.capacity_load_kg == robot_type_in.capacity_load_kg
+    assert robot_type_obj.range_m == robot_type_in.range_m
+
+    return robot_type_obj
 
 
 async def create_robot(db: AsyncSession, robot_type_obj: RobotType) -> Robot:
     robot_in = RobotCreate(
         robot_type_id=robot_type_obj.id,
         description=random_string())
-    return await robot.create(db=db, obj_in=robot_in)
+
+    robot_obj = await robot.create(db=db, obj_in=robot_in)
+    assert robot_obj.robot_type_id == robot_in.robot_type_id
+    assert robot_obj.description == robot_in.description
+
+    return robot_obj
 
 
 async def create_welding_point(db: AsyncSession, project_obj: Project, welding_order_in: int = 0) -> WeldingPoint:
     welding_point_in = get_welding_point_create(project_obj=project_obj, welding_order_in=welding_order_in)
-    return await welding_point.create(db=db, obj_in=welding_point_in)
+
+    welding_point_obj = await welding_point.create(db=db, obj_in=welding_point_in)
+    assert welding_point_obj.project_id == welding_point_in.project_id
+    assert welding_point_obj.welding_order == welding_point_in.welding_order
+    assert welding_point_obj.name == welding_point_in.name
+    assert welding_point_obj.description == welding_point_in.description
+    assert welding_point_obj.x == welding_point_in.x
+    assert welding_point_obj.y == welding_point_in.y
+    assert welding_point_obj.z == welding_point_in.z
+    assert welding_point_obj.roll == welding_point_in.roll
+    assert welding_point_obj.pitch == welding_point_in.pitch
+    assert welding_point_obj.yaw == welding_point_in.yaw
+
+    return welding_point_obj
 
 
 async def create_generation_template(db: AsyncSession) -> GenerationTemplate:
@@ -52,7 +82,13 @@ async def create_generation_template(db: AsyncSession) -> GenerationTemplate:
         description=random_string(),
         content=get_example_template()
     )
-    return await generation_template.create(db=db, obj_in=generation_template_in)
+
+    generation_template_obj = await generation_template.create(db=db, obj_in=generation_template_in)
+    assert generation_template_obj.name == generation_template_in.name
+    assert generation_template_obj.description == generation_template_in.description
+    assert generation_template_obj.content == generation_template_in.content
+
+    return generation_template_obj
 
 
 def get_welding_point_create(project_obj: Project, welding_order_in: int = 0) -> WeldingPointCreate:
