@@ -2,9 +2,8 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.robot_type import RobotType
-from app.models.robot import Robot
 from app.crud.crud_robot import robot
+from app.models.robot_type import RobotType
 from app.schemas.robot import RobotUpdate
 from app.tests.utils.models import create_robot, create_robot_type
 

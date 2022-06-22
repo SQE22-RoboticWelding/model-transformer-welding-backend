@@ -1,7 +1,6 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.generation_template import GenerationTemplate
 from app.crud.crud_generation_template import generation_template
 from app.schemas.generation_template import GenerationTemplateUpdate
 from app.tests.utils.models import create_generation_template

@@ -1,7 +1,6 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.robot_type import RobotType
 from app.crud.crud_robot_type import robot_type
 from app.schemas.robot_type import RobotTypeUpdate
 from app.tests.utils.models import create_robot_type

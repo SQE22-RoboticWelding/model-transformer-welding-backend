@@ -9,7 +9,7 @@ from app.tests.utils.models import create_project, create_welding_point
 pytestmark = pytest.mark.asyncio
 
 
-async def test_create_welding_point_integrity_fail(client: AsyncClient, database: AsyncSession):
+async def test_create_welding_point_integrity_fail(client: AsyncClient):
     data = {
         "project_id": 1,
         "welding_order": 1,

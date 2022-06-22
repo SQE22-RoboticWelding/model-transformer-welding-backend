@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import pytest
-from fastapi.encoders import jsonable_encoder
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 

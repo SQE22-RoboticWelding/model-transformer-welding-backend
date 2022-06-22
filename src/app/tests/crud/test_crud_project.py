@@ -1,7 +1,6 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.project import Project
 from app.crud.crud_project import project
 from app.schemas.project import ProjectUpdate
 from app.tests.utils.models import create_project

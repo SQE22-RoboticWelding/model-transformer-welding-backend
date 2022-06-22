@@ -1,10 +1,8 @@
 import pytest
-import sqlalchemy
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.project import Project
-from app.models.welding_point import WeldingPoint
 from app.crud.crud_welding_point import welding_point
 from app.crud.crud_project import project
 from app.schemas.welding_point import WeldingPointUpdate
