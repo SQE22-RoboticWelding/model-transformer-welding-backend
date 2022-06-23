@@ -7,10 +7,14 @@ alembic
 asyncpg
 greenlet
 bson
+psycopg
 psycopg2
 Jinja2
 pytest
-testing.postgresql
+pytest-randomly
+pytest-postgresql
+pytest-asyncio
 python-multipart
 pandas
 openpyxl
+httpx

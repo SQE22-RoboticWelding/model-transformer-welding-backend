@@ -23,10 +23,10 @@ class GenerationTemplateBase(BaseModel):
 
 class GenerationTemplateCreate(GenerationTemplateBase):
     id: Optional[int]
-    pass
 
 
 class GenerationTemplateUpdate(GenerationTemplateBase):
+    id: Optional[int]
     name: Optional[str]
     description: Optional[str]
     content: Optional[str]
