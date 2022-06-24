@@ -9,7 +9,7 @@ from app.schemas.robot import *
 router = APIRouterWithGenericExceptionHandler()
 
 
-@router.get("/", response_model=List[Robot])
+@router.get("/", response_model=List[RobotWithType])
 async def read_robots(
         db: AsyncSession = Depends(deps.get_async_db),
         skip: int = 0,
@@ -18,11 +18,13 @@ async def read_robots(
     """
     Retrieve multiple robots
     """
-    result = await robot.get_multi(db=db, skip=skip, limit=limit)
-    return result
+    robots = await robot.get_multi(db=db, skip=skip, limit=limit)
+
+    robots_with_type = [RobotWithType.factory(obj, obj.robot_type) for obj in robots]
+    return robots_with_type
 
 
-@router.get("/{id}", response_model=Robot)
+@router.get("/{id}", response_model=RobotWithType)
 async def read_robot(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
@@ -31,10 +33,11 @@ async def read_robot(
     """
     Retrieve robot by ID
     """
-    result = await robot.get_by_id(db=db, id=_id)
-    if not result:
+    robot_obj = await robot.get_by_id(db=db, id=_id)
+    if not robot_obj:
         raise HTTPException(status_code=404, detail="Robot not found")
-    return result
+
+    return RobotWithType.factory(robot_obj, robot_obj.robot_type)
 
 
 @router.post("/", response_description="Add new robot", response_model=Robot)

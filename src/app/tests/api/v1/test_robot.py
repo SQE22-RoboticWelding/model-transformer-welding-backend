@@ -41,6 +41,7 @@ async def test_read_robot(client: AsyncClient, database: AsyncSession):
     assert content["id"] == robot_obj.id
     assert content["description"] == robot_obj.description
     assert content["robot_type_id"] == robot_obj.robot_type_id
+    assert content["robot_type"] == robot_type_obj.as_dict()
 
 
 async def test_read_robot_not_found(client: AsyncClient):
