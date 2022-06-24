@@ -39,11 +39,12 @@ async def read_project(
 
 
 @router.post("/upload", response_description="Upload file to create a new project",
-             response_model=Project)
+             response_model=ProjectWithData)
 async def upload_project(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
         name: str,
+        description: Optional[str] = None,
         file: UploadFile
 ) -> Any:
     """
@@ -59,18 +60,18 @@ async def upload_project(
         raise HTTPException(status_code=415, detail=parse_result.detail)
 
     # Create new project
-    project_create = ProjectCreate(name=name)
+    project_create = ProjectCreate(name=name, description=description)
     project_obj = await project.create(db=db, obj_in=project_create)
     if project_obj is None:
         raise HTTPException(status_code=500, detail="Could not create new project")
 
     # Create welding points
-    result = await welding_point.create_multi(
+    welding_points = await welding_point.create_multi(
         db=db, obj_in=parser.get_welding_points(project=project_obj))
-    if result is None:
-        raise HTTPException(status_code=500, detail="Could not create welding point")
+    if welding_points is None:
+        raise HTTPException(status_code=500, detail="Could not create welding points")
 
-    return project_obj
+    return ProjectWithData.factory(project_obj, welding_points)
 
 
 @router.post("/", response_description="Add new project", response_model=Project)

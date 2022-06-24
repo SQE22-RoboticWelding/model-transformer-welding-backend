@@ -1,6 +1,8 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 from pydantic.schema import datetime
+
+from app.schemas.welding_point import WeldingPointBase
 
 
 class ProjectBase(BaseModel):
@@ -24,6 +26,16 @@ class ProjectCreate(ProjectBase):
 class ProjectUpdate(ProjectBase):
     id: Optional[int]
     name: Optional[str]
+
+
+class ProjectWithData(ProjectBase):
+    welding_points: List[WeldingPointBase]
+
+    @staticmethod
+    def factory(project: ProjectBase, welding_points: List[WeldingPointBase]):
+        dict_obj = project.as_dict()
+        dict_obj["welding_points"] = [obj.as_dict() for obj in welding_points]
+        return ProjectWithData(**dict_obj)
 
 
 # Properties shared by models stored in DB
