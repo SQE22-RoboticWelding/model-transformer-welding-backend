@@ -44,6 +44,7 @@ async def upload_project(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
         name: str,
+        description: Optional[str] = None,
         file: UploadFile
 ) -> Any:
     """
@@ -59,7 +60,7 @@ async def upload_project(
         raise HTTPException(status_code=415, detail=parse_result.detail)
 
     # Create new project
-    project_create = ProjectCreate(name=name)
+    project_create = ProjectCreate(name=name, description=description)
     project_obj = await project.create(db=db, obj_in=project_create)
     if project_obj is None:
         raise HTTPException(status_code=500, detail="Could not create new project")
