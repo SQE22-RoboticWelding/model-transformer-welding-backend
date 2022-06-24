@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.api_v1.api import api_router
-from app.db.init_db import init_db
+from app.db.init_db import init_db_by_migrations
 
 
 app = FastAPI(
@@ -20,7 +20,7 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.on_event("startup")
 async def startup_event():
-    init_db()
+    init_db_by_migrations(settings.DATABASE_URL_SYNC)
     print("startup")
 
 

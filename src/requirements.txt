@@ -18,3 +18,4 @@ python-multipart
 pandas
 openpyxl
 httpx
+sqlalchemy-diff
