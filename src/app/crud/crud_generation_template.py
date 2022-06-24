@@ -39,6 +39,7 @@ class CRUDGenerationTemplate(CRUDBase[GenerationTemplate, GenerationTemplateCrea
     ) -> List[GenerationTemplate]:
         result = await db.execute(
             select(self.model)
+            .filter(GenerationTemplate.is_deleted == False)
             .offset(skip)
             .limit(limit)
         )
