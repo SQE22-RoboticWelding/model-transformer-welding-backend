@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.tests.utils.models import create_project
 from app.crud.crud_project import project
+from app.schemas.welding_point import WeldingPoint
 from testdata.getter import get_file
 from testdata.validation import validate_project_file_welding_points
 
@@ -91,6 +92,9 @@ async def test_upload_project(client: AsyncClient, database: AsyncSession):
     content = response.json()
     assert "id" in content
     assert content["name"] == "testproject"
+
+    welding_points = [WeldingPoint(**obj) for obj in content["welding_points"]]
+    validate_project_file_welding_points(welding_points)
 
     project_obj = await project.get_by_id(db=database, id=content["id"])
     validate_project_file_welding_points(project_obj.welding_points)
