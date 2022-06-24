@@ -8,6 +8,7 @@ class GenerationTemplateBase(BaseModel):
     name: str
     description: Optional[str]
     content: str
+    is_deleted: bool
 
     class Config:
         schema_extra = {

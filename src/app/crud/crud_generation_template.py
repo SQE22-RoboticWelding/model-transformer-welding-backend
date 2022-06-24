@@ -44,5 +44,9 @@ class CRUDGenerationTemplate(CRUDBase[GenerationTemplate, GenerationTemplateCrea
         )
         return result.scalars().all()
 
+    async def remove(self, db: AsyncSession, *, obj: GenerationTemplate) -> GenerationTemplate:
+        delete_data = {"is_deleted": True}
+        return await self.update(db=db, db_obj=obj, obj_in=delete_data)
+
 
 generation_template = CRUDGenerationTemplate(GenerationTemplate)
