@@ -9,20 +9,23 @@ class GenerationTemplateBase(BaseModel):
     description: Optional[str]
     content: str
 
-    schema_extra = {
-        "example": {
-            "name": "Niryo One (Python 3, ROS Melodic)",
-            "description": "Python 3 templated based on ROS Melodic for the Niryo One",
-            "content":
-                "{% for p in welding_points %}"
-                "{{p.x}}, {{p.y}}, {{p.z}} / {{p.roll}}, {{p.pitch}}, {{p.yaw}} / {{p.welding_order}}"
-                "{% endfor %}"
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "Niryo One (Python 3, ROS Melodic)",
+                "description": "Python 3 templated based on ROS Melodic for the Niryo One",
+                "content":
+                    "{% for p in welding_points %}"
+                    "{{p.x}}, {{p.y}}, {{p.z}} / {{p.roll}}, {{p.pitch}}, {{p.yaw}} / {{p.welding_order}}"
+                    "{% endfor %}",
+                "is_deleted": False
+            }
         }
-    }
 
 
 class GenerationTemplateCreate(GenerationTemplateBase):
     id: Optional[int]
+    is_deleted: Optional[bool]
 
 
 class GenerationTemplateUpdate(GenerationTemplateBase):
@@ -30,6 +33,7 @@ class GenerationTemplateUpdate(GenerationTemplateBase):
     name: Optional[str]
     description: Optional[str]
     content: Optional[str]
+    is_deleted: Optional[bool]
 
 
 # Properties shared by models stored in DB
