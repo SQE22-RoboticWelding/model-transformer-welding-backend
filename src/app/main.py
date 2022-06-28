@@ -20,10 +20,11 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.on_event("startup")
 async def startup_event():
+    print("Executing migrations")
     init_db_by_migrations(settings.DATABASE_URL_SYNC)
-    print("startup")
+    print("Backend service started")
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    print("shutdown")
+    print("Backend shutting down")
