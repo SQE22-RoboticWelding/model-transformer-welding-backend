@@ -7,7 +7,7 @@ from alembic import context
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-import app.core.config
+from app.core.config import settings
 
 config = context.config
 
@@ -30,7 +30,14 @@ target_metadata = Base.metadata
 
 
 def get_url():
-    return app.core.config.settings.DATABASE_URL_SYNC
+    config_sqlalchemy_url = context.config.get_main_option("sqlalchemy.url")
+    if config_sqlalchemy_url is not None and len(config_sqlalchemy_url) > 0:
+        # Default, as we configure the alembic config before executing migrations
+        return config_sqlalchemy_url
+    else:
+        # This case should only trigger when creating new migration scripts
+        print("[Alembic] Using database URL from application settings directly (fallback)")
+        return settings.DATABASE_URL_SYNC
 
 
 def run_migrations_offline() -> None:
