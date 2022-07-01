@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.crud_generation_template import generation_template
@@ -30,30 +32,49 @@ async def create_project(db: AsyncSession) -> Project:
     return project_obj
 
 
-async def create_robot_type(db: AsyncSession) -> RobotType:
+async def create_robot_type(db: AsyncSession, template_id: Optional[int] = None) -> RobotType:
     robot_type_in = RobotTypeCreate(
         name=random_string(),
         vendor=random_string(),
         capacity_load_kg=random_float(),
-        range_m=random_float())
+        range_m=random_float(),
+        generation_template_id=template_id)
 
     robot_type_obj = await robot_type.create(db=db, obj_in=robot_type_in)
     assert robot_type_obj.name == robot_type_in.name
     assert robot_type_obj.vendor == robot_type_in.vendor
     assert robot_type_obj.capacity_load_kg == robot_type_in.capacity_load_kg
     assert robot_type_obj.range_m == robot_type_in.range_m
+    if template_id is not None:
+        assert robot_type_obj.generation_template_id == template_id
 
     return robot_type_obj
 
 
-async def create_robot(db: AsyncSession, robot_type_obj: RobotType) -> Robot:
+async def create_robot(db: AsyncSession, robot_type_obj: RobotType, project_obj: Project) -> Robot:
     robot_in = RobotCreate(
         robot_type_id=robot_type_obj.id,
-        description=random_string())
+        project_id=project_obj.id,
+        name=random_string(),
+        description=random_string(),
+        position_x=random_float(),
+        position_y=random_float(),
+        position_z=random_float(),
+        position_norm_vector_x=random_float(),
+        position_norm_vector_y=random_float(),
+        position_norm_vector_z=random_float()
+    )
 
     robot_obj = await robot.create(db=db, obj_in=robot_in)
     assert robot_obj.robot_type_id == robot_in.robot_type_id
+    assert robot_obj.name == robot_in.name
     assert robot_obj.description == robot_in.description
+    assert robot_obj.position_x == robot_in.position_x
+    assert robot_obj.position_y == robot_in.position_y
+    assert robot_obj.position_z == robot_in.position_z
+    assert robot_obj.position_norm_vector_x == robot_in.position_norm_vector_x
+    assert robot_obj.position_norm_vector_y == robot_in.position_norm_vector_y
+    assert robot_obj.position_norm_vector_z == robot_in.position_norm_vector_z
 
     return robot_obj
 

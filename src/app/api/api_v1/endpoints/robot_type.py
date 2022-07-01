@@ -8,7 +8,7 @@ from app.schemas.robot_type import *
 router = APIRouterWithGenericExceptionHandler()
 
 
-@router.get("/", response_model=List[RobotType])
+@router.get("/", response_model=List[RobotTypeWithTemplate])
 async def read_robot_types(
         db: AsyncSession = Depends(deps.get_async_db),
         skip: int = 0,
@@ -17,11 +17,12 @@ async def read_robot_types(
     """
     Retrieve multiple robot types
     """
-    result = await robot_type.get_multi(db=db, skip=skip, limit=limit)
-    return result
+    robot_types = await robot_type.get_multi(db=db, skip=skip, limit=limit)
+    robot_type_with_template = [RobotTypeWithTemplate.factory(obj, obj.generation_template) for obj in robot_types]
+    return robot_type_with_template
 
 
-@router.get("/{id}", response_model=RobotType)
+@router.get("/{id}", response_model=RobotTypeWithTemplate)
 async def read_robot_type(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
@@ -30,10 +31,10 @@ async def read_robot_type(
     """
     Retrieve robot type by ID
     """
-    result = await robot_type.get_by_id(db=db, id=_id)
-    if not result:
+    robot_type_obj = await robot_type.get_by_id(db=db, id=_id)
+    if not robot_type_obj:
         raise HTTPException(status_code=404, detail="Robot type not found")
-    return result
+    return RobotTypeWithTemplate.factory(robot_type_obj, robot_type_obj.generation_template)
 
 
 @router.post("/", response_description="Add new robot type", response_model=RobotType)
