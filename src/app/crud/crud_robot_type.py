@@ -15,7 +15,8 @@ class CRUDRobotType(CRUDBase[RobotType, RobotTypeCreate, RobotTypeUpdate]):
             name=obj_in.name,
             vendor=obj_in.vendor,
             capacity_load_kg=obj_in.capacity_load_kg,
-            range_m=obj_in.range_m
+            range_m=obj_in.range_m,
+            generation_template_id=obj_in.generation_template_id
         )
         db.add(db_obj)
         await db.commit()

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.crud_generation_template import generation_template
@@ -30,18 +32,21 @@ async def create_project(db: AsyncSession) -> Project:
     return project_obj
 
 
-async def create_robot_type(db: AsyncSession) -> RobotType:
+async def create_robot_type(db: AsyncSession, template_id: Optional[int] = None) -> RobotType:
     robot_type_in = RobotTypeCreate(
         name=random_string(),
         vendor=random_string(),
         capacity_load_kg=random_float(),
-        range_m=random_float())
+        range_m=random_float(),
+        generation_template_id=template_id)
 
     robot_type_obj = await robot_type.create(db=db, obj_in=robot_type_in)
     assert robot_type_obj.name == robot_type_in.name
     assert robot_type_obj.vendor == robot_type_in.vendor
     assert robot_type_obj.capacity_load_kg == robot_type_in.capacity_load_kg
     assert robot_type_obj.range_m == robot_type_in.range_m
+    if template_id is not None:
+        assert robot_type_obj.generation_template_id == template_id
 
     return robot_type_obj
 
