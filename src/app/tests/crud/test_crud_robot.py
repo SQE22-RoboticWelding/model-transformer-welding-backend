@@ -21,30 +21,27 @@ async def test_crud_robot_create_integrity_fail(database: AsyncSession):
         assert True
 
 
-# TODO: make enforced object load obsolete
 async def test_crud_robot_create(database: AsyncSession):
-    robot_type_obj = RobotType(**(await create_robot_type(db=database)).as_dict())
-    project_obj = Project(**(await create_project(db=database)).as_dict())
+    robot_type_obj = await create_robot_type(db=database)
+    project_obj = await create_project(db=database)
     robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj)
 
     robot_obj_get = await robot.get(db=database, id=robot_obj.id)
     assert robot_obj.as_dict() == robot_obj_get.as_dict()
 
 
-# TODO: make enforced object load obsolete
 async def test_crud_robot_get(database: AsyncSession):
-    robot_type_obj = RobotType(**(await create_robot_type(db=database)).as_dict())
-    project_obj = Project(**(await create_project(db=database)).as_dict())
+    robot_type_obj = await create_robot_type(db=database)
+    project_obj = await create_project(db=database)
     robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj)
 
     robot_obj_get = await robot.get_by_id(db=database, id=robot_obj.id)
     assert robot_obj.__eq__(robot_obj_get)
 
 
-# TODO: make enforced object load obsolete
 async def test_crud_robot_get_multi(database: AsyncSession):
-    robot_type_obj = RobotType(**(await create_robot_type(db=database)).as_dict())
-    project_obj = Project(**(await create_project(db=database)).as_dict())
+    robot_type_obj = await create_robot_type(db=database)
+    project_obj = await create_project(db=database)
 
     await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj)
     await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj)
@@ -53,10 +50,9 @@ async def test_crud_robot_get_multi(database: AsyncSession):
     assert len(robots) == 2
 
 
-# TODO: make enforced object load obsolete
 async def test_crud_robot_update(database: AsyncSession):
-    robot_type_obj = RobotType(**(await create_robot_type(db=database)).as_dict())
-    project_obj = Project(**(await create_project(db=database)).as_dict())
+    robot_type_obj = await create_robot_type(db=database)
+    project_obj = await create_project(db=database)
 
     robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj)
     await robot.update(db=database, db_obj=robot_obj, obj_in={"description": "modified"})
@@ -66,10 +62,9 @@ async def test_crud_robot_update(database: AsyncSession):
     assert robot_obj.description == "modified again"
 
 
-# TODO: make enforced object load obsolete
 async def test_crud_robot_delete(database: AsyncSession):
-    robot_type_obj = RobotType(**(await create_robot_type(db=database)).as_dict())
-    project_obj = Project(**(await create_project(db=database)).as_dict())
+    robot_type_obj = await create_robot_type(db=database)
+    project_obj = await create_project(db=database)
 
     robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj)
 
