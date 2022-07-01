@@ -40,8 +40,9 @@ class RobotCreate(RobotBase):
 
 class RobotUpdate(RobotBase):
     id: Optional[int]
-    project_id: int
-    name: str
+    project_id: Optional[int]
+    robot_type_id: Optional[int]
+    name: Optional[str]
     description: Optional[str]
     position_x: Optional[float]
     position_y: Optional[float]
