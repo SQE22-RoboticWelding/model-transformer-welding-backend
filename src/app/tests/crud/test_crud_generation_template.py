@@ -38,7 +38,7 @@ async def test_crud_generation_template_update(database: AsyncSession):
 
 
 async def test_crud_generation_template_delete(database: AsyncSession):
-    generation_template_obj = await create_generation_template(db=database)
+    generation_template_obj = await create_generation_template(db=database, commit_and_refresh=True)
 
     result = await generation_template.remove(db=database, obj=generation_template_obj)
     assert generation_template_obj.as_dict() == result.as_dict()
