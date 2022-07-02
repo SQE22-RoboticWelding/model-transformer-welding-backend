@@ -63,15 +63,19 @@ async def upload_project(
     project_create = ProjectCreate(name=name, description=description)
     project_obj = await project.create(db=db, obj_in=project_create)
     if project_obj is None:
+        await db.rollback()
         raise HTTPException(status_code=500, detail="Could not create new project")
 
     # Create welding points
     welding_points = await welding_point.create_multi(
         db=db, obj_in=parser.get_welding_points(project=project_obj))
     if welding_points is None:
+        await db.rollback()
         raise HTTPException(status_code=500, detail="Could not create welding points")
 
-    return ProjectWithData.factory(project_obj, welding_points)
+    await db.commit()
+    await db.refresh(project_obj)
+    return ProjectWithData.factory(project_obj, project_obj.welding_points)
 
 
 @router.post("/", response_description="Add new project", response_model=Project)
@@ -83,6 +87,9 @@ async def create_project(
     Create new project
     """
     result = await project.create(db=db, obj_in=project_in)
+
+    await db.commit()
+    await db.refresh(result)
     return result
 
 
@@ -96,10 +103,14 @@ async def update_project(
     """
     Update a project
     """
-    result = await project.get_by_id(db=db, id=_id)
-    if not result:
+    project_obj = await project.get_by_id(db=db, id=_id)
+    if not project_obj:
         raise HTTPException(status_code=404, detail="Project not found")
-    return await project.update(db=db, db_obj=result, obj_in=project_in)
+
+    result = await project.update(db=db, db_obj=project_obj, obj_in=project_in)
+    await db.commit()
+    await db.refresh(result)
+    return result
 
 
 @router.delete("/{id}", response_model=Project)
@@ -108,8 +119,11 @@ async def delete_project(
         db: AsyncSession = Depends(deps.get_async_db),
         _id: int
 ) -> Any:
-    result = await project.get_by_id(db=db, id=_id)
-    if not result:
+    project_obj = await project.get_by_id(db=db, id=_id)
+    if not project_obj:
+        await db.rollback()
         raise HTTPException(status_code=404, detail="Project not found")
-    result = await project.remove(db=db, obj=result)
+
+    result = await project.remove(db=db, obj=project_obj)
+    await db.commit()
     return result
