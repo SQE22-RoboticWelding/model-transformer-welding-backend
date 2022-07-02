@@ -48,8 +48,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_in_data = obj_in.dict()
         db_obj = self.model(**obj_in_data)  # type: ignore
         db.add(db_obj)
-        await db.commit()
-        await db.refresh(db_obj)
+        await db.flush()
         return db_obj
 
     async def create_multi(self, db: AsyncSession, *, obj_in: List[CreateSchemaType]) -> List[ModelType]:
@@ -57,11 +56,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         for obj_in_data in obj_in:
             encoded_obj = jsonable_encoder(obj_in_data)
             db_objs.append(self.model(**encoded_obj))  # type: ignore
-        db.add_all(db_objs)
-        await db.commit()
 
-        for obj in db_objs:
-            await db.refresh(obj)
+        db.add_all(db_objs)
+        await db.flush()
         return db_objs
 
     async def update(
@@ -71,19 +68,18 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             db_obj: ModelType,
             obj_in: Union[UpdateSchemaType, Dict[str, Any]]
     ) -> ModelType:
-        obj_data = jsonable_encoder(db_obj.as_dict())
+        obj_data = jsonable_encoder(db_obj)
         update_data = obj_in if isinstance(obj_in, dict) else obj_in.dict(exclude_unset=True)
         for field in obj_data:
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
 
         db.add(db_obj)
-        await db.commit()
-        await db.refresh(db_obj)
+        await db.flush()
         return db_obj
 
     @staticmethod
     async def remove(db: AsyncSession, *, obj: ModelType) -> ModelType:
         await db.delete(obj)
-        await db.commit()
+        await db.flush()
         return obj

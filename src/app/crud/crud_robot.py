@@ -24,8 +24,7 @@ class CRUDRobot(CRUDBase[Robot, RobotCreate, RobotUpdate]):
             position_norm_vector_z=obj_in.position_norm_vector_z,
         )
         db.add(db_obj)
-        await db.commit()
-        await db.refresh(db_obj)
+        await db.flush()
         return db_obj
 
     async def update(
