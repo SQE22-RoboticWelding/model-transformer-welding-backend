@@ -37,7 +37,7 @@ async def test_crud_project_update(database: AsyncSession):
 
 
 async def test_crud_project_delete(database: AsyncSession):
-    project_obj = await create_project(db=database)
+    project_obj = await create_project(db=database, commit_and_refresh=True)
 
     result = await project.remove(db=database, obj=project_obj)
     assert project_obj.as_dict() == result.as_dict()
