@@ -20,7 +20,7 @@ from app.schemas.welding_point import WeldingPointCreate
 from app.tests.utils.utils import random_string, random_float, get_example_template
 
 
-async def create_project(db: AsyncSession) -> Project:
+async def create_project(db: AsyncSession, commit_and_refresh: bool = False) -> Project:
     project_in = ProjectCreate(
         name=random_string(),
         description=random_string())
@@ -29,6 +29,11 @@ async def create_project(db: AsyncSession) -> Project:
     assert project_obj.name == project_in.name
     assert project_obj.description == project_in.description
 
+    # Useful when the date fields in the object are needed as they get only filled when the database executes
+    # the transaction
+    if commit_and_refresh:
+        await db.commit()
+        await db.refresh(project_obj)
     return project_obj
 
 
@@ -97,7 +102,7 @@ async def create_welding_point(db: AsyncSession, project_obj: Project, welding_o
     return welding_point_obj
 
 
-async def create_generation_template(db: AsyncSession) -> GenerationTemplate:
+async def create_generation_template(db: AsyncSession, commit_and_refresh: bool = False) -> GenerationTemplate:
     generation_template_in = GenerationTemplateCreate(
         name=random_string(),
         description=random_string(),
@@ -109,6 +114,11 @@ async def create_generation_template(db: AsyncSession) -> GenerationTemplate:
     assert generation_template_obj.description == generation_template_in.description
     assert generation_template_obj.content == generation_template_in.content
 
+    # Useful when the date fields in the object are needed as they get only filled when the database executes
+    # the transaction
+    if commit_and_refresh:
+        await db.commit()
+        await db.refresh(generation_template_obj)
     return generation_template_obj
 
 
