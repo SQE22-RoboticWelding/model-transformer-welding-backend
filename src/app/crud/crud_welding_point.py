@@ -26,8 +26,7 @@ class CRUDWeldingPoint(CRUDBase[WeldingPoint, WeldingPointCreate, WeldingPointUp
             tolerance=obj_in.tolerance
         )
         db.add(db_obj)
-        await db.commit()
-        await db.refresh(db_obj)
+        await db.flush()
         return db_obj
 
     async def create_multi(

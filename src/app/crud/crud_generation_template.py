@@ -17,8 +17,7 @@ class CRUDGenerationTemplate(CRUDBase[GenerationTemplate, GenerationTemplateCrea
             content=obj_in.content
         )
         db.add(db_obj)
-        await db.commit()
-        await db.refresh(db_obj)
+        await db.flush()
         return db_obj
 
     async def update(

@@ -19,8 +19,7 @@ class CRUDRobotType(CRUDBase[RobotType, RobotTypeCreate, RobotTypeUpdate]):
             generation_template_id=obj_in.generation_template_id
         )
         db.add(db_obj)
-        await db.commit()
-        await db.refresh(db_obj)
+        await db.flush()
         return db_obj
 
     async def update(
