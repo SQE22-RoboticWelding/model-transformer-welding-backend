@@ -49,6 +49,8 @@ async def create_robot(
     Create new robot
     """
     result = await robot.create(db=db, obj_in=robot_in)
+    await db.commit()
+    await db.refresh(result)
     return result
 
 
@@ -62,10 +64,14 @@ async def update_robot(
     """
     Update a robot
     """
-    result = await robot.get_by_id(db=db, id=_id)
-    if not result:
+    robot_obj = await robot.get_by_id(db=db, id=_id)
+    if not robot_obj:
         raise HTTPException(status_code=404, detail="Robot not found")
-    return await robot.update(db=db, db_obj=result, obj_in=robot_in)
+
+    result = await robot.update(db=db, db_obj=robot_obj, obj_in=robot_in)
+    await db.commit()
+    await db.refresh(result)
+    return result
 
 
 @router.delete("/{id}", response_model=Robot)
@@ -74,8 +80,10 @@ async def delete_robot(
         db: AsyncSession = Depends(deps.get_async_db),
         _id: int
 ) -> Any:
-    result = await robot.get_by_id(db=db, id=_id)
-    if not result:
+    robot_obj = await robot.get_by_id(db=db, id=_id)
+    if not robot_obj:
         raise HTTPException(status_code=404, detail="Robot not found")
-    result = await robot.remove(db=db, obj=result)
+
+    result = await robot.remove(db=db, obj=robot_obj)
+    await db.commit()
     return result
