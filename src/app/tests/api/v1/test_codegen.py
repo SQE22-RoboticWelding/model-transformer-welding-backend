@@ -9,11 +9,13 @@ pytestmark = pytest.mark.asyncio
 
 
 async def test_codegen(client: AsyncClient, database: AsyncSession):
-    project_obj = await create_project(db=database)
+    project_obj = await create_project(db=database, commit_and_refresh=True)
     project_id = project_obj.id
 
     welding_point_obj = await create_welding_point(db=database, project_obj=project_obj)
-    generation_template_obj = await create_generation_template(db=database)
+    generation_template_obj = await create_generation_template(db=database, commit_and_refresh=True)
+    await database.refresh(welding_point_obj)
+
     generation_template_id = generation_template_obj.id
 
     data = {"generation_template_id": project_id, "project_id": generation_template_id}
