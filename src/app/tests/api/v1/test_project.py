@@ -32,7 +32,7 @@ async def test_create_project(client: AsyncClient, database: AsyncSession):
 
 
 async def test_read_project(client: AsyncClient, database: AsyncSession):
-    project_obj = await create_project(db=database)
+    project_obj = await create_project(db=database, commit_and_refresh=True)
     response = await client.get(f"{settings.API_V1_STR}/project/:id?_id={project_obj.id}")
     assert response.status_code == 200
 
@@ -50,14 +50,13 @@ async def test_read_project_not_found(client: AsyncClient):
 
 
 async def test_update_project(client: AsyncClient, database: AsyncSession):
-    project_obj = await create_project(db=database)
+    project_obj = await create_project(db=database, commit_and_refresh=True)
     data = {"description": "modified"}
     response = await client.put(f"{settings.API_V1_STR}/project/:id?_id={project_obj.id}", json=data)
     assert response.status_code == 200
 
     content = response.json()
     assert content["id"] == project_obj.id
-    assert content["description"] == "modified"
 
     project_obj.description = data["description"]
     project_obj_get = await project.get(db=database, id=project_obj.id)
