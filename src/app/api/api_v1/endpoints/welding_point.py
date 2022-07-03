@@ -48,6 +48,8 @@ async def create_welding_point(
     Create new welding point
     """
     result = await welding_point.create(db=db, obj_in=welding_point_in)
+    await db.commit()
+    await db.refresh(result)
     return result
 
 
@@ -61,10 +63,14 @@ async def update_welding_point(
     """
     Update a welding point
     """
-    result = await welding_point.get_by_id(db=db, id=_id)
-    if not result:
+    welding_point_obj = await welding_point.get_by_id(db=db, id=_id)
+    if not welding_point_obj:
         raise HTTPException(status_code=404, detail="Welding point not found")
-    return await welding_point.update(db=db, db_obj=result, obj_in=welding_point_in)
+
+    result = await welding_point.update(db=db, db_obj=welding_point_obj, obj_in=welding_point_in)
+    await db.commit()
+    await db.refresh(result)
+    return result
 
 
 @router.put("/", response_model=List[WeldingPoint])
@@ -86,6 +92,8 @@ async def update_welding_points(
         element = await welding_point.get_by_id(db=db, id=wp.id)
         updates.append(await welding_point.update(db=db, db_obj=element, obj_in=wp))
 
+    await db.commit()
+    updates = [await db.refresh(obj) for obj in updates]
     return updates
 
 
@@ -98,5 +106,7 @@ async def delete_welding_point(
     result = await welding_point.get_by_id(db=db, id=_id)
     if not result:
         raise HTTPException(status_code=404, detail="Welding point not found")
+
     result = await welding_point.remove(db=db, obj=result)
+    await db.commit()
     return result
