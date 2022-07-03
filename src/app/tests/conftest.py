@@ -47,7 +47,6 @@ async def database(database_async_sessionmaker):
 
 @pytest.fixture(scope="function")
 def client(database_async_sessionmaker): # noqa
-    db = database
     client = AsyncClient(app=app, base_url="http://localhost")
 
     async def override_get_db():
