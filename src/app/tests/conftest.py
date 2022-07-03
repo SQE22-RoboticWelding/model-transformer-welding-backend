@@ -12,7 +12,7 @@ from app.db.init_db import init_db_by_migrations
 
 
 @pytest_asyncio.fixture(scope="function")
-async def database(postgresql):
+async def database_async_sessionmaker(postgresql):
     connection_sync = f"postgresql+psycopg2://{postgresql.info.user}:@{postgresql.info.host}:" \
                       f"{postgresql.info.port}/{postgresql.info.dbname}"
     connection_async = f'postgresql+asyncpg://{postgresql.info.user}:@{postgresql.info.host}:' \
@@ -24,11 +24,7 @@ async def database(postgresql):
     init_db_by_migrations(connection_sync)
 
     sessionmaker_async = sessionmaker(autocommit=False, autoflush=False, bind=engine_async, class_=AsyncSession)
-    session_async = sessionmaker_async()
-    try:
-        yield session_async
-    finally:
-        await session_async.close()
+    yield sessionmaker_async
 
 
 @pytest.fixture(scope="function")
@@ -40,13 +36,26 @@ def database_engine_sync(postgresql):
     yield engine_sync
 
 
+@pytest_asyncio.fixture(scope="function")
+async def database(database_async_sessionmaker):
+    session_async = database_async_sessionmaker()
+    try:
+        yield session_async
+    finally:
+        await session_async.close()
+
+
 @pytest.fixture(scope="function")
-def client(database): # noqa
+def client(database_async_sessionmaker): # noqa
     db = database
     client = AsyncClient(app=app, base_url="http://localhost")
 
-    def override_get_db():
-        yield db
+    async def override_get_db():
+        session_async = database_async_sessionmaker()
+        try:
+            yield session_async
+        finally:
+            await session_async.close()
     app.dependency_overrides[get_async_db] = override_get_db
 
     yield client
