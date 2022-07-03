@@ -45,6 +45,9 @@ async def create_generation_template(
     Create new generation template
     """
     result = await generation_template.create(db=db, obj_in=generation_template_in)
+
+    await db.commit()
+    await db.refresh(result)
     return result
 
 
@@ -58,10 +61,14 @@ async def update_generation_template(
     """
     Update a generation template
     """
-    result = await generation_template.get_by_id(db=db, id=_id)
-    if not result:
+    generation_template_obj = await generation_template.get_by_id(db=db, id=_id)
+    if not generation_template_obj:
         raise HTTPException(status_code=404, detail="Generation template not found")
-    return await generation_template.update(db=db, db_obj=result, obj_in=generation_template_in)
+
+    result = await generation_template.update(db=db, db_obj=generation_template_obj, obj_in=generation_template_in)
+    await db.commit()
+    await db.refresh(result)
+    return result
 
 
 @router.delete("/{id}", response_model=GenerationTemplate)
@@ -73,5 +80,7 @@ async def delete_generation_template(
     result = await generation_template.get_by_id(db=db, id=_id)
     if not result:
         raise HTTPException(status_code=404, detail="Generation template not found")
+
     result = await generation_template.remove(db=db, obj=result)
+    await db.commit()
     return result
