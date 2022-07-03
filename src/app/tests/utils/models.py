@@ -56,7 +56,8 @@ async def create_robot_type(db: AsyncSession, template_id: Optional[int] = None)
     return robot_type_obj
 
 
-async def create_robot(db: AsyncSession, robot_type_obj: RobotType, project_obj: Project) -> Robot:
+async def create_robot(db: AsyncSession, robot_type_obj: RobotType, project_obj: Project,
+                       commit_and_refresh: bool = False) -> Robot:
     robot_in = RobotCreate(
         robot_type_id=robot_type_obj.id,
         project_id=project_obj.id,
@@ -81,6 +82,9 @@ async def create_robot(db: AsyncSession, robot_type_obj: RobotType, project_obj:
     assert robot_obj.position_norm_vector_y == robot_in.position_norm_vector_y
     assert robot_obj.position_norm_vector_z == robot_in.position_norm_vector_z
 
+    if commit_and_refresh:
+        await db.commit()
+        await db.refresh(robot_obj)
     return robot_obj
 
 
