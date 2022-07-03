@@ -37,7 +37,8 @@ async def create_project(db: AsyncSession, commit_and_refresh: bool = False) -> 
     return project_obj
 
 
-async def create_robot_type(db: AsyncSession, template_id: Optional[int] = None) -> RobotType:
+async def create_robot_type(db: AsyncSession, template_id: Optional[int] = None,
+                            commit_and_refresh: bool = False) -> RobotType:
     robot_type_in = RobotTypeCreate(
         name=random_string(),
         vendor=random_string(),
@@ -53,6 +54,9 @@ async def create_robot_type(db: AsyncSession, template_id: Optional[int] = None)
     if template_id is not None:
         assert robot_type_obj.generation_template_id == template_id
 
+    if commit_and_refresh:
+        await db.commit()
+        await db.refresh(robot_type_obj)
     return robot_type_obj
 
 
