@@ -92,7 +92,8 @@ async def create_robot(db: AsyncSession, robot_type_obj: RobotType, project_obj:
     return robot_obj
 
 
-async def create_welding_point(db: AsyncSession, project_obj: Project, welding_order_in: int = 0) -> WeldingPoint:
+async def create_welding_point(db: AsyncSession, project_obj: Project, welding_order_in: int = 0,
+                               commit_and_refresh: bool = False) -> WeldingPoint:
     welding_point_in = get_welding_point_create(project_obj=project_obj, welding_order_in=welding_order_in)
 
     welding_point_obj = await welding_point.create(db=db, obj_in=welding_point_in)
@@ -107,6 +108,9 @@ async def create_welding_point(db: AsyncSession, project_obj: Project, welding_o
     assert welding_point_obj.pitch == welding_point_in.pitch
     assert welding_point_obj.yaw == welding_point_in.yaw
 
+    if commit_and_refresh:
+        await db.commit()
+        await db.refresh(welding_point_obj)
     return welding_point_obj
 
 
