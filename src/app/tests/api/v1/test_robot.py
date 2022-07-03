@@ -15,7 +15,6 @@ async def test_create_robot_integrity_fail(client: AsyncClient):
     assert response.status_code == 400
 
 
-@pytest.mark.skip(reason="issue with database cursors and lazy loading")
 async def test_create_robot(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database)
     project_obj = await create_project(db=database)
@@ -30,6 +29,8 @@ async def test_create_robot(client: AsyncClient, database: AsyncSession):
             "position_norm_vector_x": 0,
             "position_norm_vector_y": 0.5,
             "position_norm_vector_z": 0.75}
+
+    await database.commit()
     response = await client.post(f"{settings.API_V1_STR}/robot/", json=data)
     assert response.status_code == 200
 
@@ -49,12 +50,13 @@ async def test_create_robot(client: AsyncClient, database: AsyncSession):
     assert (await robot.get(db=database, id=content["id"])).as_dict() == content
 
 
-@pytest.mark.skip(reason="issue with database cursors and lazy loading")
 async def test_read_robot(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database)
     project_obj = await create_project(db=database)
 
-    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj)
+    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj,
+                                   commit_and_refresh=True)
+
     response = await client.get(f"{settings.API_V1_STR}/robot/:id?_id={robot_obj.id}")
     assert response.status_code == 200
 
@@ -78,12 +80,14 @@ async def test_read_robot_not_found(client: AsyncClient):
     assert response_get.status_code == 404
 
 
-@pytest.mark.skip(reason="issue with database cursors and lazy loading")
 async def test_update_robot(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database)
     project_obj = await create_project(db=database)
+    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj,
+                                   commit_and_refresh=True)
+    await database.commit()
+    await database.refresh(robot_obj)
 
-    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj)
     data = {"description": "modified"}
     response = await client.put(f"{settings.API_V1_STR}/robot/:id?_id={robot_obj.id}", json=data)
     assert response.status_code == 200
@@ -96,12 +100,12 @@ async def test_update_robot(client: AsyncClient, database: AsyncSession):
     assert (await robot.get(db=database, id=robot_obj.id)).as_dict() == robot_obj.as_dict()
 
 
-@pytest.mark.skip(reason="issue with database cursors and lazy loading")
 async def test_delete_robot(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database)
     project_obj = await create_project(db=database)
+    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj,
+                                   commit_and_refresh=True)
 
-    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj)
     response_delete = await client.delete(f"{settings.API_V1_STR}/robot/:id?_id={robot_obj.id}")
     assert response_delete.status_code == 200
 
