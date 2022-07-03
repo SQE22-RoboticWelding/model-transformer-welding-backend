@@ -46,6 +46,8 @@ async def create_robot_type(
     Create new robot type
     """
     result = await robot_type.create(db=db, obj_in=robot_type_in)
+    await db.commit()
+    await db.refresh(result)
     return result
 
 
@@ -59,10 +61,14 @@ async def update_robot_type(
     """
     Update a robot type
     """
-    result = await robot_type.get_by_id(db=db, id=_id)
-    if not result:
+    robot_type_obj = await robot_type.get_by_id(db=db, id=_id)
+    if not robot_type_obj:
         raise HTTPException(status_code=404, detail="Robot type not found")
-    return await robot_type.update(db=db, db_obj=result, obj_in=robot_type_in)
+
+    result = await robot_type.update(db=db, db_obj=robot_type_obj, obj_in=robot_type_in)
+    await db.commit()
+    await db.refresh(result)
+    return result
 
 
 @router.delete("/{id}", response_model=RobotType)
@@ -71,8 +77,10 @@ async def delete_robot_type(
         db: AsyncSession = Depends(deps.get_async_db),
         _id: int
 ) -> Any:
-    result = await robot_type.get_by_id(db=db, id=_id)
-    if not result:
+    robot_type_obj = await robot_type.get_by_id(db=db, id=_id)
+    if not robot_type_obj:
         raise HTTPException(status_code=404, detail="Robot type not found")
-    result = await robot_type.remove(db=db, obj=result)
+
+    result = await robot_type.remove(db=db, obj=robot_type_obj)
+    await db.commit()
     return result
