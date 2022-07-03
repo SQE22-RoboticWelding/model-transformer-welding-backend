@@ -34,7 +34,7 @@ async def test_create_generation_template(client: AsyncClient, database: AsyncSe
 
 
 async def test_read_generation_template(client: AsyncClient, database: AsyncSession):
-    generation_template_obj = await create_generation_template(db=database)
+    generation_template_obj = await create_generation_template(db=database, commit_and_refresh=True)
     response = await client.get(f"{settings.API_V1_STR}/generationtemplate/:id?_id={generation_template_obj.id}")
     assert response.status_code == 200
 
@@ -52,7 +52,7 @@ async def test_read_generation_template_not_found(client: AsyncClient):
 
 
 async def test_update_generation_template(client: AsyncClient, database: AsyncSession):
-    generation_template_obj = await create_generation_template(db=database)
+    generation_template_obj = await create_generation_template(db=database, commit_and_refresh=True)
     data = {"content": "modified"}
     response = await client.put(f"{settings.API_V1_STR}/generationtemplate/:id?_id={generation_template_obj.id}",
                                 json=data)
@@ -62,16 +62,18 @@ async def test_update_generation_template(client: AsyncClient, database: AsyncSe
     assert content["id"] == generation_template_obj.id
     assert content["content"] == data["content"]
 
+    generation_template_obj.content = data["content"]
     generation_template_obj_get = await generation_template.get(db=database, id=generation_template_obj.id)
-    assert generation_template_obj_get.content == data["content"]
+
+    assert generation_template_obj_get.content == generation_template_obj.content
     assert generation_template_obj_get.name == generation_template_obj.name
     assert generation_template_obj_get.description == generation_template_obj.description
     assert generation_template_obj_get.created_at == generation_template_obj.created_at
     assert generation_template_obj_get.modified_at >= generation_template_obj.modified_at
 
 
-async def test_delete_robot_type(client: AsyncClient, database: AsyncSession):
-    generation_template_obj = await create_generation_template(db=database)
+async def test_delete_generation_template(client: AsyncClient, database: AsyncSession):
+    generation_template_obj = await create_generation_template(db=database, commit_and_refresh=True)
     response_delete = await client\
         .delete(f"{settings.API_V1_STR}/generationtemplate/:id?_id={generation_template_obj.id}")
     assert response_delete.status_code == 200
@@ -85,4 +87,4 @@ async def test_delete_robot_type(client: AsyncClient, database: AsyncSession):
     assert datetime.fromisoformat(content["created_at"]) == generation_template_obj.created_at
     assert datetime.fromisoformat(content["modified_at"]) == generation_template_obj.modified_at
 
-    assert (await robot_type.get(db=database, id=generation_template_obj.id)) is None
+    assert (await generation_template.get(db=database, id=generation_template_obj.id)) is None
