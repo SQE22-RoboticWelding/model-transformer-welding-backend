@@ -4,6 +4,7 @@ from io import BytesIO
 from jinja2 import Template
 from zipfile import ZipFile
 
+from app.models.project import Project
 from app.schemas.generation_template import GenerationTemplate
 from typing import List
 
