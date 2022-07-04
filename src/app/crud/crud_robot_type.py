@@ -11,13 +11,7 @@ class CRUDRobotType(CRUDBase[RobotType, RobotTypeCreate, RobotTypeUpdate]):
     async def create(
             self, db: AsyncSession, *, obj_in: RobotTypeCreate
     ) -> RobotType:
-        db_obj = RobotType(
-            name=obj_in.name,
-            vendor=obj_in.vendor,
-            capacity_load_kg=obj_in.capacity_load_kg,
-            range_m=obj_in.range_m,
-            generation_template_id=obj_in.generation_template_id
-        )
+        db_obj = RobotType(**obj_in.dict(exclude_unset=True, exclude={"id"}))
         db.add(db_obj)
         await db.flush()
         return db_obj
