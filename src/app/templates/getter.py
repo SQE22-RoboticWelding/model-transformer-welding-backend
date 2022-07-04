@@ -17,6 +17,10 @@ def __get_templates_in_path():
     return templates
 
 
+def get_count_template_files() -> int:
+    return len(__get_templates_in_path())
+
+
 def get_library_templates() -> List[LibraryTemplate]:
     library_templates = []
     for template in __get_templates_in_path():
