@@ -54,3 +54,9 @@ class GenerationTemplate(GenerationTemplateInDBBase):
 
 class GenerationTemplateInDB(GenerationTemplateInDBBase):
     pass
+
+
+class LibraryTemplate(GenerationTemplateBase):
+    id: Optional[int]
+    description: Optional[str]
+    language: Optional[str]
