@@ -11,4 +11,4 @@ from app.models.project import Project
 class CodeGenerator:
     @staticmethod
     def generate(template: GenerationTemplate, welding_points: List[WeldingPoint]) -> str:
-        return Template(template.content).render({"welding_points": welding_points})
+        return Template(template.content, keep_trailing_newline=True).render({"welding_points": welding_points})
