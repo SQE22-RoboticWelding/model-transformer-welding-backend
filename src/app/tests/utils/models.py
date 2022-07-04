@@ -118,13 +118,17 @@ async def create_generation_template(db: AsyncSession, commit_and_refresh: bool 
     generation_template_in = GenerationTemplateCreate(
         name=random_string(),
         description=random_string(),
-        content=get_example_template()
+        content=get_example_template(),
+        language="HolyC",
+        file_extension=".HC"
     )
 
     generation_template_obj = await generation_template.create(db=db, obj_in=generation_template_in)
     assert generation_template_obj.name == generation_template_in.name
     assert generation_template_obj.description == generation_template_in.description
     assert generation_template_obj.content == generation_template_in.content
+    assert generation_template_obj.language == generation_template_in.language
+    assert generation_template_obj.file_extension == generation_template_in.file_extension
 
     # Useful when the date fields in the object are needed as they get only filled when the database executes
     # the transaction
