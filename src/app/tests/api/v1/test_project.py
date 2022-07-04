@@ -33,7 +33,7 @@ async def test_create_project(client: AsyncClient, database: AsyncSession):
 
 async def test_read_project(client: AsyncClient, database: AsyncSession):
     project_obj = await create_project(db=database, commit_and_refresh=True)
-    response = await client.get(f"{settings.API_V1_STR}/project/:id?_id={project_obj.id}")
+    response = await client.get(f"{settings.API_V1_STR}/project/{project_obj.id}")
     assert response.status_code == 200
 
     content = response.json()
@@ -45,14 +45,14 @@ async def test_read_project(client: AsyncClient, database: AsyncSession):
 
 
 async def test_read_project_not_found(client: AsyncClient):
-    response_get = await client.get(f"{settings.API_V1_STR}/project/:id?_id=1")
+    response_get = await client.get(f"{settings.API_V1_STR}/project/1")
     assert response_get.status_code == 404
 
 
 async def test_update_project(client: AsyncClient, database: AsyncSession):
     project_obj = await create_project(db=database, commit_and_refresh=True)
     data = {"description": "modified"}
-    response = await client.put(f"{settings.API_V1_STR}/project/:id?_id={project_obj.id}", json=data)
+    response = await client.put(f"{settings.API_V1_STR}/project/{project_obj.id}", json=data)
     assert response.status_code == 200
 
     content = response.json()
@@ -69,7 +69,7 @@ async def test_update_project(client: AsyncClient, database: AsyncSession):
 
 async def test_delete_project(client: AsyncClient, database: AsyncSession):
     project_obj = await create_project(db=database, commit_and_refresh=True)
-    response_delete = await client.delete(f"{settings.API_V1_STR}/project/:id?_id={project_obj.id}")
+    response_delete = await client.delete(f"{settings.API_V1_STR}/project/{project_obj.id}")
     assert response_delete.status_code == 200
     content = response_delete.json()
 

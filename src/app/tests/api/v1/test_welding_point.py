@@ -93,7 +93,7 @@ async def test_update_welding_point(client: AsyncClient, database: AsyncSession)
     welding_point_obj = await create_welding_point(db=database, project_obj=project_obj, commit_and_refresh=True)
 
     data = {"x": 1000.500, "y": -10000}
-    response = await client.put(f"{settings.API_V1_STR}/weldingpoint/:id?_id={welding_point_obj.id}", json=data)
+    response = await client.put(f"{settings.API_V1_STR}/weldingpoint/{welding_point_obj.id}", json=data)
     assert response.status_code == 200
 
     content = response.json()
@@ -110,7 +110,7 @@ async def test_delete_welding_point(client: AsyncClient, database: AsyncSession)
     project_obj = await create_project(db=database)
     welding_point_obj = await create_welding_point(db=database, project_obj=project_obj, commit_and_refresh=True)
 
-    response_delete = await client.delete(f"{settings.API_V1_STR}/weldingpoint/:id?_id={welding_point_obj.id}")
+    response_delete = await client.delete(f"{settings.API_V1_STR}/weldingpoint/{welding_point_obj.id}")
     assert response_delete.status_code == 200
 
     assert welding_point_obj.as_dict() == response_delete.json()

@@ -49,7 +49,7 @@ async def test_create_robot_type_with_template(client: AsyncClient, database: As
 
 async def test_read_robot_type(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database, commit_and_refresh=True)
-    response = await client.get(f"{settings.API_V1_STR}/robottype/:id?_id={robot_type_obj.id}")
+    response = await client.get(f"{settings.API_V1_STR}/robottype/{robot_type_obj.id}")
     assert response.status_code == 200
 
     content = response.json()
@@ -62,14 +62,14 @@ async def test_read_robot_type(client: AsyncClient, database: AsyncSession):
 
 
 async def test_read_robot_type_not_found(client: AsyncClient):
-    response_get = await client.get(f"{settings.API_V1_STR}/robottype/:id?_id=1")
+    response_get = await client.get(f"{settings.API_V1_STR}/robottype/1")
     assert response_get.status_code == 404
 
 
 async def test_update_robot_type(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database, commit_and_refresh=True)
     data = {"name": "Niryo Twenty", "range_m": 4000}
-    response = await client.put(f"{settings.API_V1_STR}/robottype/:id?_id={robot_type_obj.id}", json=data)
+    response = await client.put(f"{settings.API_V1_STR}/robottype/{robot_type_obj.id}", json=data)
     assert response.status_code == 200
 
     content = response.json()
@@ -85,7 +85,7 @@ async def test_update_robot_type(client: AsyncClient, database: AsyncSession):
 
 async def test_delete_robot_type(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database, commit_and_refresh=True)
-    response_delete = await client.delete(f"{settings.API_V1_STR}/robottype/:id?_id={robot_type_obj.id}")
+    response_delete = await client.delete(f"{settings.API_V1_STR}/robottype/{robot_type_obj.id}")
     assert response_delete.status_code == 200
 
     assert robot_type_obj.as_dict() == response_delete.json()
