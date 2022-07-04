@@ -24,16 +24,16 @@ async def read_robots(
     return robots_with_type
 
 
-@router.get("/{id}", response_model=RobotWithType)
+@router.get("/{robot_id}", response_model=RobotWithType)
 async def read_robot(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        _id: int
+        robot_id: int
 ) -> Any:
     """
     Retrieve robot by ID
     """
-    robot_obj = await robot.get_by_id(db=db, id=_id)
+    robot_obj = await robot.get_by_id(db=db, id=robot_id)
     if not robot_obj:
         raise HTTPException(status_code=404, detail="Robot not found")
 
@@ -54,17 +54,17 @@ async def create_robot(
     return result
 
 
-@router.put("/{id}", response_model=Robot)
+@router.put("/{robot_id}", response_model=Robot)
 async def update_robot(
         *,
-        _id: int,
+        robot_id: int,
         db: AsyncSession = Depends(deps.get_async_db),
         robot_in: RobotUpdate
 ) -> Any:
     """
     Update a robot
     """
-    robot_obj = await robot.get_by_id(db=db, id=_id)
+    robot_obj = await robot.get_by_id(db=db, id=robot_id)
     if not robot_obj:
         raise HTTPException(status_code=404, detail="Robot not found")
 
@@ -74,13 +74,13 @@ async def update_robot(
     return result
 
 
-@router.delete("/{id}", response_model=Robot)
+@router.delete("/{robot_id}", response_model=Robot)
 async def delete_robot(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        _id: int
+        robot_id: int
 ) -> Any:
-    robot_obj = await robot.get_by_id(db=db, id=_id)
+    robot_obj = await robot.get_by_id(db=db, id=robot_id)
     if not robot_obj:
         raise HTTPException(status_code=404, detail="Robot not found")
 

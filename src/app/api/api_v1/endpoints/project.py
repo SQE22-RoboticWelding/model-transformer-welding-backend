@@ -23,16 +23,16 @@ async def read_project(
     return result
 
 
-@router.get("/{id}", response_model=Project)
+@router.get("/{project_id}", response_model=Project)
 async def read_project(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        _id: int
+        project_id: int
 ) -> Any:
     """
     Retrieve project by ID
     """
-    result = await project.get_by_id(db=db, id=_id)
+    result = await project.get_by_id(db=db, id=project_id)
     if not result:
         raise HTTPException(status_code=404, detail="Project not found")
     return result
@@ -93,17 +93,17 @@ async def create_project(
     return result
 
 
-@router.put("/{id}", response_model=Project)
+@router.put("/{project_id}", response_model=Project)
 async def update_project(
         *,
-        _id: int,
+        project_id: int,
         db: AsyncSession = Depends(deps.get_async_db),
         project_in: ProjectUpdate
 ) -> Any:
     """
     Update a project
     """
-    project_obj = await project.get_by_id(db=db, id=_id)
+    project_obj = await project.get_by_id(db=db, id=project_id)
     if not project_obj:
         raise HTTPException(status_code=404, detail="Project not found")
 
@@ -113,13 +113,13 @@ async def update_project(
     return result
 
 
-@router.delete("/{id}", response_model=Project)
+@router.delete("/{project_id}", response_model=Project)
 async def delete_project(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        _id: int
+        project_id: int
 ) -> Any:
-    project_obj = await project.get_by_id(db=db, id=_id)
+    project_obj = await project.get_by_id(db=db, id=project_id)
     if not project_obj:
         await db.rollback()
         raise HTTPException(status_code=404, detail="Project not found")
