@@ -11,10 +11,7 @@ class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate]):
     async def create(
             self, db: AsyncSession, *, obj_in: ProjectCreate
     ) -> Project:
-        db_obj = Project(
-            name=obj_in.name,
-            description=obj_in.description
-        )
+        db_obj = Project(**obj_in.dict(exclude_unset=True, exclude={"id"}))
         db.add(db_obj)
         await db.flush()
         return db_obj

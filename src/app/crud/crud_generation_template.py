@@ -11,11 +11,7 @@ class CRUDGenerationTemplate(CRUDBase[GenerationTemplate, GenerationTemplateCrea
     async def create(
             self, db: AsyncSession, *, obj_in: GenerationTemplateCreate
     ) -> GenerationTemplate:
-        db_obj = GenerationTemplate(
-            name=obj_in.name,
-            description=obj_in.description,
-            content=obj_in.content
-        )
+        db_obj = GenerationTemplate(**obj_in.dict(exclude_unset=True, exclude={"id"}))
         db.add(db_obj)
         await db.flush()
         return db_obj

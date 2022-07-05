@@ -11,18 +11,7 @@ class CRUDRobot(CRUDBase[Robot, RobotCreate, RobotUpdate]):
     async def create(
             self, db: AsyncSession, *, obj_in: RobotCreate
     ) -> Robot:
-        db_obj = Robot(
-            project_id=obj_in.project_id,
-            robot_type_id=obj_in.robot_type_id,
-            description=obj_in.description,
-            name=obj_in.name,
-            position_x=obj_in.position_x,
-            position_y=obj_in.position_y,
-            position_z=obj_in.position_z,
-            position_norm_vector_x=obj_in.position_norm_vector_x,
-            position_norm_vector_y=obj_in.position_norm_vector_y,
-            position_norm_vector_z=obj_in.position_norm_vector_z,
-        )
+        db_obj = Robot(**obj_in.dict(exclude_unset=True, exclude={"id"}))
         db.add(db_obj)
         await db.flush()
         return db_obj

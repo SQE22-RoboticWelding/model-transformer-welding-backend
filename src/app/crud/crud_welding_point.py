@@ -11,20 +11,7 @@ class CRUDWeldingPoint(CRUDBase[WeldingPoint, WeldingPointCreate, WeldingPointUp
     async def create(
             self, db: AsyncSession, *, obj_in: WeldingPointCreate
     ) -> WeldingPoint:
-        db_obj = WeldingPoint(
-            description=obj_in.description,
-            project_id=obj_in.project_id,
-            robot_id=obj_in.robot_id,
-            welding_order=obj_in.welding_order,
-            name=obj_in.name,
-            x=obj_in.x,
-            y=obj_in.y,
-            z=obj_in.z,
-            pitch=obj_in.pitch,
-            roll=obj_in.roll,
-            yaw=obj_in.yaw,
-            tolerance=obj_in.tolerance
-        )
+        db_obj = WeldingPoint(**obj_in.dict(exclude_unset=True, exclude={"id"}))
         db.add(db_obj)
         await db.flush()
         return db_obj
