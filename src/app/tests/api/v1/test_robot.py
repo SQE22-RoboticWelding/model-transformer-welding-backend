@@ -57,7 +57,7 @@ async def test_read_robot(client: AsyncClient, database: AsyncSession):
     robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj,
                                    commit_and_refresh=True)
 
-    response = await client.get(f"{settings.API_V1_STR}/robot/:id?_id={robot_obj.id}")
+    response = await client.get(f"{settings.API_V1_STR}/robot/{robot_obj.id}")
     assert response.status_code == 200
 
     content = response.json()
@@ -76,7 +76,7 @@ async def test_read_robot(client: AsyncClient, database: AsyncSession):
 
 
 async def test_read_robot_not_found(client: AsyncClient):
-    response_get = await client.get(f"{settings.API_V1_STR}/robot/:id?_id=1")
+    response_get = await client.get(f"{settings.API_V1_STR}/robot/1")
     assert response_get.status_code == 404
 
 
@@ -89,7 +89,7 @@ async def test_update_robot(client: AsyncClient, database: AsyncSession):
     await database.refresh(robot_obj)
 
     data = {"description": "modified"}
-    response = await client.put(f"{settings.API_V1_STR}/robot/:id?_id={robot_obj.id}", json=data)
+    response = await client.put(f"{settings.API_V1_STR}/robot/{robot_obj.id}", json=data)
     assert response.status_code == 200
 
     content = response.json()
@@ -106,7 +106,7 @@ async def test_delete_robot(client: AsyncClient, database: AsyncSession):
     robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj,
                                    commit_and_refresh=True)
 
-    response_delete = await client.delete(f"{settings.API_V1_STR}/robot/:id?_id={robot_obj.id}")
+    response_delete = await client.delete(f"{settings.API_V1_STR}/robot/{robot_obj.id}")
     assert response_delete.status_code == 200
 
     assert robot_obj.as_dict() == response_delete.json()

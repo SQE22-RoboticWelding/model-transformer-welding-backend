@@ -35,7 +35,7 @@ async def test_create_generation_template(client: AsyncClient, database: AsyncSe
 
 async def test_read_generation_template(client: AsyncClient, database: AsyncSession):
     generation_template_obj = await create_generation_template(db=database, commit_and_refresh=True)
-    response = await client.get(f"{settings.API_V1_STR}/generationtemplate/:id?_id={generation_template_obj.id}")
+    response = await client.get(f"{settings.API_V1_STR}/generationtemplate/{generation_template_obj.id}")
     assert response.status_code == 200
 
     content = response.json()
@@ -47,14 +47,14 @@ async def test_read_generation_template(client: AsyncClient, database: AsyncSess
 
 
 async def test_read_generation_template_not_found(client: AsyncClient):
-    response_get = await client.get(f"{settings.API_V1_STR}/generationtemplate/:id?_id=1")
+    response_get = await client.get(f"{settings.API_V1_STR}/generationtemplate/1")
     assert response_get.status_code == 404
 
 
 async def test_update_generation_template(client: AsyncClient, database: AsyncSession):
     generation_template_obj = await create_generation_template(db=database, commit_and_refresh=True)
     data = {"content": "modified"}
-    response = await client.put(f"{settings.API_V1_STR}/generationtemplate/:id?_id={generation_template_obj.id}",
+    response = await client.put(f"{settings.API_V1_STR}/generationtemplate/{generation_template_obj.id}",
                                 json=data)
     assert response.status_code == 200
 
@@ -75,7 +75,7 @@ async def test_update_generation_template(client: AsyncClient, database: AsyncSe
 async def test_delete_generation_template(client: AsyncClient, database: AsyncSession):
     generation_template_obj = await create_generation_template(db=database, commit_and_refresh=True)
     response_delete = await client\
-        .delete(f"{settings.API_V1_STR}/generationtemplate/:id?_id={generation_template_obj.id}")
+        .delete(f"{settings.API_V1_STR}/generationtemplate/{generation_template_obj.id}")
     assert response_delete.status_code == 200
     content = response_delete.json()
 

@@ -53,17 +53,17 @@ async def create_welding_point(
     return result
 
 
-@router.put("/{id}", response_model=WeldingPoint)
+@router.put("/{welding_point_id}", response_model=WeldingPoint)
 async def update_welding_point(
         *,
-        _id: int,
+        welding_point_id: int,
         db: AsyncSession = Depends(deps.get_async_db),
         welding_point_in: WeldingPointUpdate
 ) -> Any:
     """
     Update a welding point
     """
-    welding_point_obj = await welding_point.get_by_id(db=db, id=_id)
+    welding_point_obj = await welding_point.get_by_id(db=db, id=welding_point_id)
     if not welding_point_obj:
         raise HTTPException(status_code=404, detail="Welding point not found")
 
@@ -97,13 +97,13 @@ async def update_welding_points(
     return updates
 
 
-@router.delete("/{id}", response_model=WeldingPoint)
+@router.delete("/{welding_point_id}", response_model=WeldingPoint)
 async def delete_welding_point(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        _id: int
+        welding_point_id: int
 ) -> Any:
-    result = await welding_point.get_by_id(db=db, id=_id)
+    result = await welding_point.get_by_id(db=db, id=welding_point_id)
     if not result:
         raise HTTPException(status_code=404, detail="Welding point not found")
 

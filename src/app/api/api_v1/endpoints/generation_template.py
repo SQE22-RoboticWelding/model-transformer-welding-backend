@@ -21,16 +21,16 @@ async def read_generation_templates(
     return result
 
 
-@router.get("/{id}", response_model=GenerationTemplate)
+@router.get("/{generation_template_id}", response_model=GenerationTemplate)
 async def read_generation_template(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        _id: int
+        generation_template_id: int
 ) -> Any:
     """
     Retrieve generation template by ID
     """
-    result = await generation_template.get_by_id(db=db, id=_id)
+    result = await generation_template.get_by_id(db=db, id=generation_template_id)
     if not result:
         raise HTTPException(status_code=404, detail="Generation template not found")
     return result
@@ -51,17 +51,17 @@ async def create_generation_template(
     return result
 
 
-@router.put("/{id}", response_model=GenerationTemplate)
+@router.put("/{generation_template_id}", response_model=GenerationTemplate)
 async def update_generation_template(
         *,
-        _id: int,
+        generation_template_id: int,
         db: AsyncSession = Depends(deps.get_async_db),
         generation_template_in: GenerationTemplateUpdate
 ) -> Any:
     """
     Update a generation template
     """
-    generation_template_obj = await generation_template.get_by_id(db=db, id=_id)
+    generation_template_obj = await generation_template.get_by_id(db=db, id=generation_template_id)
     if not generation_template_obj:
         raise HTTPException(status_code=404, detail="Generation template not found")
 
@@ -71,13 +71,13 @@ async def update_generation_template(
     return result
 
 
-@router.delete("/{id}", response_model=GenerationTemplate)
+@router.delete("/{generation_template_id}", response_model=GenerationTemplate)
 async def delete_generation_template(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        _id: int
+        generation_template_id: int
 ) -> Any:
-    result = await generation_template.get_by_id(db=db, id=_id)
+    result = await generation_template.get_by_id(db=db, id=generation_template_id)
     if not result:
         raise HTTPException(status_code=404, detail="Generation template not found")
 

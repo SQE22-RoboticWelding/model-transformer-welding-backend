@@ -22,16 +22,16 @@ async def read_robot_types(
     return robot_type_with_template
 
 
-@router.get("/{id}", response_model=RobotTypeWithTemplate)
+@router.get("/{robot_type_id}", response_model=RobotTypeWithTemplate)
 async def read_robot_type(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        _id: int
+        robot_type_id: int
 ) -> Any:
     """
     Retrieve robot type by ID
     """
-    robot_type_obj = await robot_type.get_by_id(db=db, id=_id)
+    robot_type_obj = await robot_type.get_by_id(db=db, id=robot_type_id)
     if not robot_type_obj:
         raise HTTPException(status_code=404, detail="Robot type not found")
     return RobotTypeWithTemplate.factory(robot_type_obj, robot_type_obj.generation_template)
@@ -51,17 +51,17 @@ async def create_robot_type(
     return result
 
 
-@router.put("/{id}", response_model=RobotType)
+@router.put("/{robot_type_id}", response_model=RobotType)
 async def update_robot_type(
         *,
-        _id: int,
+        robot_type_id: int,
         db: AsyncSession = Depends(deps.get_async_db),
         robot_type_in: RobotTypeUpdate
 ) -> Any:
     """
     Update a robot type
     """
-    robot_type_obj = await robot_type.get_by_id(db=db, id=_id)
+    robot_type_obj = await robot_type.get_by_id(db=db, id=robot_type_id)
     if not robot_type_obj:
         raise HTTPException(status_code=404, detail="Robot type not found")
 
@@ -71,13 +71,13 @@ async def update_robot_type(
     return result
 
 
-@router.delete("/{id}", response_model=RobotType)
+@router.delete("/{robot_type_id}", response_model=RobotType)
 async def delete_robot_type(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        _id: int
+        robot_type_id: int
 ) -> Any:
-    robot_type_obj = await robot_type.get_by_id(db=db, id=_id)
+    robot_type_obj = await robot_type.get_by_id(db=db, id=robot_type_id)
     if not robot_type_obj:
         raise HTTPException(status_code=404, detail="Robot type not found")
 
