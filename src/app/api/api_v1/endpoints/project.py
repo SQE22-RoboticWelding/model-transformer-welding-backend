@@ -3,12 +3,12 @@ from fastapi.responses import StreamingResponse
 
 from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
-
-from app.codegen.code_generator import zip_generated_code, generate_code_by_robot
+from app.codegen.code_generator import CodeGenerator
 from app.crud.crud_project import *
 from app.crud.crud_welding_point import *
 from app.parser.pandas_parser import PandasParser
 from app.schemas.project import *
+from app.api.api_v1.endpoints.utils import verifications
 
 
 router = APIRouterWithGenericExceptionHandler()
@@ -55,6 +55,13 @@ async def generate_project(
     if project_obj is None:
         raise HTTPException(status_code=404, detail="Project not found")
 
+    if not verifications.verify_welding_points_robot_assignment(project_obj=project_obj):
+        raise HTTPException(status_code=420, detail="Not all welding points have a robot assigned")
+
+    if not verifications.verify_project_robot_type_template_assignment(project_obj=project_obj):
+        raise HTTPException(status_code=420, detail="Not all used robot types of robots have a generation "
+                                                    "template assigned")
+
     # Get welding points seperated by robot, each list sorted by welding order ascending
     wp_by_robot = []
     robots = {wp.robot_id for wp in project_obj.welding_points}
@@ -64,10 +71,10 @@ async def generate_project(
         wp_by_robot.append(wps)
 
     # Generate code for each robot
-    generated_code = generate_code_by_robot(wp_by_robot)
+    generated_code = CodeGenerator.generate_code_by_robot(wp_by_robot)
 
     # Create in-memory zip with generated code
-    zip_obj = zip_generated_code(generated_code)
+    zip_obj = CodeGenerator.zip_generated_code(generated_code)
 
     current_time = datetime.now().strftime("%Y%m%d-%H%M%S")
     zip_name = f"{project_obj.name}_{current_time}.zip"
