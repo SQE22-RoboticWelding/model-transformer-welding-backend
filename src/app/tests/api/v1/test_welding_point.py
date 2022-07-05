@@ -4,63 +4,29 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.crud.crud_welding_point import welding_point
-from app.tests.utils.models import create_project, create_welding_point
+from app.tests.utils.models import create_project, create_welding_point,get_welding_point_json_data
 
 pytestmark = pytest.mark.asyncio
 
 
 async def test_create_welding_point_integrity_fail(client: AsyncClient):
-    data = {
-        "project_id": 1,
-        "welding_order": 1,
-        "name": "P7",
-        "description": "Welding point next to the reactor entrance",
-        "x": 3.14,
-        "y": -5.12,
-        "z": 2.4,
-        "roll": -1.7,
-        "pitch": -2.0,
-        "yaw": 4.512
-    }
-    response = await client.post(f"{settings.API_V1_STR}/weldingpoint/", json=data)
+    response = await client.post(f"{settings.API_V1_STR}/weldingpoint/", json=get_welding_point_json_data())
     assert response.status_code == 400
 
 
 async def test_create_welding_point_welding_order_fail(client: AsyncClient, database: AsyncSession):
-    project_obj = await create_project(db=database, commit_and_refresh=True)
-    data = {
-        "project_id": project_obj.id,
-        "welding_order": 1,
-        "name": "P7",
-        "description": "Welding point next to the reactor entrance",
-        "x": 3.14,
-        "y": -5.12,
-        "z": 2.4,
-        "roll": -1.7,
-        "pitch": -2.0,
-        "yaw": 4.512
-    }
-    response = await client.post(f"{settings.API_V1_STR}/weldingpoint/", json=data)
+    await create_project(db=database, commit_and_refresh=True)
+
+    response = await client.post(f"{settings.API_V1_STR}/weldingpoint/", json=get_welding_point_json_data())
     assert response.status_code == 200
-    response = await client.post(f"{settings.API_V1_STR}/weldingpoint/", json=data)
+    response = await client.post(f"{settings.API_V1_STR}/weldingpoint/", json=get_welding_point_json_data())
     assert response.status_code == 420
 
 
 async def test_create_welding_point(client: AsyncClient, database: AsyncSession):
     project_obj = await create_project(db=database, commit_and_refresh=True)
+    data = get_welding_point_json_data()
 
-    data = {
-        "project_id": project_obj.id,
-        "welding_order": 1,
-        "name": "P7",
-        "description": "Welding point next to the reactor entrance",
-        "x": 3.14,
-        "y": -5.12,
-        "z": 2.4,
-        "roll": -1.7,
-        "pitch": -2.0,
-        "yaw": 4.512
-    }
     response = await client.post(f"{settings.API_V1_STR}/weldingpoint/", json=data)
     assert response.status_code == 200
 

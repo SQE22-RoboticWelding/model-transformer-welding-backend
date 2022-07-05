@@ -152,3 +152,18 @@ def get_welding_point_create(project_obj: Project, welding_order_in: int = 0) ->
         yaw=random_float(),
         tolerance=random_float(negative=False)
     )
+
+
+def get_welding_point_json_data():
+    return {
+        "project_id": 1,
+        "welding_order": 1,
+        "name": "P7",
+        "description": "Welding point next to the reactor entrance",
+        "x": 3.14,
+        "y": -5.12,
+        "z": 2.4,
+        "roll": -1.7,
+        "pitch": -2.0,
+        "yaw": 4.512
+    }
