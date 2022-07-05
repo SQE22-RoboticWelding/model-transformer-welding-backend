@@ -4,6 +4,7 @@ from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandl
 from app.crud.crud_welding_point import *
 from app.crud.crud_project import *
 from app.schemas.welding_point import *
+from app.api.api_v1.endpoints.utils import verifications
 
 
 router = APIRouterWithGenericExceptionHandler()
@@ -48,6 +49,16 @@ async def create_welding_point(
     Create new welding point
     """
     result = await welding_point.create(db=db, obj_in=welding_point_in)
+    # Request project, as the result welding point is just in-memory and no ORM relationship is
+    # available. Received project already contains the in-memory welding point
+    project_obj = await project.get_by_id(db=db, id=result.project_id)
+
+    if not verifications.verify_welding_order_in_project(project_obj):
+        await db.rollback()
+        raise HTTPException(status_code=420,
+                            detail="Update on welding point does not ensure that the welding order "
+                                   "is unique or that each welding point has an order index")
+
     await db.commit()
     await db.refresh(result)
     return result
@@ -68,6 +79,16 @@ async def update_welding_point(
         raise HTTPException(status_code=404, detail="Welding point not found")
 
     result = await welding_point.update(db=db, db_obj=welding_point_obj, obj_in=welding_point_in)
+    # Request project, as the result welding point is just in-memory and no ORM relationship is
+    # available. Received project already contains the in-memory welding point
+    project_obj = await project.get_by_id(db=db, id=result.project_id)
+
+    if not verifications.verify_welding_order_in_project(project_obj):
+        await db.rollback()
+        raise HTTPException(status_code=420,
+                            detail="Update on welding point does not ensure that the welding order "
+                                   "is unique or that each welding point has an order index")
+
     await db.commit()
     await db.refresh(result)
     return result
@@ -91,6 +112,16 @@ async def update_welding_points(
     for wp in welding_points_in:
         element = await welding_point.get_by_id(db=db, id=wp.id)
         updates.append(await welding_point.update(db=db, db_obj=element, obj_in=wp))
+
+    # Request project, as the result welding points are just in-memory and no ORM relationship is available
+    # Received project already contains the in-memory welding points
+    project_obj = project.get_by_id(db=db, id=updates[0].project_id)
+
+    if not verifications.verify_welding_order_in_project(project_obj):
+        await db.rollback()
+        raise HTTPException(status_code=420,
+                            detail="Update on welding points does not ensure that the welding order "
+                                   "is unique or that each welding point has an order index")
 
     await db.commit()
     updates = [await db.refresh(obj) for obj in updates]

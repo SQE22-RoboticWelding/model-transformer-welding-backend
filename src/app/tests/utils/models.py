@@ -118,13 +118,17 @@ async def create_generation_template(db: AsyncSession, commit_and_refresh: bool 
     generation_template_in = GenerationTemplateCreate(
         name=random_string(),
         description=random_string(),
-        content=get_example_template()
+        content=get_example_template(),
+        language="HolyC",
+        file_extension=".HC"
     )
 
     generation_template_obj = await generation_template.create(db=db, obj_in=generation_template_in)
     assert generation_template_obj.name == generation_template_in.name
     assert generation_template_obj.description == generation_template_in.description
     assert generation_template_obj.content == generation_template_in.content
+    assert generation_template_obj.language == generation_template_in.language
+    assert generation_template_obj.file_extension == generation_template_in.file_extension
 
     # Useful when the date fields in the object are needed as they get only filled when the database executes
     # the transaction
@@ -148,3 +152,18 @@ def get_welding_point_create(project_obj: Project, welding_order_in: int = 0) ->
         yaw=random_float(),
         tolerance=random_float(negative=False)
     )
+
+
+def get_welding_point_json_data():
+    return {
+        "project_id": 1,
+        "welding_order": 1,
+        "name": "P7",
+        "description": "Welding point next to the reactor entrance",
+        "x": 3.14,
+        "y": -5.12,
+        "z": 2.4,
+        "roll": -1.7,
+        "pitch": -2.0,
+        "yaw": 4.512
+    }

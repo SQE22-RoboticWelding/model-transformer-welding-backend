@@ -16,7 +16,9 @@ async def test_create_generation_template(client: AsyncClient, database: AsyncSe
     data = {
         "name": "Test template",
         "description": "Test template description",
-        "content": get_example_template()
+        "content": get_example_template(),
+        "language": "HolyC",
+        "file_extension": ".HC"
     }
     response = await client.post(f"{settings.API_V1_STR}/generationtemplate/", json=data)
     assert response.status_code == 200
@@ -26,11 +28,15 @@ async def test_create_generation_template(client: AsyncClient, database: AsyncSe
     assert content["name"] == data["name"]
     assert content["description"] == data["description"]
     assert content["content"] == data["content"]
+    assert content["language"] == data["language"]
+    assert content["file_extension"] == data["file_extension"]
 
     generation_template_obj_get = await generation_template.get(db=database, id=content["id"])
     assert generation_template_obj_get.name == content["name"]
     assert generation_template_obj_get.description == content["description"]
     assert generation_template_obj_get.content == content["content"]
+    assert generation_template_obj_get.language == content["language"]
+    assert generation_template_obj_get.file_extension == content["file_extension"]
 
 
 async def test_read_generation_template(client: AsyncClient, database: AsyncSession):
@@ -42,6 +48,8 @@ async def test_read_generation_template(client: AsyncClient, database: AsyncSess
     assert content["id"] == generation_template_obj.id
     assert content["description"] == generation_template_obj.description
     assert content["content"] == generation_template_obj.content
+    assert content["language"] == generation_template_obj.language
+    assert content["file_extension"] == generation_template_obj.file_extension
     assert datetime.fromisoformat(content["created_at"]) == generation_template_obj.created_at
     assert datetime.fromisoformat(content["modified_at"]) == generation_template_obj.modified_at
 
@@ -68,6 +76,8 @@ async def test_update_generation_template(client: AsyncClient, database: AsyncSe
     assert generation_template_obj_get.content == generation_template_obj.content
     assert generation_template_obj_get.name == generation_template_obj.name
     assert generation_template_obj_get.description == generation_template_obj.description
+    assert generation_template_obj_get.language == generation_template_obj.language
+    assert generation_template_obj_get.file_extension == generation_template_obj.file_extension
     assert generation_template_obj_get.created_at == generation_template_obj.created_at
     assert generation_template_obj_get.modified_at >= generation_template_obj.modified_at
 
@@ -84,6 +94,8 @@ async def test_delete_generation_template(client: AsyncClient, database: AsyncSe
     assert content["id"] == generation_template_obj.id
     assert content["description"] == generation_template_obj.description
     assert content["content"] == generation_template_obj.content
+    assert content["language"] == generation_template_obj.language
+    assert content["file_extension"] == generation_template_obj.file_extension
     assert datetime.fromisoformat(content["created_at"]) == generation_template_obj.created_at
     assert datetime.fromisoformat(content["modified_at"]) == generation_template_obj.modified_at
 

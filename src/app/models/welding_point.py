@@ -18,3 +18,4 @@ class WeldingPoint(Base):
     yaw = Column(Float)
     tolerance = Column(Float)
     project = relationship("Project", back_populates="welding_points", lazy='subquery')
+    robot = relationship("Robot", lazy='subquery')
