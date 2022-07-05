@@ -49,7 +49,7 @@ async def generate_project(
         _id: int
 ) -> Any:
     """"
-    Retrieve generated code of the project
+    Generate and retrieve code of the project
     """
     project_obj = await project.get_by_id(db=db, id=_id)
     if project_obj is None:
