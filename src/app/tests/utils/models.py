@@ -120,7 +120,8 @@ async def create_generation_template(db: AsyncSession, commit_and_refresh: bool 
         description=random_string(),
         content=get_example_template(),
         language="HolyC",
-        file_extension=".HC"
+        file_extension=".HC",
+        version=1.00
     )
 
     generation_template_obj = await generation_template.create(db=db, obj_in=generation_template_in)
