@@ -1,4 +1,4 @@
-{"name": "Niryo One v1.0", "description": "Niryo One Python 3 Template", "language": "Python 3", "file_extension": "py"}
+{"name": "Niryo One v1.0", "description": "Niryo One Python 3 Template", "language": "Python 3", "file_extension": "py", "version": 1.00}
 from niryo_one_python_api.niryo_one_api import NiryoOne
 import rospy
 import time
