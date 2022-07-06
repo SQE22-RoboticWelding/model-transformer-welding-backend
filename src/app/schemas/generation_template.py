@@ -9,6 +9,7 @@ class GenerationTemplateBase(BaseModel):
     description: Optional[str]
     language: str
     file_extension: str
+    version: float
     content: str
 
     class Config:
@@ -18,6 +19,7 @@ class GenerationTemplateBase(BaseModel):
                 "description": "Python 3 templated based on ROS Melodic for the Niryo One",
                 "language": "Python 3",
                 "file_extension": "py",
+                "version": 1.00,
                 "content":
                     "{% for p in welding_points %}"
                     "{{p.x}}, {{p.y}}, {{p.z}} / {{p.roll}}, {{p.pitch}}, {{p.yaw}} / {{p.welding_order}}"
@@ -36,6 +38,7 @@ class GenerationTemplateUpdate(GenerationTemplateBase):
     description: Optional[str]
     language: Optional[str]
     file_extension: Optional[str]
+    version: Optional[float]
     content: Optional[str]
 
 
