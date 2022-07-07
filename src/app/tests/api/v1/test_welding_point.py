@@ -95,7 +95,10 @@ async def test_update_welding_point(client: AsyncClient, database: AsyncSession)
     project_obj = await create_project(db=database)
     welding_point_obj = await create_welding_point(db=database, project_obj=project_obj, commit_and_refresh=True)
 
-    data = {"x": 1000.500, "y": -10000}
+    data = {
+        "x": welding_point_obj.x_original - welding_point_obj.tolerance / 10,
+        "y": welding_point_obj.x_original + welding_point_obj.tolerance / 10
+    }
     response = await client.put(f"{settings.API_V1_STR}/weldingpoint/{welding_point_obj.id}", json=data)
     assert response.status_code == 200
 

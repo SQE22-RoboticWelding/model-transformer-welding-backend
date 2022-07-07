@@ -28,6 +28,8 @@ def verify_welding_coordinates_in_tolerance(welding_points: List[WeldingPoint]) 
     Verifies that the welding point coordinates are within the tolerance
     """
     for wp in welding_points:
+        if wp.tolerance is None:
+            continue
         dist = calculate_distance_from_origin(wp)
         if dist > wp.tolerance:
             return False
