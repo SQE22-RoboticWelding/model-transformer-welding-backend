@@ -25,9 +25,6 @@ def upgrade() -> None:
     op.alter_column('weldingpoint', 'project_id',
                existing_type=sa.INTEGER(),
                nullable=False)
-    op.alter_column('weldingpoint', 'robot_id',
-               existing_type=sa.INTEGER(),
-               nullable=False)
     op.alter_column('weldingpoint', 'welding_order',
                existing_type=sa.INTEGER(),
                nullable=False)
@@ -97,9 +94,6 @@ def downgrade() -> None:
                existing_type=sa.VARCHAR(),
                nullable=True)
     op.alter_column('weldingpoint', 'welding_order',
-               existing_type=sa.INTEGER(),
-               nullable=True)
-    op.alter_column('weldingpoint', 'robot_id',
                existing_type=sa.INTEGER(),
                nullable=True)
     op.alter_column('weldingpoint', 'project_id',
