@@ -1,0 +1,139 @@
+{"name": "Niryo One Blockly v1.0", "description": "Niryo One Blockly Template", "language": "Blockly", "file_extension": "xml", "version": 1.00}
+<?xml version="1.0" encoding="UTF-8"?>
+<xml xmlns="http://www.w3.org/1999/xhtml">
+   <block type="niryo_one_move_pose_from_pose" id="{{ generate_blockly_block_id()  }}" x="610" y="310">
+      <field name="MOVE_POSE_METHOD_SELECT">MoveCommandType.POSE</field>
+      <value name="POSE">
+         <block type="niryo_one_pose" id="{{ generate_blockly_block_id()  }}">
+            <value name="x">
+               <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                  <field name="NUM">0</field>
+               </block>
+            </value>
+            <value name="y">
+               <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                  <field name="NUM">0</field>
+               </block>
+            </value>
+            <value name="z">
+               <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                  <field name="NUM">0</field>
+               </block>
+            </value>
+            <value name="roll">
+               <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                  <field name="NUM">0</field>
+               </block>
+            </value>
+            <value name="pitch">
+               <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                  <field name="NUM">0</field>
+               </block>
+            </value>
+            <value name="yaw">
+               <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                  <field name="NUM">0</field>
+               </block>
+            </value>
+         </block>
+      </value>
+{% for p in welding_points -%}
+      <next>
+         <block type="niryo_one_move_pose_from_pose" id="{{ generate_blockly_block_id()  }}">
+            <field name="MOVE_POSE_METHOD_SELECT">MoveCommandType.POSE</field>
+            <value name="POSE">
+               <block type="niryo_one_pose" id="{{ generate_blockly_block_id()  }}">
+                  <value name="x">
+                     <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                        <field name="NUM">{{ p.x }}</field>
+                     </block>
+                  </value>
+                  <value name="y">
+                     <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                        <field name="NUM">{{ p.y }}</field>
+                     </block>
+                  </value>
+                  <value name="z">
+                     <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                        <field name="NUM">{{ p.z }}</field>
+                     </block>
+                  </value>
+                  <value name="roll">
+                     <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                        <field name="NUM">{{ p.roll }}</field>
+                     </block>
+                  </value>
+                  <value name="pitch">
+                     <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                        <field name="NUM">{{ p.pitch }}</field>
+                     </block>
+                  </value>
+                  <value name="yaw">
+                     <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                        <field name="NUM">{{ p.yaw }}</field>
+                     </block>
+                  </value>
+               </block>
+            </value>
+            <next>
+               <block type="niryo_one_grasp_w_tool" id="{{ generate_blockly_block_id()  }}">
+                  <next>
+                     <block type="niryo_one_move_pose_from_pose" id="{{ generate_blockly_block_id()  }}">
+                        <field name="MOVE_POSE_METHOD_SELECT">MoveCommandType.POSE</field>
+                        <value name="POSE">
+                           <block type="niryo_one_pose" id="{{ generate_blockly_block_id()  }}">
+                              <value name="x">
+                                 <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                                    <field name="NUM">0</field>
+                                 </block>
+                              </value>
+                              <value name="y">
+                                 <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                                    <field name="NUM">0</field>
+                                 </block>
+                              </value>
+                              <value name="z">
+                                 <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                                    <field name="NUM">0</field>
+                                 </block>
+                              </value>
+                              <value name="roll">
+                                 <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                                    <field name="NUM">0</field>
+                                 </block>
+                              </value>
+                              <value name="pitch">
+                                 <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                                    <field name="NUM">0</field>
+                                 </block>
+                              </value>
+                              <value name="yaw">
+                                 <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                                    <field name="NUM">0</field>
+                                 </block>
+                              </value>
+                           </block>
+                        </value>
+                        <next>
+                           <block type="niryo_one_release_w_tool" id="{{ generate_blockly_block_id()  }}">
+                              <next>
+                                 <block type="niryo_one_sleep" id="{{ generate_blockly_block_id()  }}">
+                                    <value name="SLEEP_TIME">
+                                       <block type="math_number" id="{{ generate_blockly_block_id()  }}">
+                                          <field name="NUM">2</field>
+                                       </block>
+                                    </value>
+                                 </block>
+                              </next>
+                           </block>
+                        </next>
+                     </block>
+                  </next>
+               </block>
+            </next>
+         </block>
+      </next>
+{%- if loop.index != welding_points|length %}
+{% endif %}{% endfor %}
+   </block>
+</xml>

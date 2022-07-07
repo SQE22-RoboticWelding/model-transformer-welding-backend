@@ -3,7 +3,7 @@ from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 from app.crud.crud_generation_template import *
 from app.schemas.generation_template import *
-
+from app.templates.getter import get_library_templates
 
 router = APIRouterWithGenericExceptionHandler()
 
@@ -19,6 +19,14 @@ async def read_generation_templates(
     """
     result = await generation_template.get_multi(db=db, skip=skip, limit=limit)
     return result
+
+
+@router.get("/librarytemplates", response_model=List[LibraryTemplate])
+async def read_library_templates() -> Any:
+    """
+    Retrieve all pre-defined templates from the template library
+    """
+    return get_library_templates()
 
 
 @router.get("/{generation_template_id}", response_model=GenerationTemplate)

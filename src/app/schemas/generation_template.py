@@ -9,20 +9,23 @@ class GenerationTemplateBase(BaseModel):
     description: Optional[str]
     language: str
     file_extension: str
+    version: float
     content: str
 
-    schema_extra = {
-        "example": {
-            "name": "Niryo One (Python 3, ROS Melodic)",
-            "description": "Python 3 templated based on ROS Melodic for the Niryo One",
-            "language": "Python 3",
-            "file_extension": "py",
-            "content":
-                "{% for p in welding_points %}"
-                "{{p.x}}, {{p.y}}, {{p.z}} / {{p.roll}}, {{p.pitch}}, {{p.yaw}} / {{p.welding_order}}"
-                "{% endfor %}"
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "Niryo One (Python 3, ROS Melodic)",
+                "description": "Python 3 templated based on ROS Melodic for the Niryo One",
+                "language": "Python 3",
+                "file_extension": "py",
+                "version": 1.00,
+                "content":
+                    "{% for p in welding_points %}"
+                    "{{p.x}}, {{p.y}}, {{p.z}} / {{p.roll}}, {{p.pitch}}, {{p.yaw}} / {{p.welding_order}}"
+                    "{% endfor %}"
+            }
         }
-    }
 
 
 class GenerationTemplateCreate(GenerationTemplateBase):
@@ -35,6 +38,7 @@ class GenerationTemplateUpdate(GenerationTemplateBase):
     description: Optional[str]
     language: Optional[str]
     file_extension: Optional[str]
+    version: Optional[float]
     content: Optional[str]
 
 
@@ -53,3 +57,9 @@ class GenerationTemplate(GenerationTemplateInDBBase):
 
 class GenerationTemplateInDB(GenerationTemplateInDBBase):
     pass
+
+
+class LibraryTemplate(GenerationTemplateBase):
+    id: Optional[int]
+    description: Optional[str]
+    language: Optional[str]
