@@ -6,7 +6,7 @@ from app.db.base_class import Base
 class WeldingPoint(Base):
     id = Column(Integer, primary_key=True, index=True)
     project_id = Column(Integer, ForeignKey("project.id"), nullable=False)
-    robot_id = Column(Integer, ForeignKey("robot.id"), nullable=False)
+    robot_id = Column(Integer, ForeignKey("robot.id"))
     welding_order = Column(Integer, index=True, nullable=False)
     name = Column(String, nullable=False)
     description = Column(String)
