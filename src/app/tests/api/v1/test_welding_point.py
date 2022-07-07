@@ -36,6 +36,9 @@ async def test_create_welding_point(client: AsyncClient, database: AsyncSession)
     assert content["welding_order"] == data["welding_order"]
     assert content["name"] == data["name"]
     assert content["description"] == data["description"]
+    assert content["x_original"] == data["x_original"]
+    assert content["y_original"] == data["y_original"]
+    assert content["z_original"] == data["z_original"]
     assert content["x"] == data["x"]
     assert content["y"] == data["y"]
     assert content["z"] == data["z"]
@@ -61,6 +64,9 @@ async def test_read_welding_point(client: AsyncClient, database: AsyncSession):
     assert content["welding_order"] == welding_point_obj.welding_order
     assert content["name"] == welding_point_obj.name
     assert content["description"] == welding_point_obj.description
+    assert content["x_original"] == welding_point_obj.x_original
+    assert content["y_original"] == welding_point_obj.y_original
+    assert content["z_original"] == welding_point_obj.z_original
     assert content["x"] == welding_point_obj.x
     assert content["y"] == welding_point_obj.y
     assert content["z"] == welding_point_obj.z
