@@ -1,8 +1,7 @@
 """code_generator.py handles codegen of models."""
 import random
 import string
-#from lxml import etree, objectify
-from io import BytesIO, StringIO
+from io import BytesIO
 from typing import List
 from zipfile import ZipFile
 
@@ -52,12 +51,6 @@ class CodeGenerator:
         env = Environment(loader=BaseLoader(), keep_trailing_newline=True, autoescape=True)\
             .from_string(template.content)
         generated_code = env.render({"welding_points": welding_points} | func_dict)
-
-        # ToDo: fix formatting of xml
-        # Format the xml blockly output, as the generated code is not correctly formatted
-        #if template.language == "Blockly":
-        #    parsed_xml = objectify.fromstring(bytes(generated_code))
-        #    generated_code = etree.tostring(parsed_xml, pretty_print=True)
 
         return generated_code
 
