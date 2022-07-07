@@ -37,7 +37,7 @@
             </value>
          </block>
       </value>
-{% for p in welding_points -%}
+      {% for p in welding_points -%}
       <next>
          <block type="niryo_one_move_pose_from_pose" id="{{ generate_blockly_block_id()  }}">
             <field name="MOVE_POSE_METHOD_SELECT">MoveCommandType.POSE</field>
@@ -133,7 +133,7 @@
             </next>
          </block>
       </next>
-{%- if loop.index != welding_points|length %}
-{% endif %}{% endfor %}
+      {%- if loop.index != welding_points|length %}
+      {% endif %}{% endfor %}
    </block>
 </xml>
