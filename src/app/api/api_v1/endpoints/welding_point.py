@@ -59,6 +59,12 @@ async def create_welding_point(
                             detail="Update on welding point does not ensure that the welding order "
                                    "is unique or that each welding point has an order index")
 
+    if not verifications.verify_welding_coordinates_in_tolerance([result]):
+        await db.rollback()
+        raise HTTPException(status_code=420,
+                            detail="Update on welding point does not ensure that the coordinates are within the"
+                                   "given tolerance")
+
     await db.commit()
     await db.refresh(result)
     return result
@@ -88,6 +94,12 @@ async def update_welding_point(
         raise HTTPException(status_code=420,
                             detail="Update on welding point does not ensure that the welding order "
                                    "is unique or that each welding point has an order index")
+
+    if not verifications.verify_welding_coordinates_in_tolerance([result]):
+        await db.rollback()
+        raise HTTPException(status_code=420,
+                            detail="Update on welding point does not ensure that the coordinates are within the"
+                                   "given tolerance")
 
     await db.commit()
     await db.refresh(result)
@@ -122,6 +134,12 @@ async def update_welding_points(
         raise HTTPException(status_code=420,
                             detail="Update on welding points does not ensure that the welding order "
                                    "is unique or that each welding point has an order index")
+
+    if not verifications.verify_welding_coordinates_in_tolerance(updates):
+        await db.rollback()
+        raise HTTPException(status_code=420,
+                            detail="Update on welding point does not ensure that the coordinates are within the"
+                                   "given tolerance")
 
     await db.commit()
     updates = [await db.refresh(obj) for obj in updates]

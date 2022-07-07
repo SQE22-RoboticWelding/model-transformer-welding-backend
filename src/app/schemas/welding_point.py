@@ -9,6 +9,9 @@ class WeldingPointBase(BaseModel):
     welding_order: int
     name: Optional[str]
     description: Optional[str]
+    x_original: float
+    y_original: float
+    z_original: float
     x: float
     y: float
     z: float

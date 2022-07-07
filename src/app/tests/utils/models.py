@@ -101,6 +101,9 @@ async def create_welding_point(db: AsyncSession, project_obj: Project, welding_o
     assert welding_point_obj.welding_order == welding_point_in.welding_order
     assert welding_point_obj.name == welding_point_in.name
     assert welding_point_obj.description == welding_point_in.description
+    assert welding_point_obj.x_original == welding_point_in.x_original
+    assert welding_point_obj.y_original == welding_point_in.y_original
+    assert welding_point_obj.z_original == welding_point_in.z_original
     assert welding_point_obj.x == welding_point_in.x
     assert welding_point_obj.y == welding_point_in.y
     assert welding_point_obj.z == welding_point_in.z
@@ -145,6 +148,9 @@ def get_welding_point_create(project_obj: Project, welding_order_in: int = 0) ->
         welding_order=welding_order_in,
         name=random_string(),
         description=random_string(),
+        x_original=random_float(),
+        y_original=random_float(),
+        z_original=random_float(),
         x=random_float(),
         y=random_float(),
         z=random_float(),
@@ -161,6 +167,9 @@ def get_welding_point_json_data():
         "welding_order": 1,
         "name": "P7",
         "description": "Welding point next to the reactor entrance",
+        "x_original": -3.14,
+        "y_original": 5.12,
+        "z_original": -2.4,
         "x": 3.14,
         "y": -5.12,
         "z": 2.4,

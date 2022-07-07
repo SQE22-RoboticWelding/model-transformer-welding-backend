@@ -118,6 +118,12 @@ async def upload_project(
         await db.rollback()
         raise HTTPException(status_code=500, detail="Could not create welding points")
 
+    if not verifications.verify_welding_coordinates_in_tolerance(welding_points):
+        await db.rollback()
+        raise HTTPException(status_code=420,
+                            detail="Update on welding point does not ensure that the coordinates are within the"
+                                   "given tolerance")
+
     await db.commit()
     await db.refresh(project_obj)
     return ProjectWithData.factory(project_obj, project_obj.welding_points)

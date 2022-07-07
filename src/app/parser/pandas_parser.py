@@ -66,6 +66,9 @@ class PandasParser(ParserBase):
                 WeldingPointCreate(project_id=project.id,
                                    welding_order=getattr(row, "Index"),
                                    name=getattr(row, "ID"),
+                                   x_original=getattr(row, "x"),  # we use the x, y, z values as original defaults
+                                   y_original=getattr(row, "y"),
+                                   z_original=getattr(row, "z"),
                                    x=getattr(row, "x"),
                                    y=getattr(row, "y"),
                                    z=getattr(row, "z"),
