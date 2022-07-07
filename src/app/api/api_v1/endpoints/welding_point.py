@@ -62,7 +62,7 @@ async def create_welding_point(
     if not verifications.verify_welding_coordinates_in_tolerance([result]):
         await db.rollback()
         raise HTTPException(status_code=420,
-                            detail="Update on welding point does not ensure that the coordinates are within the"
+                            detail="Update on welding point does not ensure that the coordinates are within the "
                                    "given tolerance")
 
     await db.commit()

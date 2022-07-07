@@ -44,7 +44,7 @@ def test_tolerance_distance_two_dimensions_success():
                       y=0,
                       z=1,
                       tolerance=14.14214)
-    assert not verify_welding_coordinates_in_tolerance([wp])
+    assert verify_welding_coordinates_in_tolerance([wp])
 
 
 def test_tolerance_distance_three_dimensions_fail():

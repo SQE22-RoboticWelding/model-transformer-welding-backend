@@ -143,17 +143,21 @@ async def create_generation_template(db: AsyncSession, commit_and_refresh: bool 
 
 
 def get_welding_point_create(project_obj: Project, welding_order_in: int = 0) -> WeldingPointCreate:
+    x_original = random_float()
+    y_original = random_float()
+    z_original = random_float()
+
     return WeldingPointCreate(
         project_id=project_obj.id,
         welding_order=welding_order_in,
         name=random_string(),
         description=random_string(),
-        x_original=random_float(),
-        y_original=random_float(),
-        z_original=random_float(),
-        x=random_float(),
-        y=random_float(),
-        z=random_float(),
+        x_original=x_original,
+        y_original=y_original,
+        z_original=z_original,
+        x=x_original,
+        y=y_original,
+        z=z_original,
         roll=random_float(),
         pitch=random_float(),
         yaw=random_float(),

@@ -50,6 +50,9 @@ class WeldingPointCreate(WeldingPointBase):
 class WeldingPointUpdate(WeldingPointBase):
     id: Optional[int]
     project_id: Optional[int]
+    x_original: Optional[float]
+    y_original: Optional[float]
+    z_original: Optional[float]
     x: Optional[float]
     y: Optional[float]
     z: Optional[float]
