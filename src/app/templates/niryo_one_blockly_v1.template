@@ -1,4 +1,4 @@
-{"name": "Niryo One Blockly v1.0", "description": "Niryo One Blockly Template", "language": "Blockly", "file_extension": "xml", "version": 1.00}
+{"name": "Niryo One Blockly", "description": "Niryo One Blockly Template", "language": "Blockly", "file_extension": "xml", "version": 1.00}
 <?xml version="1.0" encoding="UTF-8"?>
 <xml xmlns="http://www.w3.org/1999/xhtml">
    <block type="niryo_one_move_pose_from_pose" id="{{ generate_blockly_block_id()  }}" x="610" y="310">
