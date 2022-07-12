@@ -127,7 +127,7 @@ async def update_welding_points(
 
     # Request project, as the result welding points are just in-memory and no ORM relationship is available
     # Received project already contains the in-memory welding points
-    project_obj = project.get_by_id(db=db, id=updates[0].project_id)
+    project_obj = await project.get_by_id(db=db, id=updates[0].project_id)
 
     if not verifications.verify_welding_order_in_project(project_obj):
         await db.rollback()
@@ -142,7 +142,8 @@ async def update_welding_points(
                                    "given tolerance")
 
     await db.commit()
-    updates = [await db.refresh(obj) for obj in updates]
+    for obj in updates:
+        await db.refresh(obj)
     return updates
 
 
