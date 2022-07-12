@@ -71,9 +71,8 @@ def verify_template_version_increase_on_content_change(generation_template_obj: 
     :param generation_template_in:  Update object of the template to update
     :return: True, if template update ensures the constraint
     """
-    if generation_template_in.content is not None and generation_template_obj.content != generation_template_in.content:
-        if generation_template_in.version is not None \
-                and generation_template_in.version > generation_template_obj.version:
-            return True
+    if generation_template_in.content is None or generation_template_obj.content == generation_template_in.content:
+        return True
+    if generation_template_in.version is None or generation_template_in.version <= generation_template_obj.version:
         return False
     return True
