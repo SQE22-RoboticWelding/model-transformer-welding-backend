@@ -63,9 +63,18 @@ async def test_read_generation_template_not_found(client: AsyncClient):
     assert response_get.status_code == 404
 
 
-async def test_update_generation_template(client: AsyncClient, database: AsyncSession):
+async def test_update_generation_template_content_version_verification_fail(
+        client: AsyncClient, database: AsyncSession):
     generation_template_obj = await create_generation_template(db=database, commit_and_refresh=True)
     data = {"content": "modified"}
+    response = await client.put(f"{settings.API_V1_STR}/generationtemplate/{generation_template_obj.id}",
+                                json=data)
+    assert response.status_code == 420
+    
+
+async def test_update_generation_template(client: AsyncClient, database: AsyncSession):
+    generation_template_obj = await create_generation_template(db=database, commit_and_refresh=True)
+    data = {"content": "modified", "version": 1.01}
     response = await client.put(f"{settings.API_V1_STR}/generationtemplate/{generation_template_obj.id}",
                                 json=data)
     assert response.status_code == 200

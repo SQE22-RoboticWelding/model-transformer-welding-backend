@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException
 from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
+from app.api.api_v1.endpoints.utils import verifications
 from app.crud.crud_generation_template import *
 from app.schemas.generation_template import *
 from app.templates.getter import get_library_templates
@@ -72,6 +73,10 @@ async def update_generation_template(
     generation_template_obj = await generation_template.get_by_id(db=db, id=generation_template_id)
     if not generation_template_obj:
         raise HTTPException(status_code=404, detail="Generation template not found")
+
+    if not verifications.verify_template_version_increase_on_content_change(
+            generation_template_obj, generation_template_in):
+        raise HTTPException(status_code=420, detail="Template content changed without increasing the version")
 
     result = await generation_template.update(db=db, db_obj=generation_template_obj, obj_in=generation_template_in)
     await db.commit()

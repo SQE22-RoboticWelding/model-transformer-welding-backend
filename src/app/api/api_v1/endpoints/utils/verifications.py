@@ -1,6 +1,8 @@
 from typing import List
 
 from app.models.project import Project
+from app.models.generation_template import GenerationTemplate
+from app.schemas.generation_template import GenerationTemplateUpdate
 from app.models.welding_point import WeldingPoint
 
 
@@ -58,4 +60,19 @@ def verify_project_robot_type_template_assignment(project_obj: Project) -> bool:
     for robot_type in robot_types:
         if robot_type.generation_template_id is None:
             return False
+    return True
+
+
+def verify_template_version_increase_on_content_change(generation_template_obj: GenerationTemplate,
+                                                       generation_template_in: GenerationTemplateUpdate) -> bool:
+    """
+    Verifies that on template update the content can only be changed when the version was increased as well
+    :param generation_template_obj: Current template in the database
+    :param generation_template_in:  Update object of the template to update
+    :return: True, if template update ensures the constraint
+    """
+    if generation_template_in.content is None or generation_template_obj.content == generation_template_in.content:
+        return True
+    if generation_template_in.version is None or generation_template_in.version <= generation_template_obj.version:
+        return False
     return True
