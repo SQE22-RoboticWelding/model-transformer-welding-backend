@@ -42,16 +42,16 @@ async def read_project(
     return result
 
 
-@router.get("/{id}/generate", response_description="Zip file containing the generated code")
+@router.get("/{project_id}/generate", response_description="Zip file containing the generated code")
 async def generate_project(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        _id: int
+        project_id: int
 ) -> Any:
     """"
     Generate and retrieve code of the project
     """
-    project_obj = await project.get_by_id(db=db, id=_id)
+    project_obj = await project.get_by_id(db=db, id=project_id)
     if project_obj is None:
         raise HTTPException(status_code=404, detail="Project not found")
 
