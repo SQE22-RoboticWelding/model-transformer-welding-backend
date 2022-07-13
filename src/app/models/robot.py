@@ -16,3 +16,4 @@ class Robot(Base):
     position_norm_vector_y = Column(Float)
     position_norm_vector_z = Column(Float)
     robot_type = relationship("RobotType", back_populates="robots", lazy="subquery")
+    project = relationship("Project", back_populates="robots", lazy="subquery")
