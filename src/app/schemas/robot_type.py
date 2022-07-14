@@ -8,6 +8,7 @@ class RobotTypeBase(BaseModel):
     id: int
     name: str
     vendor: str
+    model_file: Optional[str]
     capacity_load_kg: Optional[float]
     range_m: Optional[float]
     generation_template_id: Optional[int]

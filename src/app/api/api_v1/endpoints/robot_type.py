@@ -1,4 +1,5 @@
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, UploadFile
+
 from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 from app.crud.crud_robot_type import *
@@ -41,11 +42,21 @@ async def read_robot_type(
 async def create_robot_type(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        robot_type_in: RobotTypeCreate):
+        name: str,
+        vendor: str,
+        model_file: Optional[UploadFile],
+        capacity_load_kg: Optional[float],
+        range_m: Optional[float]):
     """
     Create new robot type
     """
-    result = await robot_type.create(db=db, obj_in=robot_type_in)
+    model_file_content = await model_file.read() if model_file else None
+    robot_type_create = RobotTypeCreate(name=name,
+                                        vendor=vendor,
+                                        model_file=model_file_content,
+                                        capacity_load_kg=capacity_load_kg,
+                                        range_m=range_m)
+    result = await robot_type.create(db=db, obj_in=robot_type_create)
     await db.commit()
     await db.refresh(result)
     return result
@@ -56,7 +67,11 @@ async def update_robot_type(
         *,
         robot_type_id: int,
         db: AsyncSession = Depends(deps.get_async_db),
-        robot_type_in: RobotTypeUpdate
+        name: Optional[str],
+        vendor: Optional[str],
+        model_file: Optional[UploadFile],
+        capacity_load_kg: Optional[float],
+        range_m: Optional[float]
 ) -> Any:
     """
     Update a robot type
@@ -65,7 +80,14 @@ async def update_robot_type(
     if not robot_type_obj:
         raise HTTPException(status_code=404, detail="Robot type not found")
 
-    result = await robot_type.update(db=db, db_obj=robot_type_obj, obj_in=robot_type_in)
+    model_file_content = await model_file.read() if model_file else None
+    robot_type_update = RobotTypeUpdate(name=name,
+                                        vendor=vendor,
+                                        model_file=model_file_content,
+                                        capacity_load_kg=capacity_load_kg,
+                                        range_m=range_m)
+
+    result = await robot_type.update(db=db, db_obj=robot_type_obj, obj_in=robot_type_update)
     await db.commit()
     await db.refresh(result)
     return result

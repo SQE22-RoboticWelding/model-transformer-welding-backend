@@ -42,6 +42,7 @@ async def create_robot_type(db: AsyncSession, template_id: Optional[int] = None,
     robot_type_in = RobotTypeCreate(
         name=random_string(),
         vendor=random_string(),
+        model_file=random_string(),
         capacity_load_kg=random_float(),
         range_m=random_float(),
         generation_template_id=template_id)
