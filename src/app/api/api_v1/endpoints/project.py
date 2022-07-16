@@ -52,26 +52,9 @@ async def generate_project(
     Generate and retrieve code of the project
     """
     project_obj = await project.get_by_id(db=db, id=project_id)
-    if project_obj is None:
-        raise HTTPException(status_code=404, detail="Project not found")
+    validate_project_for_generation(project_obj)
 
-    if not verifications.verify_welding_points_robot_assignment(project_obj=project_obj):
-        raise HTTPException(status_code=420, detail="Not all welding points have a robot assigned")
-
-    if not verifications.verify_project_robot_type_template_assignment(project_obj=project_obj):
-        raise HTTPException(status_code=420, detail="Not all used robot types of robots have a generation "
-                                                    "template assigned")
-
-    # Get welding points seperated by robot, each list sorted by welding order ascending
-    wp_by_robot = []
-    robots = {wp.robot_id for wp in project_obj.welding_points}
-    for robot_id in robots:
-        wps = [wp for wp in project_obj.welding_points if wp.robot_id == robot_id]
-        wps.sort(key=lambda x: x.welding_order)
-        wp_by_robot.append(wps)
-
-    # Generate code for each robot
-    generated_code = CodeGenerator.generate_code_by_robot(wp_by_robot)
+    generated_code = CodeGenerator.generate_code_for_project(project_obj)
 
     # Create in-memory zip with generated code
     zip_obj = CodeGenerator.zip_generated_code(generated_code)
@@ -81,6 +64,17 @@ async def generate_project(
     return StreamingResponse(zip_obj,
                              media_type="application/zip",
                              headers={"Content-Disposition": f"attachment;filename={zip_name}"})
+
+
+@router.get("/{project_id}/generate/validate", status_code=204)
+async def validate_generate_project(
+        *,
+        db: AsyncSession = Depends(deps.get_async_db),
+        project_id: int
+) -> Any:
+    project_obj = await project.get_by_id(db=db, id=project_id)
+    validate_project_for_generation(project_obj)
+    CodeGenerator.generate_code_for_project(project_obj)
 
 
 @router.post("/upload", response_description="Upload file to create a new project",
@@ -178,3 +172,15 @@ async def delete_project(
     result = await project.remove(db=db, obj=project_obj)
     await db.commit()
     return result
+
+
+def validate_project_for_generation(project_obj: Project):
+    if project_obj is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    if not verifications.verify_welding_points_robot_assignment(project_obj=project_obj):
+        raise HTTPException(status_code=420, detail="Not all welding points have a robot assigned")
+
+    if not verifications.verify_project_robot_type_template_assignment(project_obj=project_obj):
+        raise HTTPException(status_code=420, detail="Not all used robot types of robots have a generation "
+                                                    "template assigned")
