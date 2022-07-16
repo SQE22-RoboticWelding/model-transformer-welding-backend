@@ -1,5 +1,5 @@
-from fastapi import Depends, HTTPException, UploadFile
-from fastapi.responses import StreamingResponse
+from fastapi import Depends, HTTPException, status, UploadFile
+from fastapi.responses import Response, StreamingResponse
 
 from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
@@ -66,7 +66,7 @@ async def generate_project(
                              headers={"Content-Disposition": f"attachment;filename={zip_name}"})
 
 
-@router.get("/{project_id}/generate/validate", status_code=204)
+@router.get("/{project_id}/generate/validate", status_code=status.HTTP_204_NO_CONTENT)
 async def validate_generate_project(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
@@ -75,6 +75,7 @@ async def validate_generate_project(
     project_obj = await project.get_by_id(db=db, id=project_id)
     validate_project_for_generation(project_obj)
     CodeGenerator.generate_code_for_project(project_obj)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.post("/upload", response_description="Upload file to create a new project",
