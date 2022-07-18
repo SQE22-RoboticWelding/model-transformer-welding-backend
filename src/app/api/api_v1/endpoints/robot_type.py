@@ -80,6 +80,8 @@ async def delete_robot_type(
     robot_type_obj = await robot_type.get_by_id(db=db, id=robot_type_id)
     if not robot_type_obj:
         raise HTTPException(status_code=404, detail="Robot type not found")
+    if len(robot_type_obj.robots) > 0:
+        raise HTTPException(status_code=420, detail="Robot type has existing robots. Please delete first")
 
     result = await robot_type.remove(db=db, obj=robot_type_obj)
     await db.commit()
