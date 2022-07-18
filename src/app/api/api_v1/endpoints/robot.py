@@ -80,9 +80,16 @@ async def delete_robot(
         db: AsyncSession = Depends(deps.get_async_db),
         robot_id: int
 ) -> Any:
+    """
+    Delete a robot
+    """
     robot_obj = await robot.get_by_id(db=db, id=robot_id)
     if not robot_obj:
         raise HTTPException(status_code=404, detail="Robot not found")
+    # Check, if the robot is still assigned to any welding point of the project
+    if len([wp for wp in robot_obj.project.welding_points if wp.robot_id == robot_obj.id]) > 0:
+        raise HTTPException(status_code=420,
+                            detail=f"Robot is still assigned in welding points of project '{robot_obj.project.name}'")
 
     result = await robot.remove(db=db, obj=robot_obj)
     await db.commit()
