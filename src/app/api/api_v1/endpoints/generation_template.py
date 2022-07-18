@@ -3,6 +3,7 @@ from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 from app.api.api_v1.endpoints.utils import verifications
 from app.crud.crud_generation_template import *
+from app.models.robot_type import RobotType
 from app.schemas.generation_template import *
 from app.templates.getter import get_library_templates
 
@@ -90,10 +91,22 @@ async def delete_generation_template(
         db: AsyncSession = Depends(deps.get_async_db),
         generation_template_id: int
 ) -> Any:
-    result = await generation_template.get_by_id(db=db, id=generation_template_id)
-    if not result:
+    """
+    Delete a generation template
+    """
+    generation_template_obj = await generation_template.get_by_id(db=db, id=generation_template_id)
+    if not generation_template_obj:
         raise HTTPException(status_code=404, detail="Generation template not found")
 
-    result = await generation_template.remove(db=db, obj=result)
+    # Check, that template is not used in any robot type
+    linked_robot_types = await db.execute(select(RobotType)
+                                          .filter(RobotType.generation_template_id == generation_template_obj.id))
+    linked_robot_types = linked_robot_types.scalars().all()
+    if len(linked_robot_types) > 0:
+        robot_types_name = [rt.name for rt in linked_robot_types]
+        raise HTTPException(status_code=420,
+                            detail=f"The template is still used as template for robot types {robot_types_name}")
+
+    result = await generation_template.remove(db=db, obj=generation_template_obj)
     await db.commit()
     return result

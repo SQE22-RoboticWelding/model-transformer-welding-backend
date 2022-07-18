@@ -28,10 +28,11 @@ async def test_crud_project_get_multi(database: AsyncSession):
 
 
 async def test_crud_project_update(database: AsyncSession):
-    project_obj = await create_project(db=database)
+    project_obj = await create_project(db=database, commit_and_refresh=True)
     await project.update(db=database, db_obj=project_obj, obj_in={"name": "modified"})
     assert project_obj.name == "modified"
 
+    await database.refresh(project_obj)
     await project.update(db=database, db_obj=project_obj, obj_in=ProjectUpdate(name="modified again"))
     assert project_obj.name == "modified again"
 
