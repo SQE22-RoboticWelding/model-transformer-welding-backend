@@ -5,8 +5,10 @@ from io import BytesIO
 from typing import List
 from zipfile import ZipFile
 
+import jinja2
 from jinja2 import BaseLoader, Environment
 
+from app.models.project import Project
 from app.models.robot import Robot
 from app.models.welding_point import WeldingPoint
 from app.schemas.generation_template import GenerationTemplate
@@ -48,7 +50,10 @@ class CodeGenerator:
         func_dict = {"generate_blockly_block_id": TemplateFunctions.generate_blockly_block_id}
 
         # Create new jinja environment and load template from string
-        env = Environment(loader=BaseLoader(), keep_trailing_newline=True, autoescape=True)\
+        env = Environment(loader=BaseLoader(),
+                          keep_trailing_newline=True,
+                          autoescape=True,
+                          undefined=jinja2.StrictUndefined)\
             .from_string(template.content)
         generated_code = env.render({"welding_points": welding_points} | func_dict)
 
@@ -68,6 +73,19 @@ class CodeGenerator:
             code = CodeGenerator.generate(robot.robot_type.generation_template, wp_list)
             result.append(GeneratedCode(robot, code))
         return result
+
+    @staticmethod
+    def generate_code_for_project(project_obj: Project):
+        # Get welding points seperated by robot, each list sorted by welding order ascending
+        wp_by_robot = []
+        robots = {wp.robot_id for wp in project_obj.welding_points}
+        for robot_id in robots:
+            wps = [wp for wp in project_obj.welding_points if wp.robot_id == robot_id]
+            wps.sort(key=lambda x: x.welding_order)
+            wp_by_robot.append(wps)
+
+        # Generate code for each robot
+        return CodeGenerator.generate_code_by_robot(wp_by_robot)
 
     @staticmethod
     def zip_generated_code(generated_code: List[GeneratedCode]) -> BytesIO:
