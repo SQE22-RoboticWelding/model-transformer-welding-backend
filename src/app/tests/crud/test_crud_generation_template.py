@@ -28,10 +28,11 @@ async def test_crud_generation_template_get_multi(database: AsyncSession):
 
 
 async def test_crud_generation_template_update(database: AsyncSession):
-    generation_template_obj = await create_generation_template(db=database)
+    generation_template_obj = await create_generation_template(db=database, commit_and_refresh=True)
     await generation_template.update(db=database, db_obj=generation_template_obj, obj_in={"name": "modified"})
     assert generation_template_obj.name == "modified"
 
+    await database.refresh(generation_template_obj)
     await generation_template.update(db=database, db_obj=generation_template_obj,
                                      obj_in=GenerationTemplateUpdate(name="modified again"))
     assert generation_template_obj.name == "modified again"
