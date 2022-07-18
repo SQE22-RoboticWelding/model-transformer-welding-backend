@@ -8,6 +8,7 @@ class RobotTypeBase(BaseModel):
     id: int
     name: str
     vendor: str
+    model_file: Optional[str]
     capacity_load_kg: Optional[float]
     range_m: Optional[float]
     generation_template_id: Optional[int]
@@ -17,6 +18,7 @@ class RobotTypeBase(BaseModel):
             "example": {
                 "name": "Niryo One",
                 "vendor": "Niryo",
+                "model_file": "<xml></xml>",
                 "capacity_load_kg": 50.5,
                 "range_m": 3.141
             }

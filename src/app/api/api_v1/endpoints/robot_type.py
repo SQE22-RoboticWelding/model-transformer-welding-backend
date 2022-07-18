@@ -1,4 +1,5 @@
 from fastapi import Depends, HTTPException
+
 from app.api import deps
 from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandler
 from app.crud.crud_robot_type import *

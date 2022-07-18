@@ -69,7 +69,8 @@ async def test_read_robot_type_not_found(client: AsyncClient):
 async def test_update_robot_type(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database, commit_and_refresh=True)
     data = {"name": "Niryo Twenty", "range_m": 4000}
-    response = await client.put(f"{settings.API_V1_STR}/robottype/{robot_type_obj.id}", json=data)
+    response = await client.put(f"{settings.API_V1_STR}/robottype/{robot_type_obj.id}",
+                                json=data)
     assert response.status_code == 200
 
     content = response.json()
