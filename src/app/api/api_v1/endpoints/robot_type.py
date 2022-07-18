@@ -42,7 +42,7 @@ async def read_robot_type(
 async def create_robot_type(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
-        robot_type_in: RobotTypeUpdate):
+        robot_type_in: RobotTypeCreate):
     """
     Create new robot type
     """
