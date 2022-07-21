@@ -1,12 +1,21 @@
 from app.codegen.code_generator import CodeGenerator
 from app.models.generation_template import GenerationTemplate
 from app.models.welding_point import WeldingPoint
+from app.models.robot import Robot
 from app.tests.utils.utils import get_example_template
 
 
 def test_code_generation():
+    robot_obj = Robot(id=1,
+                      name="Test Robot",
+                      position_x=1,
+                      position_y=1,
+                      position_z=1)
+
     welding_point_obj = WeldingPoint(project_id=1,
                                      welding_order=0,
+                                     robot_id=robot_obj.id,
+                                     robot=robot_obj,
                                      x=10,
                                      y=5.5,
                                      z=0.25,

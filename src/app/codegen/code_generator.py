@@ -36,6 +36,10 @@ class TemplateFunctions:
         return "".join(random.choices(string.ascii_letters + string.digits, k=20))
 
 
+class CodeGeneratorException(Exception):
+    pass
+
+
 class CodeGenerator:
     @staticmethod
     def generate(template: GenerationTemplate, welding_points: List[WeldingPoint]) -> str:
@@ -49,13 +53,26 @@ class CodeGenerator:
         # Define a dictionary with functions, which can be used in templates
         func_dict = {"generate_blockly_block_id": TemplateFunctions.generate_blockly_block_id}
 
+        # Robot for which the program will be generated
+        robots = set([wp.robot.id for wp in welding_points])
+        if len(robots) != 1 or robots.pop() is None:
+            raise CodeGeneratorException("All welding points must have the same non-None robot")
+        robot = welding_points[0].robot
+
+        # Add welding points x, y, z relative to robot to be available as expression in templates
+        wp_list = [wp.as_dict() for wp in welding_points]
+        for wp in wp_list:
+            wp["x_rel"] = wp["x"] - robot.position_x
+            wp["y_rel"] = wp["y"] - robot.position_y
+            wp["z_rel"] = wp["z"] - robot.position_z
+
         # Create new jinja environment and load template from string
         env = Environment(loader=BaseLoader(),
                           keep_trailing_newline=True,
                           autoescape=True,
                           undefined=jinja2.StrictUndefined)\
             .from_string(template.content)
-        generated_code = env.render({"welding_points": welding_points} | func_dict)
+        generated_code = env.render({"welding_points": wp_list} | {"robot": robot} | func_dict)
 
         return generated_code
 
@@ -99,7 +116,7 @@ class CodeGenerator:
 
         # Write generated code to file
         for generated in generated_code:
-            filename = (f"{generated.robot.id}_{generated.robot.name}"
+            filename = (f"{generated.robot.name}"
                         f".{generated.robot.robot_type.generation_template.file_extension}")
             in_memory_zip.writestr(filename, generated.code)
         in_memory_zip.close()
