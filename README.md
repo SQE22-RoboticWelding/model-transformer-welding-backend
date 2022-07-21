@@ -33,4 +33,5 @@ docker compose up -d --build
 Or, for running locally, execute from the repository root:  
 * Install dependencies first: `pip3 install -r src/requirements.txt`
 * Start the database `docker compose up -d --no-deps sqe_database`
-* Run the backend application with uvicorn: `cd src && uvicorn app.main:app --host 0.0.0.0`
+* Run the backend application with uvicorn: `cd src && uvicorn app.main:app`
+* If you want to start the backend in development mode (hot reloading etc.) use `uvicorn app.main:app --reload` instead
