@@ -49,13 +49,23 @@ class CodeGenerator:
         # Define a dictionary with functions, which can be used in templates
         func_dict = {"generate_blockly_block_id": TemplateFunctions.generate_blockly_block_id}
 
+        # Robot for which the program will be generated
+        robot = welding_points[0].robot
+
+        # Add welding points x, y, z relative to robot to be available as expression in templates
+        wp_list = [wp.as_dict() for wp in welding_points]
+        for wp in wp_list:
+            wp["x_rel"] = wp["x"] - robot.position_x
+            wp["y_rel"] = wp["y"] - robot.position_y
+            wp["z_rel"] = wp["z"] - robot.position_z
+
         # Create new jinja environment and load template from string
         env = Environment(loader=BaseLoader(),
                           keep_trailing_newline=True,
                           autoescape=True,
                           undefined=jinja2.StrictUndefined)\
             .from_string(template.content)
-        generated_code = env.render({"welding_points": welding_points} | func_dict)
+        generated_code = env.render({"welding_points": wp_list} | {"robot": robot} | func_dict)
 
         return generated_code
 
