@@ -54,9 +54,10 @@ class CodeGenerator:
         func_dict = {"generate_blockly_block_id": TemplateFunctions.generate_blockly_block_id}
 
         # Robot for which the program will be generated
+        robots = set([wp.robot.id for wp in welding_points])
+        if len(robots) !== 1 or robots[0] is None:
+            raise CodeGeneratorException("All welding points must have the same non-None robot")
         robot = welding_points[0].robot
-        if robot is None:
-            raise CodeGeneratorException("Welding point does not have a robot")
 
         # Add welding points x, y, z relative to robot to be available as expression in templates
         wp_list = [wp.as_dict() for wp in welding_points]
