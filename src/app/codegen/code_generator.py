@@ -109,7 +109,7 @@ class CodeGenerator:
 
         # Write generated code to file
         for generated in generated_code:
-            filename = (f"{generated.robot.id}_{generated.robot.name}"
+            filename = (f"{generated.robot.name}"
                         f".{generated.robot.robot_type.generation_template.file_extension}")
             in_memory_zip.writestr(filename, generated.code)
         in_memory_zip.close()
