@@ -36,6 +36,10 @@ class TemplateFunctions:
         return "".join(random.choices(string.ascii_letters + string.digits, k=20))
 
 
+class CodeGeneratorException(Exception):
+    pass
+
+
 class CodeGenerator:
     @staticmethod
     def generate(template: GenerationTemplate, welding_points: List[WeldingPoint]) -> str:
@@ -51,6 +55,8 @@ class CodeGenerator:
 
         # Robot for which the program will be generated
         robot = welding_points[0].robot
+        if robot is None:
+            raise CodeGeneratorException("Welding point does not have a robot")
 
         # Add welding points x, y, z relative to robot to be available as expression in templates
         wp_list = [wp.as_dict() for wp in welding_points]
