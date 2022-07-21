@@ -55,7 +55,7 @@ class CodeGenerator:
 
         # Robot for which the program will be generated
         robots = set([wp.robot.id for wp in welding_points])
-        if len(robots) !== 1 or robots[0] is None:
+        if len(robots) != 1 or robots[0] is None:
             raise CodeGeneratorException("All welding points must have the same non-None robot")
         robot = welding_points[0].robot
 
