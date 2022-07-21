@@ -1,9 +1,12 @@
 # SQE Robotic Welding Backend
-Backend component of the robotic welding project. The backend is built with the 
-web framework [FastAPI](https://github.com/tiangolo/fastapi), [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy)
-is used for Object Relational Mapping (ORM) and [PostgreSQL](https://www.postgresql.org) as database. For database 
-migrations we used [Alembic](https://alembic.sqlalchemy.org/en/latest/), which is associated with SQLAlchemy.
-For tests, [pytest](https://docs.pytest.org/en/7.1.x/) is used.
+Backend components of the robotic welding project:
+| Component                                    | Used Technology                                                                    |
+| ------------------------------------- | ---------------------------------------------------------------- |
+| Web Framework                             | [FastAPI](https://github.com/tiangolo/fastapi)                      |
+| Object Relational Mapping (ORM) | [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) |
+| Database                                        | [PostgreSQL](https://www.postgresql.org)                            |
+| Database Migrations                      | [Alembic](https://alembic.sqlalchemy.org/en/latest/)           |
+| Testing                                            | [pytest](https://docs.pytest.org/en/7.1.x/)                             |
 
 ## Project Structure
 * **scripts:** Utility scripts for developing
