@@ -50,6 +50,8 @@ async def create_robot_type(db: AsyncSession, template_id: Optional[int] = None,
     robot_type_obj = await robot_type.create(db=db, obj_in=robot_type_in)
     assert robot_type_obj.name == robot_type_in.name
     assert robot_type_obj.vendor == robot_type_in.vendor
+    assert robot_type_obj.model_file_name == robot_type_in.model_file_name
+    assert robot_type_obj.model_file == robot_type_in.model_file
     assert robot_type_obj.capacity_load_kg == robot_type_in.capacity_load_kg
     assert robot_type_obj.range_m == robot_type_in.range_m
     if template_id is not None:
