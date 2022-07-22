@@ -7,7 +7,6 @@ from app.schemas.robot_type import RobotTypeBase
 class RobotBase(BaseModel):
     id: int
     robot_type_id: int
-    project_id: Optional[int]
     name: str
     description: Optional[str]
     position_x: float
@@ -21,7 +20,6 @@ class RobotBase(BaseModel):
         schema_extra = {
             "example": {
                 "robot_type_id": 1,
-                "project_id": 1,
                 "name": "Scratchy",
                 "description": "Robot with the scratch on arm",
                 "position_x": 0.554,

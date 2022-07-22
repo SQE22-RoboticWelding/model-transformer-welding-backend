@@ -54,8 +54,7 @@ async def test_read_robot(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database)
     project_obj = await create_project(db=database)
 
-    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj,
-                                   commit_and_refresh=True)
+    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, commit_and_refresh=True)
 
     response = await client.get(f"{settings.API_V1_STR}/robot/{robot_obj.id}")
     assert response.status_code == 200
@@ -83,8 +82,7 @@ async def test_read_robot_not_found(client: AsyncClient):
 async def test_update_robot(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database)
     project_obj = await create_project(db=database)
-    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj,
-                                   commit_and_refresh=True)
+    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, commit_and_refresh=True)
     await database.commit()
     await database.refresh(robot_obj)
 
@@ -102,9 +100,7 @@ async def test_update_robot(client: AsyncClient, database: AsyncSession):
 
 async def test_delete_robot(client: AsyncClient, database: AsyncSession):
     robot_type_obj = await create_robot_type(db=database)
-    project_obj = await create_project(db=database)
-    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, project_obj=project_obj,
-                                   commit_and_refresh=True)
+    robot_obj = await create_robot(db=database, robot_type_obj=robot_type_obj, commit_and_refresh=True)
 
     response_delete = await client.delete(f"{settings.API_V1_STR}/robot/{robot_obj.id}")
     assert response_delete.status_code == 200

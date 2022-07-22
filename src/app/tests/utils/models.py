@@ -61,11 +61,10 @@ async def create_robot_type(db: AsyncSession, template_id: Optional[int] = None,
     return robot_type_obj
 
 
-async def create_robot(db: AsyncSession, robot_type_obj: RobotType, project_obj: Project,
+async def create_robot(db: AsyncSession, robot_type_obj: RobotType,
                        commit_and_refresh: bool = False) -> Robot:
     robot_in = RobotCreate(
         robot_type_id=robot_type_obj.id,
-        project_id=project_obj.id,
         name=random_string(),
         description=random_string(),
         position_x=random_float(),

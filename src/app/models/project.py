@@ -12,5 +12,3 @@ class Project(Base):
     modified_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
     welding_points = relationship("WeldingPoint", back_populates="project", lazy='subquery',
                                   cascade="all, delete")
-    robots = relationship("Robot", back_populates="project", lazy="subquery",
-                          cascade="all, delete")
