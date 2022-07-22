@@ -7,7 +7,7 @@ from app.schemas.robot_type import RobotTypeBase
 class RobotBase(BaseModel):
     id: int
     robot_type_id: int
-    project_id: int
+    project_id: Optional[int]
     name: str
     description: Optional[str]
     position_x: float
@@ -40,7 +40,6 @@ class RobotCreate(RobotBase):
 
 class RobotUpdate(RobotBase):
     id: Optional[int]
-    project_id: Optional[int]
     robot_type_id: Optional[int]
     name: Optional[str]
     description: Optional[str]
