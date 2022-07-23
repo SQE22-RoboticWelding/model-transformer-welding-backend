@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status, UploadFile
+from fastapi import Depends, HTTPException, status, UploadFile, Body
 from fastapi.responses import Response, StreamingResponse
 
 from app.api import deps
@@ -6,10 +6,11 @@ from app.api.generic_exception_handler import APIRouterWithGenericExceptionHandl
 from app.codegen.code_generator import CodeGenerator
 from app.crud.crud_project import *
 from app.crud.crud_welding_point import *
+from app.crud.crud_workpiece import workpiece as crud_workpiece
 from app.parser.pandas_parser import PandasParser
 from app.schemas.project import *
 from app.api.api_v1.endpoints.utils import verifications
-
+from app.schemas.workpiece import WorkpieceUpdate
 
 router = APIRouterWithGenericExceptionHandler()
 
@@ -27,7 +28,7 @@ async def read_project(
     return result
 
 
-@router.get("/{project_id}", response_model=Project)
+@router.get("/{project_id}", response_model=ProjectWithData)
 async def read_project(
         *,
         db: AsyncSession = Depends(deps.get_async_db),
@@ -36,9 +37,16 @@ async def read_project(
     """
     Retrieve project by ID
     """
-    result = await project.get_by_id(db=db, id=project_id)
-    if not result:
+    project_obj = await project.get_by_id(db=db, id=project_id)
+    if not project_obj:
         raise HTTPException(status_code=404, detail="Project not found")
+
+    welding_points = await welding_point.get_multi_by_project_id(db=db, project_id=project_obj.id)
+    workpiece_obj = None
+    if project_obj.workpiece is not None:
+        workpiece_obj = await crud_workpiece.get_by_id(db=db, id=project_obj.workpiece.id
+                                                   )
+    result = ProjectWithData.factory(project=project_obj, welding_points=welding_points, workpiece=workpiece_obj)
     return result
 
 
@@ -85,7 +93,7 @@ async def upload_project(
         db: AsyncSession = Depends(deps.get_async_db),
         name: str,
         description: Optional[str] = None,
-        file: UploadFile
+        file: UploadFile,
 ) -> Any:
     """
     Create new project by uploading a file
@@ -116,12 +124,18 @@ async def upload_project(
     if not verifications.verify_welding_coordinates_in_tolerance(welding_points):
         await db.rollback()
         raise HTTPException(status_code=420,
-                            detail="Update on welding point does not ensure that the coordinates are within the"
-                                   "given tolerance")
+                            detail="Welding points are not within the given tolerance")
+
+    # Add a workpiece to the project
+    workpiece = WorkpieceCreate(project_id=project_obj.id)
+    workpiece_obj = await crud_workpiece.create(db=db, obj_in=workpiece)
+    if workpiece_obj is None:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail="Could not create workpiece for object")
 
     await db.commit()
     await db.refresh(project_obj)
-    return ProjectWithData.factory(project_obj, project_obj.welding_points)
+    return ProjectWithData.factory(project_obj, project_obj.welding_points, workpiece_obj)
 
 
 @router.post("/", response_description="Add new project", response_model=Project)
@@ -139,7 +153,7 @@ async def create_project(
     return result
 
 
-@router.put("/{project_id}", response_model=Project)
+@router.put("/{project_id}", response_model=ProjectWithData)
 async def update_project(
         *,
         project_id: int,
@@ -153,10 +167,15 @@ async def update_project(
     if not project_obj:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    result = await project.update(db=db, db_obj=project_obj, obj_in=project_in)
+    project_obj = await project.update(db=db, db_obj=project_obj, obj_in=project_in)
+
+    workpiece_obj = None
+    if project_obj.workpiece is not None:
+        workpiece_obj = await crud_workpiece.get_by_id(db=db, id=project_obj.workpiece.id)
+
     await db.commit()
-    await db.refresh(result)
-    return result
+    await db.refresh(project_obj)
+    return ProjectWithData.factory(project_obj, project_obj.welding_points, workpiece_obj)
 
 
 @router.delete("/{project_id}", response_model=Project)
