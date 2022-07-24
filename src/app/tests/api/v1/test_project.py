@@ -14,23 +14,6 @@ from testdata.validation import validate_project_file_welding_points
 pytestmark = pytest.mark.asyncio
 
 
-async def test_create_project(client: AsyncClient, database: AsyncSession):
-    data = {"name": "Test", "description": "Test description"}
-    response = await client.post(f"{settings.API_V1_STR}/project/", json=data)
-    assert response.status_code == 200
-
-    content = response.json()
-    assert content["name"] == data["name"]
-    assert content["description"] == data["description"]
-    assert "id" in content
-    assert "created_at" in content
-    assert "modified_at" in content
-
-    project_get = await project.get(db=database, id=content["id"])
-    assert project_get.name == content["name"]
-    assert project_get.description == content["description"]
-
-
 async def test_read_project(client: AsyncClient, database: AsyncSession):
     project_obj = await create_project(db=database, commit_and_refresh=True)
     response = await client.get(f"{settings.API_V1_STR}/project/{project_obj.id}")
@@ -93,6 +76,8 @@ async def test_upload_project(client: AsyncClient, database: AsyncSession):
     content = response.json()
     assert "id" in content
     assert content["name"] == "testproject"
+    assert "workpiece" in content
+    assert "id" in content["workpiece"]
 
     welding_points = [WeldingPoint(**obj) for obj in content["welding_points"]]
     validate_project_file_welding_points(welding_points)

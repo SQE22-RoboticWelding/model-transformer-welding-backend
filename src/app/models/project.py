@@ -14,3 +14,5 @@ class Project(Base):
                                   cascade="all, delete")
     robots = relationship("Robot", back_populates="project", lazy="subquery",
                           cascade="all, delete")
+    workpiece = relationship("Workpiece", back_populates="project", uselist=False, lazy="subquery",
+                             cascade="all, delete")
