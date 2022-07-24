@@ -13,9 +13,6 @@ class RobotBase(BaseModel):
     position_x: float
     position_y: float
     position_z: float
-    position_norm_vector_x: float
-    position_norm_vector_y: float
-    position_norm_vector_z: float
 
     class Config:
         schema_extra = {
@@ -26,10 +23,7 @@ class RobotBase(BaseModel):
                 "description": "Robot with the scratch on arm",
                 "position_x": 0.554,
                 "position_y": 5.554,
-                "position_z": 15.554,
-                "position_norm_vector_x": 0,
-                "position_norm_vector_y": 0,
-                "position_norm_vector_z": 1,
+                "position_z": 15.554
             }
         }
 
@@ -47,9 +41,6 @@ class RobotUpdate(RobotBase):
     position_x: Optional[float]
     position_y: Optional[float]
     position_z: Optional[float]
-    position_norm_vector_x: Optional[float]
-    position_norm_vector_y: Optional[float]
-    position_norm_vector_z: Optional[float]
 
 
 class RobotWithType(RobotBase):
