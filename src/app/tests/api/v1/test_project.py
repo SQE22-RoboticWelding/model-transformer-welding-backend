@@ -76,6 +76,8 @@ async def test_upload_project(client: AsyncClient, database: AsyncSession):
     content = response.json()
     assert "id" in content
     assert content["name"] == "testproject"
+    assert "workpiece" in content
+    assert "id" in content["workpiece"]
 
     welding_points = [WeldingPoint(**obj) for obj in content["welding_points"]]
     validate_project_file_welding_points(welding_points)
