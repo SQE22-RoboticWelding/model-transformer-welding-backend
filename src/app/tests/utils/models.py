@@ -99,10 +99,7 @@ async def create_robot(db: AsyncSession, robot_type_obj: RobotType, project_obj:
         description=random_string(),
         position_x=random_float(),
         position_y=random_float(),
-        position_z=random_float(),
-        position_norm_vector_x=random_float(),
-        position_norm_vector_y=random_float(),
-        position_norm_vector_z=random_float()
+        position_z=random_float()
     )
 
     robot_obj = await robot.create(db=db, obj_in=robot_in)
@@ -112,9 +109,6 @@ async def create_robot(db: AsyncSession, robot_type_obj: RobotType, project_obj:
     assert robot_obj.position_x == robot_in.position_x
     assert robot_obj.position_y == robot_in.position_y
     assert robot_obj.position_z == robot_in.position_z
-    assert robot_obj.position_norm_vector_x == robot_in.position_norm_vector_x
-    assert robot_obj.position_norm_vector_y == robot_in.position_norm_vector_y
-    assert robot_obj.position_norm_vector_z == robot_in.position_norm_vector_z
 
     if commit_and_refresh:
         await db.commit()

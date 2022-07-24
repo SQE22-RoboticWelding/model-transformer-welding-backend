@@ -24,7 +24,6 @@ def calculate_distance_from_origin(wp: WeldingPoint):
     return (x_dist_square + y_dist_square + z_dist_square)**0.5
 
 
-# TODO: once we have normal vector this should check the tolerance on its orthogonal plane, not in a sphere
 def verify_welding_coordinates_in_tolerance(welding_points: List[WeldingPoint]) -> bool:
     """
     Verifies that the welding point coordinates are within the tolerance

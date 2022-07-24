@@ -25,10 +25,7 @@ async def test_create_robot(client: AsyncClient, database: AsyncSession):
             "description": "Test",
             "position_x": 5,
             "position_y": 5.5,
-            "position_z": 5.55,
-            "position_norm_vector_x": 0,
-            "position_norm_vector_y": 0.5,
-            "position_norm_vector_z": 0.75}
+            "position_z": 5.55}
 
     await database.commit()
     response = await client.post(f"{settings.API_V1_STR}/robot/", json=data)
@@ -43,9 +40,6 @@ async def test_create_robot(client: AsyncClient, database: AsyncSession):
     assert content["position_x"] == data["position_x"]
     assert content["position_y"] == data["position_y"]
     assert content["position_z"] == data["position_z"]
-    assert content["position_norm_vector_x"] == data["position_norm_vector_x"]
-    assert content["position_norm_vector_y"] == data["position_norm_vector_y"]
-    assert content["position_norm_vector_z"] == data["position_norm_vector_z"]
 
     assert (await robot.get(db=database, id=content["id"])).as_dict() == content
 
@@ -70,9 +64,6 @@ async def test_read_robot(client: AsyncClient, database: AsyncSession):
     assert content["position_x"] == robot_obj.position_x
     assert content["position_y"] == robot_obj.position_y
     assert content["position_z"] == robot_obj.position_z
-    assert content["position_norm_vector_x"] == robot_obj.position_norm_vector_x
-    assert content["position_norm_vector_y"] == robot_obj.position_norm_vector_y
-    assert content["position_norm_vector_z"] == robot_obj.position_norm_vector_z
 
 
 async def test_read_robot_not_found(client: AsyncClient):
