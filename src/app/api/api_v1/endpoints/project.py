@@ -138,21 +138,6 @@ async def upload_project(
     return ProjectWithData.factory(project_obj, project_obj.welding_points, workpiece_obj)
 
 
-@router.post("/", response_description="Add new project", response_model=Project)
-async def create_project(
-        *,
-        db: AsyncSession = Depends(deps.get_async_db),
-        project_in: ProjectCreate):
-    """
-    Create new project
-    """
-    result = await project.create(db=db, obj_in=project_in)
-
-    await db.commit()
-    await db.refresh(result)
-    return result
-
-
 @router.put("/{project_id}", response_model=ProjectWithData)
 async def update_project(
         *,
