@@ -6,3 +6,4 @@ from app.models.robot import Robot # noqa
 from app.models.welding_point import WeldingPoint # noqa
 from app.models.project import Project # noqa
 from app.models.generation_template import GenerationTemplate # noqa
+from app.models.workpiece import Workpiece # noqa

@@ -7,16 +7,19 @@ from app.crud.crud_robot import robot
 from app.crud.crud_robot_type import robot_type
 from app.crud.crud_project import project
 from app.crud.crud_welding_point import welding_point
+from app.crud.crud_workpiece import workpiece
 from app.models.project import Project
 from app.models.welding_point import WeldingPoint
 from app.models.generation_template import GenerationTemplate
 from app.models.robot import Robot
 from app.models.robot_type import RobotType
+from app.models.workpiece import Workpiece
 from app.schemas.generation_template import GenerationTemplateCreate
 from app.schemas.project import ProjectCreate
 from app.schemas.robot import RobotCreate
 from app.schemas.robot_type import RobotTypeCreate
 from app.schemas.welding_point import WeldingPointCreate
+from app.schemas.workpiece import WorkpieceCreate
 from app.tests.utils.utils import random_string, random_float, get_example_template
 
 
@@ -35,6 +38,30 @@ async def create_project(db: AsyncSession, commit_and_refresh: bool = False) -> 
         await db.commit()
         await db.refresh(project_obj)
     return project_obj
+
+
+async def create_workpiece(db: AsyncSession, project_id: int, commit_and_refresh: bool = False) -> Workpiece:
+    workpiece_in = WorkpieceCreate(
+        project_id=project_id,
+        position_x=random_float(),
+        position_y=random_float(),
+        position_z=random_float(),
+        model_file_name=random_string(),
+        model_file=random_string()
+    )
+
+    workpiece_obj = await workpiece.create(db=db, obj_in=workpiece_in)
+    assert workpiece_obj.project_id == workpiece_in.project_id
+    assert workpiece_obj.position_x == workpiece_in.position_x
+    assert workpiece_obj.position_y == workpiece_in.position_y
+    assert workpiece_obj.position_z == workpiece_in.position_z
+    assert workpiece_obj.model_file_name == workpiece_in.model_file_name
+    assert workpiece_obj.model_file == workpiece_in.model_file
+
+    if commit_and_refresh:
+        await db.commit()
+        await db.refresh(workpiece_obj)
+    return workpiece_obj
 
 
 async def create_robot_type(db: AsyncSession, template_id: Optional[int] = None,

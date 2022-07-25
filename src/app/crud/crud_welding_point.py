@@ -43,5 +43,11 @@ class CRUDWeldingPoint(CRUDBase[WeldingPoint, WeldingPointCreate, WeldingPointUp
         )
         return result.scalars().all()
 
+    async def get_multi_by_project_id(
+            self, db: AsyncSession, project_id: int) -> List[WeldingPoint]:
+        result = await db.execute(
+            select(self.model).filter(self.model.project_id == project_id))
+        return result.scalars().all()
+
 
 welding_point = CRUDWeldingPoint(WeldingPoint)
