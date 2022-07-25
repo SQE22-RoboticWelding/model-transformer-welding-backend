@@ -25,7 +25,6 @@ class WorkpieceBase(BaseModel):
 
 class WorkpieceCreate(WorkpieceBase):
     id: Optional[int]
-    project_id: int
     model_file: Optional[str]
 
 

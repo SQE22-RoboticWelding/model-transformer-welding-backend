@@ -44,8 +44,8 @@ async def read_project(
     welding_points = await welding_point.get_multi_by_project_id(db=db, project_id=project_obj.id)
     workpiece_obj = None
     if project_obj.workpiece is not None:
-        workpiece_obj = await crud_workpiece.get_by_id(db=db, id=project_obj.workpiece.id
-                                                   )
+        workpiece_obj = await crud_workpiece.get_by_id(db=db, id=project_obj.workpiece.id)
+
     result = ProjectWithData.factory(project=project_obj, welding_points=welding_points, workpiece=workpiece_obj)
     return result
 
@@ -93,7 +93,7 @@ async def upload_project(
         db: AsyncSession = Depends(deps.get_async_db),
         name: str,
         description: Optional[str] = None,
-        file: UploadFile,
+        file: UploadFile
 ) -> Any:
     """
     Create new project by uploading a file
