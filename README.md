@@ -38,3 +38,51 @@ Or, for running locally, execute from the repository root:
 * Start the database `docker compose up -d --no-deps sqe_database`
 * Run the backend application with uvicorn: `cd src && uvicorn app.main:app`
 * If you want to start the backend in development mode (hot reloading etc.) use `uvicorn app.main:app --reload` instead
+
+## Available variables and functions in templates
+The templates are [Jinja2 templates](https://jinja.palletsprojects.com/en/3.1.x/templates/). 
+
+ ### Variables
+ The following list is an example input for templates:
+```
+welding_points": [{
+        "id": 1,
+        "project_id": 1,
+        "robot_id": 1,
+        "welding_order": 0,
+        "name": "P1",
+        "description": "Initial welding point",
+        "x_original": 1.57,
+        "y_original": 0,
+        "z_original": 0.1,
+        "x": 1.60,
+        "y": 0.01,
+        "z": 0.057,
+        "x_rel": 1.046,
+        "y_rel": -5.54,
+        "z_rel": -15.454,
+        "roll": 0.2,
+        "pitch": 0.1,
+        "yaw": 0.05,
+        "tolerance": 0.1
+    }],
+"robot": {
+        "id": 1,
+        "robot_type_id": 1,
+        "project_id": 1,
+        "name": "Scratchy",
+        "description": "Robot with the scratch on arm",
+        "position_x": 0.554,
+        "position_y": 5.554,
+        "position_z": 15.554,
+        "position_norm_vector_x": 0,
+        "position_norm_vector_y": 0,
+        "position_norm_vector_z": 1,
+    }
+ ```
+Data can be accesed in templates with expressions: the robot name can be used as `{{robot.name}}`, and the first welding point description with `{{welding_points[0].description}}`. As the welding points are given as list, a loop can be used to iterate over it. 
+ 
+ A note about the values `x_rel`, `y_rel`, `z_rel`: These values are the relative x, y and z positions as seen from the robot for this welding point. They are calculated with e.g., `x_rel = welding_point.x - robot.x`.
+ 
+ ### Utility functions
+ There is currently only one utility function available: `generate_blockly_block_id()`, which returns a 20 characters long random string. It can be used as ID for blockly blocks.
