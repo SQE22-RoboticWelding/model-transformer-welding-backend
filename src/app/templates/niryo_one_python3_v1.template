@@ -14,7 +14,7 @@ if __name__ == '__main__':
     n = NiryoOne()
 
     {% for p in welding_points -%}
-    n.move_pose(x={{p.x}}, y={{p.y}}, z={{p.z}}, roll={{p.roll}}, pitch={{p.pitch}}, yaw={{p.yaw}})
+    n.move_pose(x={{p.x_rel}}, y={{p.y_rel}}, z={{p.z_rel}}, roll={{p.roll}}, pitch={{p.pitch}}, yaw={{p.yaw}})
     grab_release_reset(n)
     {%- if loop.index != welding_points|length %}
     {% endif %}{% endfor %}
