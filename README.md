@@ -40,7 +40,7 @@ Or, for running locally, execute from the repository root:
 * If you want to start the backend in development mode (hot reloading etc.) use `uvicorn app.main:app --reload` instead
 
 ## Available variables and functions in templates
-The templates are [Jinja2 templates](https://jinja.palletsprojects.com/en/3.1.x/templates/). 
+The templates are [Jinja2 templates](https://jinja.palletsprojects.com/en/3.1.x/templates/). An example template can be found [here](https://github.com/SQE22-RoboticWelding/model-transformer-welding-backend/blob/main/src/app/templates/niryo_one_python3_v1.template).
 
  ### Variables
  The following list is an example input for templates:
